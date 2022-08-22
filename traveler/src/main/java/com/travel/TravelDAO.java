@@ -10,7 +10,7 @@ import java.util.List;
 import com.util.DBConn;
 
 public class TravelDAO {
-	private Connection conn=DBConn.getConnection();
+	private final Connection conn=DBConn.getConnection();
 	
 	// �Խù� ����
 	public int dataCount() {
@@ -100,10 +100,10 @@ public class TravelDAO {
 		
 		try {
 			sb.append("SELECT t.travelNum, place, information, t.userid, username, likeNum, ");
-			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') created, img.saveFilename saveFilename  ");
-			sb.append("  FROM travel t JOIN member m ON t.userId = m.userId ");
+			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename  ");
+			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
 			sb.append("  LEFT OUTER JOIN ( ");
-			sb.append("  	SELECT travelNum, LISTAGG(saveFilename,',') WITHIN GROUP (order by saveFilename) saveFilename ");
+			sb.append("  	SELECT travelNum, group_concat(saveFilename,',') AS saveFilename ");
 			sb.append(" 	FROM travelFile f  ");
 			sb.append("     GROUP BY travelNum ");
 			sb.append("   	) img ON t.travelNum = img.travelNum");
@@ -114,6 +114,10 @@ public class TravelDAO {
 			pstmt.setString(1, type);
 			
 			rs = pstmt.executeQuery();
+
+			if(rs == null){
+				return null;
+			}
 			
 			while(rs.next()) {
 				
@@ -131,9 +135,6 @@ public class TravelDAO {
 				
 				list.add(dto);
 			}
-			
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -230,7 +231,7 @@ public class TravelDAO {
 		try {
 			sb.append("INSERT INTO travel ");
 			sb.append(" (place, information, userid, type) ");
-			sb.append(" VALUES(?,?,?,?) ");
+			sb.append(" VALUES(?,?,?) ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			pstmt.setString(1, dto.getPlace());
@@ -395,28 +396,17 @@ public class TravelDAO {
 		return result;
 	}
 	
-	public int insertImage(TravelDTO dto ,String s) {
+	public void insertImage(TravelDTO dto ,String s) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		String sql;
 		
 		try {
-			
-			if(dto==null) {
-				sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES(MAX(travelNum), ?)";
-				
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, s);
+			sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( (SELECT MAX(travelNum) from travel), ?)";
 
-			} else {
-				
-				sql = "INSERT INTO travelFile(travelNum,saveFilename) VALUES( ?, ?)";
-				
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, dto.getNum());
-				pstmt.setString(2, s);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, s);
 
-			}
 			result = pstmt.executeUpdate();
 
 
@@ -431,7 +421,6 @@ public class TravelDAO {
 				}
 			}
 		}
-		return result;
 	}
 	
 	public int deleteImage(String name) {
