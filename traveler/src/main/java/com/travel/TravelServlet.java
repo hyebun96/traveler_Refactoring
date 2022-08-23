@@ -39,21 +39,21 @@ public class TravelServlet extends MyUploadServlet {
 		String root = session.getServletContext().getRealPath("/");
 		pathname = root + "uploads" + File.separator + "travel";
 
-		if (uri.indexOf("list.do") != -1) {
+		if (uri.contains("list.do")) {
 			list(req, resp);
-		} else if (uri.indexOf("created.do") != -1) {
+		} else if (uri.contains("created.do")) {
 			createdForm(req, resp);
-		} else if (uri.indexOf("created_ok.do") != -1) {
+		} else if (uri.contains("created_ok.do")) {
 			createdSubmit(req, resp);
-		} else if (uri.indexOf("update.do") != -1) {
+		} else if (uri.contains("update.do")) {
 			updateForm(req, resp);
-		} else if (uri.indexOf("update_ok.do") != -1) {
+		} else if (uri.contains("update_ok.do")) {
 			updateSubmit(req, resp);
-		} else if (uri.indexOf("delete.do") != -1) {
+		} else if (uri.contains("delete.do")) {
 			delete(req, resp);
-		} else if (uri.indexOf("deleteFile.do") != -1) {
+		} else if (uri.contains("deleteFile.do")) {
 			deleteFile(req, resp);
-		} else if (uri.indexOf("like.do") != -1) {
+		} else if (uri.contains("like.do")) {
 			like(req, resp);
 		}
 
@@ -64,9 +64,8 @@ public class TravelServlet extends MyUploadServlet {
 		String cp = req.getContextPath();
 
 		String type = req.getParameter("type");
-		
-		
-		// °Ë»ö
+
+		// ï¿½Ë»ï¿½
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
 
@@ -79,26 +78,22 @@ public class TravelServlet extends MyUploadServlet {
 			keyword = URLDecoder.decode(keyword, "utf-8");
 		}
 
-		// ¿À´Ã ³¯Â¥ °è»ê
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½
 		Date nowTime = new Date();
 		SimpleDateFormat day = new SimpleDateFormat("MM dd, yyyy");
 		String date = day.format(nowTime);
-		
-		SimpleDateFormat day2 = new SimpleDateFormat("yyyy/MM/dd");
-		String date2 = day2.format(nowTime);
 
 		int dataCount;
-		List<TravelDTO> list = null;
+		List<TravelDTO> list;
 
-		if (keyword.length() != 0)
+		if (keyword.length() != 0) {
 			dataCount = dao.dataCount(condition, keyword);
-		else
-			dataCount = dao.dataCount();
-
-		if (keyword.length() != 0)
 			list = dao.listTravel(condition, keyword);
-		else
+		} else{
+			dataCount = dao.dataCount();
 			list = dao.listTravel(type);
+		}
+
 
 		String query = "";
 		String listUrl = "";
@@ -113,9 +108,9 @@ public class TravelServlet extends MyUploadServlet {
 			articleUrl += "?" + query;
 		}
 		
-		WeatherDTO vo = dao.listWeather(date2,type);
+		WeatherDTO vo = dao.listWeather(type);
 
-		// Æ÷¿öµù jsp¿¡ ³Ñ±æ µ¥ÀÌÅÍ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ jspï¿½ï¿½ ï¿½Ñ±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		req.setAttribute("list", list);
 		req.setAttribute("vo", vo);
 		req.setAttribute("articleUrl", articleUrl);
@@ -126,7 +121,7 @@ public class TravelServlet extends MyUploadServlet {
 		req.setAttribute("date", date);
 		req.setAttribute("type", type);
 
-		// JSP·Î Æ÷¿öµù
+		// JSPï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		forward(req, resp, "/WEB-INF/views/travel/list.jsp?type="+type);
 
 	}
@@ -179,7 +174,7 @@ public class TravelServlet extends MyUploadServlet {
 
 		dao.insertTravel(dto);
 
-		List<Part> list = new ArrayList<Part>();
+		List<Part> list = new ArrayList<>();
 
 		for (Part part : req.getParts()) {
 			list.add(part);
@@ -190,7 +185,7 @@ public class TravelServlet extends MyUploadServlet {
 			String[] saveFilenames = map.get("saveFilenames");
 
 			for (String s : saveFilenames) {
-				dao.insertImage(null,s);
+				dao.insertImage(dto,s);
 			}
 
 		}
@@ -209,6 +204,7 @@ public class TravelServlet extends MyUploadServlet {
 		int num = Integer.parseInt(req.getParameter("num"));
 		String type = req.getParameter("type");
 		
+
 		TravelDTO dto = dao.readTravel(num);
 
 		if (dto == null) {
@@ -251,7 +247,7 @@ public class TravelServlet extends MyUploadServlet {
 		
 		if (req.getParts() != null) {
 
-			List<Part> list = new ArrayList<Part>();
+			List<Part> list = new ArrayList<>();
 
 			for (Part part : req.getParts()) {
 				list.add(part);

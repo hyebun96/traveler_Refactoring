@@ -34,8 +34,8 @@
 			<p><button type="button" id="cr" onclick="javascript:location.href='<%=cp%>/travel/created.do?type=${type}'">글등록</button></p>
 		</c:if>
 		<div class="weather">
-		<img alt="" src="<%=cp %>/resource/img/${vo.weather}">
-			<p style="margin-top: 20px; display: block;">${type} weather<span style="font-size: 20px;">( ${vo.tem} )</span></p>		
+		<img alt="" src="<%=cp %>/resource/img/weather/${vo.weather}">
+			<p style="margin-top: 20px; display: block;">${type} weather<span style="font-size: 20px;">( ${vo.tem} ℃)</span></p>
 			<p style="font-size: 15px; padding-top: 10px; float: right;">${date}&nbsp;&nbsp;&nbsp;</p>	<%--April 21, 2020 --%>
 		</div>
 

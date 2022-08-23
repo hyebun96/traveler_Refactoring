@@ -6,13 +6,14 @@
    String cp = request.getContextPath();
 %>
 
+<script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
 <script type="text/javascript">
 //엔터 처리
 $(function(){
 	   $("input").not($(":button")).keypress(function (evt) {
-	        if (evt.keyCode == 13) {
-	            var fields = $(this).parents('form,body').find('button,input,textarea,select');
-	            var index = fields.index(this);
+	        if (evt.keyCode === 13) {
+				const fields = $(this).parents('form,body').find('button,input,textarea,select');
+				let index = fields.index(this);
 	            if ( index > -1 && ( index + 1 ) < fields.length ) {
 	                fields.eq( index + 1 ).focus();
 	            }
@@ -20,13 +21,14 @@ $(function(){
 	        }
 	     });
 });
+
 </script>
 
 	<div class="header-top">  
 		<div class="header-center">
 			<p style="margin: 2px;">
 				<a href="<%=cp %>/main.do" style="text-decoration: none;">
-				<img alt="HOME" src="<%=cp %>/resource/img/logo.jpg" width="37%" style="margin: 12px 16px; background-size: cover;" >
+				<img alt="HOME" src="<%=cp %>/resource/img/logo2.png" style="width: 140px; margin: 0px 16px; background-size: cover;" >
 				</a>
 			</p>
 		</div>
@@ -38,12 +40,12 @@ $(function(){
 		            <li>
 		                <a href="<%=cp%>/travel/list.do?type=seoul">여행지</a>
 		                <ul>
-		                    <li><a href="<%=cp%>/travel/list.do?type=seoul">수도권</a></li>
-		                    <li><a href="<%=cp%>/travel/list.do?type=gangwon">강원</a></li>
-		                    <li><a href="<%=cp%>/travel/list.do?type=chungcheon">충청</a></li>
-		                    <li><a href="<%=cp%>/travel/list.do?type=jeonla">전라</a></li>
-		                    <li><a href="<%=cp%>/travel/list.do?type=gyeongsang">경상</a></li>
-		                    <li><a href="<%=cp%>/travel/list.do?type=jeju">제주</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Seoul">서울</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Gangwon-do">강원</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Chungcheongbuk-do">충북</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Gwangju">광주</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Gyeongsangbuk-do">경북</a></li>
+		                    <li><a href="<%=cp%>/travel/list.do?type=Jeju">제주</a></li>
                     
 		                </ul>
 		            </li>

@@ -1,5 +1,9 @@
 package com.travel;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.util.DBConn;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class TravelDAO {
 	private final Connection conn=DBConn.getConnection();
+	private final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+	private final String apiKey = "5e12679699fcfba7406abda339c17eb4";
 	
 	// �Խù� ����
 	public int dataCount() {
@@ -103,7 +112,7 @@ public class TravelDAO {
 			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename  ");
 			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
 			sb.append("  LEFT OUTER JOIN ( ");
-			sb.append("  	SELECT travelNum, group_concat(saveFilename,',') AS saveFilename ");
+			sb.append("  	SELECT travelNum, group_concat(saveFilename) AS saveFilename ");
 			sb.append(" 	FROM travelFile f  ");
 			sb.append("     GROUP BY travelNum ");
 			sb.append("   	) img ON t.travelNum = img.travelNum");
@@ -167,7 +176,7 @@ public class TravelDAO {
 			sb.append("SELECT travelNum, place, information, t.userid, username, likeNum, ");
 			sb.append("         DATE_FORMAT(created, '%Y-%m-%d') created, subquery1.saveFilename saveFilename ");
 			sb.append("  FROM travel t JOIN member m ON t.userId = m.userId, ");
-			sb.append("   (SELECT LISTAGG(SAVEFILENAME,',') WITHIN GROUP (order by SAVEFILENAME) saveFilename");
+			sb.append("   (SELECT GROUP_CONCAT(SAVEFILENAME) AS saveFilename");
 			sb.append(" FROM TRAVELFILE ");
 			sb.append(" GROUP BY travelNum ");
 			sb.append("   ) subquery1 ");
@@ -231,7 +240,7 @@ public class TravelDAO {
 		try {
 			sb.append("INSERT INTO travel ");
 			sb.append(" (place, information, userid, type) ");
-			sb.append(" VALUES(?,?,?) ");
+			sb.append(" VALUES(?,?,?,?) ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			pstmt.setString(1, dto.getPlace());
@@ -239,7 +248,7 @@ public class TravelDAO {
 			pstmt.setString(3, dto.getUserId());
 			pstmt.setString(4, dto.getType());
 			
-			pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 			
 			
 		} catch (Exception e) {
@@ -260,7 +269,7 @@ public class TravelDAO {
 			sb.append("SELECT t.travelNum, place, information, t.userid, userName , saveFilename, type ");
 			sb.append(" FROM travel t JOIN member m ON t.userid = m.userid ");
 			sb.append(" LEFT OUTER JOIN ( ");
-			sb.append("    SELECT travelNum, LISTAGG(SAVEFILENAME,',') WITHIN GROUP (order by SAVEFILENAME) saveFilename");
+			sb.append("    SELECT travelNum, GROUP_CONCAT(SAVEFILENAME) AS saveFilename");
 			sb.append("    FROM TRAVELFILE f ");
 			sb.append("    WHERE f.travelNum = ? ");
 			sb.append("    GROUP BY travelNum ");
@@ -402,7 +411,11 @@ public class TravelDAO {
 		String sql;
 		
 		try {
-			sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( (SELECT MAX(travelNum) from travel), ?)";
+			if(dto.getNum() == 0){
+				sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( (SELECT MAX(travelNum) from travel), ?)";
+			} else {
+				sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( "+ dto.getNum()  +", ?)";
+			}
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, s);
@@ -451,31 +464,38 @@ public class TravelDAO {
 		return result;
 	}	
 	
-	public WeatherDTO listWeather(String cal, String area) {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
+	public WeatherDTO listWeather(String area) {
+		StringBuilder urlBuilder = new StringBuilder(BASE_URL);
+		URL url;
+		BufferedReader bf;
+		String line;
+		String result = "";
 		WeatherDTO dto = new WeatherDTO();
-		
+
 		try {
-			
-			sql="SELECT wnum, tem, weather FROM weather WHERE cal=? AND area=?";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, cal);
-			pstmt.setString(2, area);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-			
-			dto.setwNum(rs.getInt("wnum"));
-			dto.setTem(rs.getString("tem"));
-			dto.setWeather(rs.getString("weather"));
-					
+			urlBuilder.append("?" + URLEncoder.encode("q", "UTF-8") + "=" + area);
+			urlBuilder.append("&" + URLEncoder.encode("appid", "UTF-8") + "=" + apiKey);
+
+			url = new URL(urlBuilder.toString());
+
+			// openStream 메소드로 날씨 정보를 받아옴
+			bf = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			// 버퍼에 있는 정보를 문자열로 변환
+			while((line = bf.readLine()) != null){
+				result = result.concat(line);
 			}
-			
+
+			JSONParser jsonParser = new JSONParser();
+			// To JSONObject
+			JSONObject jsonObj = (JSONObject) jsonParser.parse(result);
+
+			JSONObject WeatherObj = (JSONObject) ((JSONArray) jsonObj.get("weather")).get(0);
+			JSONObject CoordObj = (JSONObject) jsonObj.get("coord");
+
+			dto.setWeather(WeatherObj.get("main").toString() + ".svg");
+			dto.setTem(String.format("%.2f", (Float) CoordObj.get("lat") ));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
