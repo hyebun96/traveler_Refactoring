@@ -60,10 +60,15 @@
 						</c:if>
 					</div>
 				<br>
-				<div class="like-box">
+				<div class="like-box frame">
 					<hr style="clear: both;">
-					<span>${dto.likeNum} Like&nbsp;&nbsp;&nbsp;Only read</span><span
-						style="float: right;"><a href="javascript:location.href='<%=cp%>/travel/like.do?num=${dto.num}&type=${type}'">♥</a></span>
+					<span>${dto.likeNum} Like&nbsp;&nbsp;&nbsp;Only read</span>
+					<span style="float: right;">
+						<span class="custom-btn " type="button" onclick="javascript:location.href='<%=cp%>/travel/like.do?num=${dto.num}&type=${type}'">
+							<c:if test="${dto.travelLike == 0}"><img class="ico_like" style="width: 25px; height: 25px;" alt="" src="<%=cp%>/resource/img/unlike.png"></c:if>
+							<c:if test="${dto.travelLike > 0}"><img class="ico_postbtn" style="width: 25px; height: 25px;" alt="" src="<%=cp%>/resource/img/like.png"></c:if>
+						</span>
+					</span>
 				</div>
 			</div>
 			<br>

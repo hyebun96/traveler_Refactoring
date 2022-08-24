@@ -106,10 +106,10 @@ public class TravelDAO {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
-		
+
 		try {
 			sb.append("SELECT t.travelNum, place, information, t.userid, username, likeNum, ");
-			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename  ");
+			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename");
 			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
 			sb.append("  LEFT OUTER JOIN ( ");
 			sb.append("  	SELECT travelNum, group_concat(saveFilename) AS saveFilename ");
@@ -117,11 +117,83 @@ public class TravelDAO {
 			sb.append("     GROUP BY travelNum ");
 			sb.append("   	) img ON t.travelNum = img.travelNum");
 			sb.append("	 WHERE type=? ");
+
+
+			pstmt = conn.prepareStatement(sb.toString());
+			pstmt.setString(1, type);;
+
+			rs = pstmt.executeQuery();
+
+			if(rs == null){
+				return null;
+			}
+
+			while(rs.next()) {
+
+				TravelDTO dto = new TravelDTO();
+				dto.setNum(rs.getInt("travelNum"));
+				dto.setPlace(rs.getString("place"));
+				dto.setInformation(rs.getString("information"));
+				dto.setUserId(rs.getString("userId"));
+				dto.setUserName(rs.getString("username"));
+				if(rs.getString("saveFilename")!=null) {
+					dto.setImageFilename(rs.getString("saveFilename").split(","));
+				}
+				dto.setCreated(rs.getString("created"));
+				dto.setLikeNum(rs.getInt("likeNum"));
+				dto.setTravelLike(0);
+
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(rs!=null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if(pstmt!=null) {
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
+
+	public List<TravelDTO> listTravel(String type, String userId) {
+		List<TravelDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			sb.append("SELECT t.travelNum, place, information, t.userid, username, likeNum, ");
+			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename, tL.travelNum AS travelLike");
+			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
+			sb.append("  LEFT OUTER JOIN ( ");
+			sb.append("  	SELECT travelNum, group_concat(saveFilename) AS saveFilename ");
+			sb.append(" 	FROM travelFile f  ");
+			sb.append("     GROUP BY travelNum ");
+			sb.append("   	) img ON t.travelNum = img.travelNum");
+			sb.append("   	LEFT OUTER JOIN ( ");
+			sb.append("   	  SELECT travelNum ");
+			sb.append("   	  FROM travelLike");
+			sb.append("   	  WHERE userId = ? ");
+			sb.append("   	) tL on t.travelNum = tL.travelNum ");
+			sb.append("	 WHERE type=? ");
 			
 			
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setString(1, type);
-			
+			pstmt.setString(1, userId);
+			pstmt.setString(2, type);
+
 			rs = pstmt.executeQuery();
 
 			if(rs == null){
@@ -141,6 +213,7 @@ public class TravelDAO {
 				}
 				dto.setCreated(rs.getString("created"));
 				dto.setLikeNum(rs.getInt("likeNum"));
+				dto.setTravelLike(rs.getInt("travelLike"));
 				
 				list.add(dto);
 			}
@@ -166,7 +239,7 @@ public class TravelDAO {
 		return list;
 	}
 	
-	public List<TravelDTO> listTravel(String condition, String keyword) {
+	public List<TravelDTO> listTravel(String condition, String keyword, String userId) {
 		List<TravelDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -206,6 +279,7 @@ public class TravelDAO {
 				}
 				dto.setCreated(rs.getString("created"));
 				dto.setLikeNum(rs.getInt("likeNum"));
+				dto.setTravelLike(rs.getInt("travelLike"));
 				
 				list.add(dto);
 			}
@@ -377,19 +451,37 @@ public class TravelDAO {
 		return result;
 	}
 	
-	public int likeInsert(int num) {
-		int result=0;
+	public void likeInsert(int num, String userId) {
 		PreparedStatement pstmt = null;
 		String sql;
-		
+		String sql2;
+		ResultSet rs = null;
+
 		try {
-			sql = "UPDATE travel SET likeNum=likeNum+1 WHERE travelNum=?";
-			
+			sql = "SELECT * FROM travelLike WHERE travelNum = ? AND userId = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, num);
-			result=pstmt.executeUpdate();
-			
-			
+			pstmt.setString(2, userId);
+
+
+			rs = pstmt.executeQuery();
+
+			if(!rs.next()){
+				sql = "INSERT INTO travelLike(travelNum, userId) VALUES (?,?)";
+				sql2 = "UPDATE travel SET likeNum=likeNum+1 WHERE travelNum=?";
+			} else {
+				sql = "DELETE FROM travelLike WHERE travelNum = ? AND userId = ?";
+				sql2 = "UPDATE travel SET likeNum=likeNum-1 WHERE travelNum=?";
+			}
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			pstmt.setString(2, userId);
+			pstmt.executeUpdate();
+			pstmt = conn.prepareStatement(sql2);
+			pstmt.setInt(1, num);
+			pstmt.executeUpdate();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -401,8 +493,6 @@ public class TravelDAO {
 				}
 			}
 		}
-		
-		return result;
 	}
 	
 	public void insertImage(TravelDTO dto ,String s) {
@@ -494,7 +584,7 @@ public class TravelDAO {
 			JSONObject CoordObj = (JSONObject) jsonObj.get("coord");
 
 			dto.setWeather(WeatherObj.get("main").toString() + ".svg");
-			dto.setTem(String.format("%.2f", (Float) CoordObj.get("lat") ));
+			dto.setTem(String.format("%.2f" , Float.parseFloat(String.valueOf(CoordObj.get("lat")))) );
 
 		} catch (Exception e) {
 			e.printStackTrace();

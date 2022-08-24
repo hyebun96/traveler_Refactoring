@@ -1,5 +1,16 @@
 package com.travel;
 
+import com.member.SessionInfo;
+import com.util.FileManager;
+import com.util.MyUploadServlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -9,18 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
-
-import com.member.SessionInfo;
-import com.util.FileManager;
-import com.util.MyUploadServlet;
 
 @WebServlet("/travel/*")
 @MultipartConfig
@@ -85,15 +84,19 @@ public class TravelServlet extends MyUploadServlet {
 
 		int dataCount;
 		List<TravelDTO> list;
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-		if (keyword.length() != 0) {
-			dataCount = dao.dataCount(condition, keyword);
-			list = dao.listTravel(condition, keyword);
-		} else{
+		if(info == null){
 			dataCount = dao.dataCount();
 			list = dao.listTravel(type);
+		} else if(info != null && keyword.length() != 0){
+			dataCount = dao.dataCount(condition, keyword);
+			list = dao.listTravel(condition, keyword, info.getUserId());
+		} else {
+			dataCount = dao.dataCount();
+			list = dao.listTravel(type, info.getUserId());
 		}
-
 
 		String query = "";
 		String listUrl = "";
@@ -108,11 +111,11 @@ public class TravelServlet extends MyUploadServlet {
 			articleUrl += "?" + query;
 		}
 		
-		WeatherDTO vo = dao.listWeather(type);
+		WeatherDTO weatherDTO = dao.listWeather(type);
 
 		// ������ jsp�� �ѱ� ������
 		req.setAttribute("list", list);
-		req.setAttribute("vo", vo);
+		req.setAttribute("vo", weatherDTO);
 		req.setAttribute("articleUrl", articleUrl);
 		req.setAttribute("listUrl", listUrl);
 		req.setAttribute("dataCount", dataCount);
@@ -343,13 +346,16 @@ public class TravelServlet extends MyUploadServlet {
 	}
 
 	protected void like(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String cp = req.getContextPath();
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
 		TravelDAO dao = new TravelDAO();
+
+		String cp = req.getContextPath();
 
 		int num = Integer.parseInt(req.getParameter("num"));
 		String type = req.getParameter("type");
 		
-		dao.likeInsert(num);
+		dao.likeInsert(num, info.getUserId());
 
 		resp.sendRedirect(cp + "/travel/list.do?type="+type);
 	}

@@ -1,17 +1,18 @@
 package com.travel;
 
 public class TravelDTO {
-	private int num;			// DB ¼ø¼­
-	private int listNum;		// °Ô½Ã¹° ¹øÈ£
-	private String userName;	// »ç¿ëÀÚ ÀÌ¸§
-	private String userId;		// »ç¿ëÀÚ ¾ÆÀÌµð
-	private String place;		// ¿©ÇàÁö
-	private String information;	// ¿©ÇàÀÚ Á¤º¸	
-	private String created;		// »ý¼ºÀÏ
-	private int likeNum;		// ÁÁ¾Æ¿ä ¼ö
-	private String imageFilename[];	// ÀÌ¹ÌÁö ÆÄÀÏ
-	private String type;			// Áö¿ª    
-	
+	private int num;			// DB ï¿½ï¿½ï¿½ï¿½
+	private int listNum;		// ï¿½Ô½Ã¹ï¿½ ï¿½ï¿½È£
+	private String userName;	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
+	private String userId;		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
+	private String place;		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	private String information;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	private String created;		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	private int likeNum;		// ï¿½ï¿½ï¿½Æ¿ï¿½ ï¿½ï¿½
+	private String imageFilename[];	// ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	private String type;			// ï¿½ï¿½ï¿½ï¿½
+	private int travelLike;
+
 	public int getNum() {
 		return num;
 	}
@@ -73,7 +74,12 @@ public class TravelDTO {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
 
-	
+	public int getTravelLike() {
+		return travelLike;
+	}
+
+	public void setTravelLike(int travelLike) {
+		this.travelLike = travelLike;
+	}
 }
