@@ -40,8 +40,7 @@ public class ContactDAO {
 		}	
 		return result;
 	}
-	
-	// ������ ����
+
 	public int dataCount(String ctSort) {
 		int result=0;
 		PreparedStatement pstmt=null;
@@ -83,7 +82,6 @@ public class ContactDAO {
 		}
 		return result;
 	}
-	// �˻������� ������ ����
 	
 	public int dataCount(String condition, String keyword, String ctSort) {
 		int result=0;
@@ -95,7 +93,7 @@ public class ContactDAO {
 			sql="SELECT COALESCE(COUNT(*),0) FROM contact";
 			if(condition.equals("ctDate")) {
 				keyword=keyword.replaceAll("-", "");
-				sql+=" WHERE TO_CHAR(ctDate, 'YYYYMMDD')=?";
+				sql+=" WHERE DATE_FORMAT(ctDate, '%Y-%m-%d')=?";
 			} else {
 				sql+=" WHERE INSTR("+condition+", ?) >=1";
 			}	
@@ -133,8 +131,7 @@ public class ContactDAO {
 		}
 		return result;
 	}
-	
-	// ����Ʈ ����Ʈ (admin�� ���)
+
 	public List<ContactDTO> listContact(int offset, int rows, String ctSort){
 		List<ContactDTO> list = new ArrayList<>();
 		PreparedStatement pstmt=null;
@@ -142,13 +139,13 @@ public class ContactDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append("SELECT ctSort, ctNum, ctName, ctSubject, TO_CHAR(ctDate, 'YYYY-MM-DD') ctDate, fin ");
+			sb.append("SELECT ctSort, ctNum, ctName, ctSubject, DATE_FORMAT(ctDate, '%Y-%m-%d') ctDate, fin ");
 			sb.append(" FROM contact ");
 			if(ctSort.length()!=0) {
 				sb.append(" WHERE ctSort= ? ");
 			}
 			sb.append(" ORDER BY ctNum DESC ");
-			sb.append(" ORDERS LIMIT ? OFFSET ? ");
+			sb.append(" LIMIT ? OFFSET ? ");
 			
 			pstmt=conn.prepareStatement(sb.toString());
 			
@@ -201,11 +198,11 @@ public class ContactDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append("SELECT ctSort, ctNum, ctName, ctSubject, TO_CHAR(ctDate, 'YYYY-MM-DD') ctDate, fin ");
+			sb.append("SELECT ctSort, ctNum, ctName, ctSubject, DATE_FORMAT(ctDate, '%Y-%m-%d') ctDate, fin ");
 			sb.append(" FROM contact ");
 			if(condition.equals("ctDate")) {
 				keyword=keyword.replaceAll("-", "");
-				sb.append(" WHERE TO_CHAR(ctDate, 'YYYYMMDD')=?");
+				sb.append(" WHERE DATE_FORMAT(ctDate, '%Y-%m-%d')=?");
 			} else {
 				sb.append(" WHERE INSTR(").append(condition).append(", ?) >=1");
 			}	
@@ -214,17 +211,17 @@ public class ContactDAO {
 				sb.append(" AND ctSort= ? ");
 			}
 			sb.append(" ORDER BY ctNum DESC ");
-			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY");
+			sb.append(" LIMIT ? OFFSET ? ");
 			
 			pstmt=conn.prepareStatement(sb.toString());
 			pstmt.setString(1, keyword);
 			if(ctSort.length()==0) {
-				pstmt.setInt(2, offset);
-				pstmt.setInt(3, rows);
+				pstmt.setInt(2, rows);
+				pstmt.setInt(3, offset);
 			} else {
 				pstmt.setString(2, ctSort);
-				pstmt.setInt(3, offset);
-				pstmt.setInt(4, rows);
+				pstmt.setInt(3, rows);
+				pstmt.setInt(4, offset);
 			}
 			
 			rs= pstmt.executeQuery();
@@ -357,5 +354,4 @@ public class ContactDAO {
 		}
 		return result;
 	}
-	
 }

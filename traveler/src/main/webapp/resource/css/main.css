@@ -70,14 +70,13 @@ ul.nav li {
 ul.nav li a {
   float: left;
   line-height: 40px;
-  color: #7B241C;
   text-decoration: none;
   margin: 0;
   padding: 0 20px;
 }
 
 ul.nav .current a, ul.nav li:hover > a {
-  color: #333333;
+  color: green;
   font-weight : 900;
   text-decoration: none;
 }
