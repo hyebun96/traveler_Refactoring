@@ -49,7 +49,7 @@
 <div class=main>	
 	<div class="clock">
 		<p id="nowDate"  style="color: black; width: 300px; height: 100%;
-			font-size: 15px; font-family:fantasy; border: none;
+			font-size: 15px; border: none;
 			text-align: center; display: inline-block; margin: 10px auto; float: right;">
 		<img alt="" src="<%=cp %>/resource/img/clock.png" style="width:30px; height: 30px; float: left;"><%= nowTime%></p>
 	</div>
