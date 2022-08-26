@@ -90,6 +90,7 @@ public class MemberServlet extends MyUploadServlet {
 		SessionInfo info=new SessionInfo();
 		info.setUserId(dto.getUserId());
 		info.setUserName(dto.getUserName());
+		info.setImageFilename(dto.getImageFilename());
 		
 		session.setAttribute("member", info);
 	
@@ -135,16 +136,8 @@ public class MemberServlet extends MyUploadServlet {
 		}
 		
 		dto.setUserBirth(req.getParameter("userBirth"));
-	
-		Part p = req.getPart("upload"); 
-		Map<String, String> map = doFileUpload(p,pathname);
 
-		if(map!=null) { 
-			String saveFilename = map.get("saveFilename");
-			if(saveFilename!=null) {
-				dto.setImageFilename(saveFilename);
-			}	  
-		}
+		dto.setImageFilename(req.getParameter("upload"));
 		
 		try {
 			dao.insertMember(dto);
@@ -288,16 +281,7 @@ public class MemberServlet extends MyUploadServlet {
 		}
 		dto.setUserBirth(req.getParameter("userBirth"));
 		dto.setUserId(info.getUserId());
-		
-		Part p =req.getPart("upload");
-		Map<String, String> map = doFileUpload(p, pathname);
-		if(map!=null) {
-			if(req.getParameter("imageFilename").length()!=0) {
-				FileManager.doFiledelete(pathname, req.getParameter("imageFilename"));
-			}
-			String saveFilename = map.get("saveFilename");
-			dto.setImageFilename(saveFilename);
-		}
+		dto.setImageFilename(req.getParameter("upload"));
 		
 		try {
 			dao.updateMember(dto);

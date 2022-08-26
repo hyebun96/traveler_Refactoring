@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/signup.css" type="text/css">
 
-    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript">
         $(function () {  //엔터치면 다음으로 넘어가게함.
             $("input").not($(":button")).not($(":reset")).keypress(function (evt) { //input에서 keypress가 발생했으면(버튼과 리셋은 빼고)
@@ -29,15 +29,53 @@
                     return false; //엔터 이벤트 취소
                 }
             });
-
         });
+        $(function () {
+            $(".userImg").click(function () {
+                $(".userImg").css("background-color", "white");
+            });
+            $(".user1").click(function (){
+                $("#upload").val('user1');
+                $(".user1").css("background-color", "#e7f0fe");
+            });
+            $(".user2").click(function (){
+                $("#upload").val('user2');
+                $(".user2").css("background-color", "#e7f0fe");
+            });
+            $(".user3").click(function (){
+                $("#upload").val('user3');
+                $(".user3").css("background-color", "#e7f0fe");
+            });
+            $(".user4").click(function (){
+                $("#upload").val('user4');
+                $(".user4").css("background-color", "#e7f0fe");
+            });
+            $(".user5").click(function (){
+                $("#upload").val('user5');
+                $(".user5").css("background-color", "#e7f0fe");
+            });
+        });
+
     </script>
 
     <script type="text/javascript"> /* 자바스크립트는  웹브라우저에 의해 실행되어지는거,전세계적으로 많이 씀*/
+    let f = document.memberForm;
+    if(!f.upload.value){
+        let imgName = f.upload.value;
+        $("." + imgName).css("background-color", "#e7f0fe");
+        console.log(imgName + '이거야'); // TODO
+    }
+
 
     function memberOk() {
-        var f = document.memberForm;
         var str;
+
+        str = f.upload.value;
+        if(!str){
+            alert("계정의 이미지를 선택해 주세요.");
+            f.upload.focus();
+            return;
+        }
 
         str = f.userId.value;
         str = str.trim();
@@ -168,11 +206,6 @@
         }
     }
 
-    function userIdCheck() {
-        // 아이디 중복 검사
-
-    }
-
     //날짜입력검증
     function isValidDateFormat(data) {
         var p = /^[12][0-9]{3}[\.|\-|\/]?[0-9]{2}[\.|\-|\/]?[0-9]{2}$/; //0-9까지 3개
@@ -221,12 +254,13 @@
     <div class="index">
 
         <form name="memberForm" action="javascript:send();" method="post" enctype="multipart/form-data">
-            <c:if test="${not empty dto.imageFilename}">
-                <img src="<%=cp%>/uploads/travel/${dto.imageFilename}">
-            </c:if>
-            <br>
-            <input type="file" name="upload" value="${dto.imageFilename}" accept="image/*" class="btn" size="53"
-                   style="height: 25px;">
+            <input id="upload" hidden type="text" name="upload" value="${dto.imageFilename}">
+                <img class="userImg user1" id="user1" value="user1" src="<%=cp%>/resource/img/user1.png"/>
+                <img class="userImg user2" id="user2" value="user2" src="<%=cp%>/resource/img/user2.png"/>
+                <img class="userImg user3" id="user3" value="user3" src="<%=cp%>/resource/img/user3.png"/>
+                <img class="userImg user4" id="user4" value="user4" src="<%=cp%>/resource/img/user4.png"/>
+                <img class="userImg user5" id="user5" value="user5" src="<%=cp%>/resource/img/user5.png"/>
+            </input>
 
             <input type="text" name="userId" value="${dto.userId}" class="imo" required="required" maxlength="15"
                    pattern="[a-zA-Z0-9]+" placeholder="UserID" ${mode=="update" ? "readonly='readonly' ":""}>

@@ -64,7 +64,6 @@ public class TravelServlet extends MyUploadServlet {
 
 		String type = req.getParameter("type");
 
-		// �˻�
 		String condition = req.getParameter("condition");
 		String keyword = req.getParameter("keyword");
 
@@ -77,7 +76,6 @@ public class TravelServlet extends MyUploadServlet {
 			keyword = URLDecoder.decode(keyword, "utf-8");
 		}
 
-		// ���� ��¥ ���
 		Date nowTime = new Date();
 		SimpleDateFormat day = new SimpleDateFormat("MM dd, yyyy");
 		String date = day.format(nowTime);
@@ -113,7 +111,6 @@ public class TravelServlet extends MyUploadServlet {
 		
 		WeatherDTO weatherDTO = dao.listWeather(type);
 
-		// ������ jsp�� �ѱ� ������
 		req.setAttribute("list", list);
 		req.setAttribute("vo", weatherDTO);
 		req.setAttribute("articleUrl", articleUrl);
@@ -124,7 +121,6 @@ public class TravelServlet extends MyUploadServlet {
 		req.setAttribute("date", date);
 		req.setAttribute("type", type);
 
-		// JSP�� ������
 		forward(req, resp, "/WEB-INF/views/travel/list.jsp?type="+type);
 
 	}
@@ -206,8 +202,6 @@ public class TravelServlet extends MyUploadServlet {
 
 		int num = Integer.parseInt(req.getParameter("num"));
 		String type = req.getParameter("type");
-		
-
 		TravelDTO dto = dao.readTravel(num);
 
 		if (dto == null) {

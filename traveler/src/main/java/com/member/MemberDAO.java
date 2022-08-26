@@ -80,7 +80,7 @@ public class MemberDAO {
         PreparedStatement pstmt = null;
         String sql;
         try {
-            sql = "INSERT INTO member(userId,userPwd,userName,userTel,userEmail,userBirth, imageFilename) VALUES(?,?,?,?,?,?,?)";
+            sql = "INSERT INTO member(userId, userPwd, userName, userTel, userEmail, userBirth, imageFilename) VALUES(?,?,?,?,?,?,?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, dto.getUserId());
             pstmt.setString(2, dto.getUserPwd());
@@ -88,7 +88,7 @@ public class MemberDAO {
             pstmt.setString(4, dto.getUserTel());
             pstmt.setString(5, dto.getUserEmail());
             pstmt.setString(6, dto.getUserBirth());
-            pstmt.setString(7, "/resources/img/user1");
+            pstmt.setString(7, "/resources/img/"+ dto.getImageFilename());
 
             pstmt.executeUpdate();
         } catch (Exception e) {

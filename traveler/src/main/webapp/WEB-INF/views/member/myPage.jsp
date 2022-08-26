@@ -15,20 +15,20 @@
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/signup.css" type="text/css">
 
-    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
     <script type="text/javascript">
 
         function memberOk(mode) {
-            var f = document.memberForm;
-            var str;
+            let f = document.memberForm;
+            let str;
 
-            if (mode == "delete") {
+            if (mode === "delete") {
                 alert("탈퇴하시겠습니까?");
                 f.action = "<%=cp%>/member/delete.do";
 
-            } else if (mode == "update") {
+            } else if (mode === "update") {
                 alert("수정하시겠습니까?");
                 f.action = "<%=cp%>/member/update.do";
             }
@@ -52,21 +52,13 @@
 <div class="main">
     <div class="signup">
         <h1>${title}<img style="width:70px; height: 70px; float: right;"
-                         src="<%=cp%>/uploads/travel/${dto.imageFilename}"/>
+                         src="<%=cp%>/resource/img/${dto.imageFilename}.png"/>
         </h1>
     </div>
 
     <div class="index">
 
         <form name="memberForm" action="javascript:send();" method="post" enctype="multipart/form-data">
-
-            <!-- 파일처리하려함. 아직 못함. -->
-            <%-- 	  	<input type="file" name="upload" accept="image/*" class="btn" size="53" style="height: 25px;">
-                        <c:if test="${not empty dto.imageFilename}">
-                            ${dto.imageFilename}
-                            | <a href="javascript:deleteFile('${dto.num}')">삭제</a>
-                        </c:if> --%>
-
 
             <p>
                 <font>&nbsp;&nbsp;&nbsp;&nbsp;I&nbsp;D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>

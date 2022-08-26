@@ -6,9 +6,7 @@
     String cp = request.getContextPath();
 %>
 
-<link rel="stylesheet" href="<%=cp%>/resource/jquery/css/smoothness/jquery-ui.min.css" type="text/css">
-<script src="https://code.jquery.com/jquery-3.6.0.slim.js"
-        integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     //엔터 처리
     $(function () {
@@ -30,14 +28,14 @@
     <div class="header-center">
         <p style="margin: 2px;">
             <a href="<%=cp %>/main.do" style="text-decoration: none;">
-                <img alt="HOME" src="<%=cp %>/resource/img/logo3.png"
-                     style="width: 120px; margin: 0px 16px; background-size: cover;">
+                <img alt="HOME" src="<%=cp %>/resource/img/logo.jpeg"
+                     style="width: 123px; margin: 18px 16px; background-size: cover;">
             </a>
         </p>
     </div>
 
     <div class="header-right">
-        <div style="padding-top: 30px;  float: right;">
+        <div style="padding-top: 30px;  float: right; margin-right: 50px">
             <div class="menu">
                 <ul class="nav">
                     <li>
@@ -93,8 +91,12 @@
                             &nbsp;
                             <a href="<%=cp%>/member/logout.do" style="font-size: 12px;">Logout</a>
                             &nbsp;
-                            <a href="<%=cp%>/member/pwd.do?mode=update"
-                               style="font-size: 12px;">${sessionScope.member.userId=="admin"?"관리자Page":"MyPage"}</a>
+                            <a href="<%=cp%>/member/pwd.do?mode=update" style="font-size: 12px;">
+                                <img src='<%=cp%>/resource/img/${sessionScope.member.userId != null ?  sessionScope.member.imageFilename :  "user1"}.png'
+                                             style="border-radius: 60%; width: 30px" />
+                            </a>
+
+
                         </c:if>
                     </li>
                 </ul>

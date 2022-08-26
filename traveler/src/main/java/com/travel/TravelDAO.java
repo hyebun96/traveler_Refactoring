@@ -4,12 +4,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.util.DBConn;
 import org.json.simple.JSONArray;
@@ -20,8 +19,7 @@ public class TravelDAO {
 	private final Connection conn=DBConn.getConnection();
 	private final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 	private final String apiKey = "5e12679699fcfba7406abda339c17eb4";
-	
-	// �Խù� ����
+
 	public int dataCount() {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -56,8 +54,7 @@ public class TravelDAO {
 		}
 		return result;
 	}
-	
-	// �˻��� �Խù� ���� 
+
 	public int dataCount(String condition, String keyword) {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -120,7 +117,7 @@ public class TravelDAO {
 
 
 			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setString(1, type);;
+			pstmt.setString(1, type);
 
 			rs = pstmt.executeQuery();
 
@@ -588,9 +585,33 @@ public class TravelDAO {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			
 		}
 		return dto;
+	}
+
+	public List<Map<String, String>> allTravelImage(){
+
+		String sql;
+		PreparedStatement pstmt = null;
+		ResultSet rs;
+		List<Map<String, String>> list = new ArrayList<>();
+
+		try{
+			sql = "SELECT saveFilename, type FROM travelFile JOIN travel t ON travelFile.travelNum = t.travelNum";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			while(rs.next()){
+				Map<String, String> map = new HashMap<>();
+				map.put("saveFileName", rs.getString("saveFileName"));
+				map.put("type", rs.getString("type"));
+				list.add(map);
+			}
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }

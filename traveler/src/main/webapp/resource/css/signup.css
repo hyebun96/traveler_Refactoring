@@ -63,8 +63,18 @@
 }
 
 .index img{
-	 width:30px; 
-	 height:30px; 
+	 width:70px;
+	 height:70px;
 	 border:0px;
 	 cursor: pointer;
+	margin: 3px;
+}
+
+.index img:hover{
+	width:70px;
+	height:70px;
+	border:0px;
+	cursor: pointer;
+	margin: 3px;
+	background-color: #E8F0FE;
 }

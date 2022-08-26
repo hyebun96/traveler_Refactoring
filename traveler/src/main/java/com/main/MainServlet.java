@@ -1,7 +1,9 @@
 package com.main;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.notice.NoticeDAO;
 import com.notice.NoticeDTO;
+import com.travel.TravelDAO;
+import com.travel.TravelDTO;
 import com.util.MyServlet;
+import org.apache.poi.ss.formula.functions.T;
 
 @WebServlet("/main.do")
 public class MainServlet extends MyServlet {
@@ -39,8 +44,13 @@ public class MainServlet extends MyServlet {
             dto.setCreated(dto.getCreated().substring(0, 10));
         }
 
+        // 이미지 출력
+        TravelDAO travelDAO = new TravelDAO();
+        List<Map<String, String>> travelImageList = travelDAO.allTravelImage();
+
         req.setAttribute("list", list);
         req.setAttribute("articleUrl", articleUrl);
+        req.setAttribute("travelImageList", travelImageList);
         forward(req, resp, "/WEB-INF/views/main/main.jsp");
     }
 
