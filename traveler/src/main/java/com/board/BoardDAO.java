@@ -231,7 +231,6 @@ public class BoardDAO {
         return list;
     }
 
-    // ��ȸ������
     public void updateViewCount(int num) {
         PreparedStatement pstmt = null;
         String sql;

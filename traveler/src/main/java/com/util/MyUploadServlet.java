@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 @MultipartConfig(
-	location = "c:/temp",						// ÆÄÀÏÀ» ÀÓ½Ã·Î ÀúÀåÇÒ °æ·Î(±âº»°ª ""), c:\temp °æ·Î°¡ ¾øÀ¸¸é ¾÷·Îµå°¡ ¾ÈµÊ
-	fileSizeThreshold = 1024*1024,		// ¾÷·ÎµåµÈ ÆÄÀÏÀÌ ÀÓ½Ã·Î ¼­¹ö¿¡ ÀúÀåµÇÁö ¾Ê°í ¸Ş¸ğ¸®¿¡¼­ ½ºÆ®¸²À¸·Î ¹Ù·Î Àü´ŞµÇ´Â Å©±â
-	maxFileSize = 1024*1024*5,			// ¾÷·ÎµåµÈ ÇÏ³ªÀÇ ÆÄÀÏ Å©±â. ±âº» ¿ë·® Á¦ÇÑ ¾øÀ½
-	maxRequestSize = 1024*1024*10	// Æû ÀüÃ¼ ¿ë·®
+		location = "c:/temp",				// íŒŒì¼ì„ ì„ì‹œë¡œ ì €ì¥í•  ê²½ë¡œ(ê¸°ë³¸ê°’ ""), c:\temp ê²½ë¡œê°€ ì—†ìœ¼ë©´ ì—…ë¡œë“œê°€ ì•ˆë¨
+		fileSizeThreshold = 1024 * 1024,		// ì—…ë¡œë“œëœ íŒŒì¼ì´ ì„ì‹œë¡œ ì„œë²„ì— ì €ì¥ë˜ì§€ ì•Šê³  ë©”ëª¨ë¦¬ì—ì„œ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ë°”ë¡œ ì „ë‹¬ë˜ëŠ” í¬ê¸°
+		maxFileSize = 1024 * 1024 * 5,      // ì—…ë¡œë“œëœ í•˜ë‚˜ì˜ íŒŒì¼ í¬ê¸°. ê¸°ë³¸ ìš©ëŸ‰ ì œí•œ ì—†ìŒ
+		maxRequestSize = 1024 * 1024 * 10   // í¼ ì „ì²´ ìš©ëŸ‰
 )
 public abstract class MyUploadServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
@@ -37,23 +37,23 @@ public abstract class MyUploadServlet extends HttpServlet{
 	}
 
 	protected void forward(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
-		// Æ÷¿öµùÀ» À§ÇÑ ¸Ş¼Òµå
+		// í¬ì›Œë”©ì„ ìœ„í•œ ë©”ì†Œë“œ
 		RequestDispatcher rd=req.getRequestDispatcher(path);
 		rd.forward(req, resp);
 	}
-	
+
 	/**
-	 * ´ÜÀÏ ÆÄÀÏ ¾÷·Îµå
-	 * @param p					Part °´Ã¼
-	 * @param pathname	¼­¹ö¿¡ ÆÄÀÏÀ» ÀúÀåÇÒ °æ·Î
-	 * @return					¼­¹ö¿¡ ÀúÀåµÈ ÆÄÀÏ¸í, Å¬¶óÀÌ¾ğÆ®°¡ ¾÷·ÎµåÇÑ ÆÄÀÏ¸í
+	 * ë‹¨ì¼ íŒŒì¼ ì—…ë¡œë“œ
+	 * @param p					Part ê°ì²´
+	 * @param pathname	ì„œë²„ì— íŒŒì¼ì„ ì €ì¥í•  ê²½ë¡œ
+	 * @return					ì„œë²„ì— ì €ì¥ëœ íŒŒì¼ëª…, í´ë¼ì´ì–¸íŠ¸ê°€ ì—…ë¡œë“œí•œ íŒŒì¼ëª…
 	 */
 	protected Map<String, String> doFileUpload(Part p, String pathname) throws ServletException, IOException {
 		Map<String, String> map = null;
 		
 		try {
 			File f=new File(pathname);
-			if(! f.exists()) { // Æú´õ°¡ Á¸ÀçÇÏÁö ¾ÊÀ¸¸é
+			if(! f.exists()) {	// í´ë”ê°€ ì¡´ì¬í•˜ì§€ ì•Šìœ¼ë©´
 				f.mkdirs();
 			}
 			
@@ -80,16 +80,16 @@ public abstract class MyUploadServlet extends HttpServlet{
 	}
 
 	/**
-	 * ´ÙÁß ÆÄÀÏ ¾÷·Îµå
-	 * @param parts				Å¬¶óÀÌ¾ğÆ®°¡ ¼­¹ö·Î Àü¼ÛÇÑ ¸ğµç Part °´Ã¼
-	 * @param pathname		¼­¹ö¿¡ ÆÄÀÏÀ» ÀúÀåÇÒ °æ·Î 
-	 * @return						¼­¹ö¿¡ ÀúÀåµÈ ÆÄÀÏ¸í, Å¬¶óÀÌ¾ğÆ®°¡ ¿Ã¸° ÆÄÀÏ¸í
+	 * ë‹¤ì¤‘ íŒŒì¼ ì—…ë¡œë“œ
+	 * @param parts			í´ë¼ì´ì–¸íŠ¸ê°€ ì„œë²„ë¡œ ì „ì†¡í•œ ëª¨ë“  Part ê°ì²´
+	 * @param pathname		ì„œë²„ì— íŒŒì¼ì„ ì €ì¥í•  ê²½ë¡œ
+	 * @return				ì„œë²„ì— ì €ì¥ëœ íŒŒì¼ëª…, í´ë¼ì´ì–¸íŠ¸ê°€ ì˜¬ë¦° íŒŒì¼ëª…
 	 */
 	protected Map<String, String[]> doFileUpload(Collection<Part> parts, String pathname) throws ServletException, IOException {
 		Map<String, String[]> map = null;
 		try {
 			File f=new File(pathname);
-			if(! f.exists()) { // Æú´õ°¡ Á¸ÀçÇÏÁö ¾ÊÀ¸¸é
+			if(! f.exists()) {	// í´ë”ê°€ ì¡´ì¬í•˜ì§€ ì•Šìœ¼ë©´
 				f.mkdirs();
 			}
 			
@@ -99,13 +99,9 @@ public abstract class MyUploadServlet extends HttpServlet{
 			
 			for(Part p : parts) {
 				String contentType = p.getContentType();
-/*				
-			      if(contentType != null && contentType.toLowerCase().startsWith("multipart/")) {
-			         // multipart
-			      }				
-*/
-				// contentType °¡ null ÀÎ °æ¿ì´Â ÆÄÀÏÀÌ ¾Æ´Ñ °æ¿ìÀÌ´Ù.(<input type="text"... µî)
-				if(contentType != null) { // ÆÄÀÏÀÌ¸é
+
+				// contentType ê°€ null ì¸ ê²½ìš°ëŠ” íŒŒì¼ì´ ì•„ë‹Œ ê²½ìš°ì´ë‹¤.(<input type="text"... ë“±)
+				if(contentType != null) {
 					original = getOriginalFilename(p);
 					if(original == null || original.length() == 0 ) continue;
 					
@@ -120,7 +116,7 @@ public abstract class MyUploadServlet extends HttpServlet{
 					
 					listOriginal.add(original);
 					listSave.add(save);
-					// Long size = p.getSize()); // ÆÄÀÏ Å©±â
+					// Long size = p.getSize());
 				}
 			}		
 			

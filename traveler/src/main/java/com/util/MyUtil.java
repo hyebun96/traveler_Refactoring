@@ -4,10 +4,10 @@ import java.util.regex.Pattern;
 
 public class MyUtil {
 	/**
-	 * ÀüÃ¼ ÆäÀÌÁö ¼ö ±¸ÇÏ±â
-	 * @param rows			ÇÑÇà¿¡ Ãâ·ÂÇÒ ¸ñ·Ï ¼ö
-	 * @param dataCount	ÃÑ µ¥ÀÌÅÍ °³¼ö
-	 * @return					ÀüÃ¼ ÆäÀÌÁö ¼ö
+	 * ì „ì²´ í˜ì´ì§€ ìˆ˜ êµ¬í•˜ê¸°
+	 * @param rows			í•œí–‰ì— ì¶œë ¥í•  ëª©ë¡ ìˆ˜
+	 * @param dataCount		ì´ ë°ì´í„° ê°œìˆ˜
+	 * @return				ì „ì²´ í˜ì´ì§€ ìˆ˜
 	 */
 	public int pageCount(int rows, int dataCount) {
 		if(dataCount <= 0) 
@@ -15,13 +15,13 @@ public class MyUtil {
 	
 		return dataCount / rows + (dataCount % rows > 0 ? 1 : 0);
 	}
-	
+
 	/**
-	 * ÆäÀÌÂ¡(paging) Ã³¸®(GET ¹æ½Ä)
-	 * @param current_page	ÇöÀç Ç¥½ÃµÇ´Â ÆäÀÌÁö ¹øÈ£	
-	 * @param total_page		ÀüÃ¼ ÆäÀÌÁö ¼ö
-	 * @param list_url				¸µÅ©¸¦ ¼³Á¤ÇÒ ÁÖ¼Ò
-	 * @return						ÆäÀÌÂ¡ Ã³¸® °á°ú
+	 * í˜ì´ì§•(paging) ì²˜ë¦¬(GET ë°©ì‹)
+	 * @param current_page		í˜„ì¬ í‘œì‹œë˜ëŠ” í˜ì´ì§€ ë²ˆí˜¸
+	 * @param total_page		ì „ì²´ í˜ì´ì§€ ìˆ˜
+	 * @param list_url			ë§í¬ë¥¼ ì„¤ì •í•  ì£¼ì†Œ
+	 * @return					í˜ì´ì§• ì²˜ë¦¬ ê²°ê³¼
 	 */
 	public String paging(int current_page, int total_page, String list_url) {
 		StringBuilder sb=new StringBuilder();
@@ -39,15 +39,15 @@ public class MyUtil {
 		} else {
 			list_url+="?";
 		}
-		
-		// currentPageSetup : Ç¥½ÃÇÒÃ¹ÆäÀÌÁö-1
+
+		// currentPageSetup : í‘œì‹œí• ì²«í˜ì´ì§€-1
 		currentPageSetup=(current_page/numPerBlock)*numPerBlock;
 		if(current_page%numPerBlock==0) {
 			currentPageSetup=currentPageSetup-numPerBlock;
 		}
 
 		sb.append("<style type='text/css'>");
-		sb.append("#paginate {clear:both;font:12px \"¸¼Àº °íµñ\",NanumGothic,µ¸¿ò,Dotum,AppleGothic;padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
+		sb.append("#paginate {clear:both; padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
 		sb.append("#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}");
 		sb.append("#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}");
 		sb.append("#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}");
@@ -55,14 +55,14 @@ public class MyUtil {
 		sb.append("</style>");
 		
 		sb.append("<div id='paginate'>");
-		// Ã³À½ÆäÀÌÁö, ÀÌÀü(10ÆäÀÌÁö Àü)
+		// ì²˜ìŒí˜ì´ì§€, ì´ì „(10í˜ì´ì§€ ì „)
 		n=current_page-numPerBlock;
 		if(total_page > numPerBlock && currentPageSetup > 0) {
-			sb.append("<a href='"+list_url+"page=1'>Ã³À½</a>");
-			sb.append("<a href='"+list_url+"page="+n+"'>ÀÌÀü</a>");
+			sb.append("<a href='"+list_url+"page=1'></a>");
+			sb.append("<a href='"+list_url+"page="+n+"'></a>");
 		}
-		
-		// ¹Ù·Î°¡±â
+
+		// ë°”ë¡œê°€ê¸°
 		page=currentPageSetup+1;
 		while(page<=total_page && page <=(currentPageSetup+numPerBlock)) {
 			if(page==current_page) {
@@ -72,13 +72,13 @@ public class MyUtil {
 			}
 			page++;
 		}
-		
-		// ´ÙÀ½(10ÆäÀÌÁö ÈÄ), ¸¶Áö¸·ÆäÀÌÁö
+
+		// ë‹¤ìŒ(10í˜ì´ì§€ í›„), ë§ˆì§€ë§‰í˜ì´ì§€
 		n=current_page+numPerBlock;
 		if(n>total_page) n=total_page;
 		if(total_page-currentPageSetup>numPerBlock) {
-			sb.append("<a href='"+list_url+"page="+n+"'>´ÙÀ½</a>");
-			sb.append("<a href='"+list_url+"page="+total_page+"'>³¡</a>");
+			sb.append("<a href='"+list_url+"page="+n+"'>Pre</a>");
+			sb.append("<a href='"+list_url+"page="+total_page+"'>Next</a>");
 		}
 		sb.append("</div>");
 	
@@ -86,30 +86,29 @@ public class MyUtil {
 	}
 
 	/**
-	 * javascript·Î ÆäÀÌÂ¡(paging) Ã³¸® : javascript listPage() ÇÔ¼ö È£Ãâ
-	 * @param current_page	ÇöÀç Ç¥½ÃµÇ´Â ÆäÀÌÁö ¹øÈ£	
-	 * @param total_page		ÀüÃ¼ ÆäÀÌÁö ¼ö
-	 * @return						ÆäÀÌÂ¡ Ã³¸® °á°ú
+	 * javascriptë¡œ í˜ì´ì§•(paging) ì²˜ë¦¬ : javascript listPage() í•¨ìˆ˜ í˜¸ì¶œ
+	 * @param current_page		í˜„ì¬ í‘œì‹œë˜ëŠ” í˜ì´ì§€ ë²ˆí˜¸
+	 * @param total_page		ì „ì²´ í˜ì´ì§€ ìˆ˜
+	 * @return					í˜ì´ì§• ì²˜ë¦¬ ê²°ê³¼
 	 */
     public String paging(int current_page, int total_page) {
     	StringBuilder sb=new StringBuilder();
 
-        int numPerBlock = 10;   // ¸®½ºÆ®¿¡ ³ªÅ¸³¾ ÆäÀÌÁö ¼ö
+        int numPerBlock = 10;	// ë¦¬ìŠ¤íŠ¸ì— ë‚˜íƒ€ë‚¼ í˜ì´ì§€ ìˆ˜
         int currentPageSetUp;
         int n, page;
         
         if(current_page < 1 || total_page < 1) {
         	return "";
         }
-        
-        // Ç¥½ÃÇÒ Ã¹ ÆäÀÌÁö
+
         currentPageSetUp = (current_page / numPerBlock) * numPerBlock;
         if (current_page % numPerBlock == 0) {
             currentPageSetUp = currentPageSetUp - numPerBlock;
         }
         
 		sb.append("<style type='text/css'>");
-		sb.append("#paginate {clear:both;font:12px \"¸¼Àº °íµñ\",NanumGothic,µ¸¿ò,Dotum,AppleGothic;padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
+		sb.append("#paginate {clear:both; AppleGothic;padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
 		sb.append("#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}");
 		sb.append("#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}");
 		sb.append("#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}");
@@ -117,15 +116,13 @@ public class MyUtil {
 		sb.append("</style>");
 		
 		sb.append("<div id='paginate'>");
-        
-        // Ã³À½ÆäÀÌÁö, ÀÌÀü(10ÆäÀÌÁö Àü)
+
         n = current_page - numPerBlock;
         if ((total_page > numPerBlock) && (currentPageSetUp > 0)) {
-			sb.append("<a onclick='listPage(1);'>Ã³À½</a>");
-			sb.append("<a onclick='listPage("+n+");'>ÀÌÀü</a>");
+			sb.append("<a onclick='listPage(1);'>Pre</a>");
+			sb.append("<a onclick='listPage("+n+");'>Next</a>");
         }
 
-        // ¹Ù·Î°¡±â ÆäÀÌÁö ±¸Çö
         page = currentPageSetUp + 1;
         while((page <= total_page) && (page <= currentPageSetUp + numPerBlock)) {
            if(page == current_page) {
@@ -136,12 +133,11 @@ public class MyUtil {
            page++;
         }
 
-        // ´ÙÀ½(10ÆäÀÌÁö ÈÄ), ¸¶Áö¸· ÆäÀÌÁö
         n = current_page + numPerBlock;
 		if(n>total_page) n=total_page;
         if (total_page - currentPageSetUp > numPerBlock) {
-			sb.append("<a onclick='listPage("+n+");'>´ÙÀ½</a>");
-			sb.append("<a onclick='listPage("+total_page+");'>³¡</a>");
+			sb.append("<a onclick='listPage("+n+");'>Pre</a>");
+			sb.append("<a onclick='listPage("+total_page+");'>NEXT</a>");
         }
 		sb.append("</div>");
 
@@ -149,31 +145,30 @@ public class MyUtil {
     }
 
 	/**
-	 * javascript·Î ÆäÀÌÂ¡(paging) Ã³¸® : javascript ÁöÁ¤ ÇÔ¼ö È£Ãâ
-	 * @param current_page	ÇöÀç Ç¥½ÃµÇ´Â ÆäÀÌÁö ¹øÈ£	
-	 * @param total_page		ÀüÃ¼ ÆäÀÌÁö ¼ö
-	 * @param methodName	È£ÃâÇÒ ÀÚ¹Ù ½ºÅ©¸³Æ® ÇÔ¼ö¸í
-	 * @return						ÆäÀÌÂ¡ Ã³¸® °á°ú
+	 * javascriptë¡œ í˜ì´ì§•(paging) ì²˜ë¦¬ : javascript ì§€ì • í•¨ìˆ˜ í˜¸ì¶œ
+	 * @param current_page		í˜„ì¬ í‘œì‹œë˜ëŠ” í˜ì´ì§€ ë²ˆí˜¸
+	 * @param total_page		ì „ì²´ í˜ì´ì§€ ìˆ˜
+	 * @param methodName		í˜¸ì¶œí•  ìë°” ìŠ¤í¬ë¦½íŠ¸ í•¨ìˆ˜ëª…
+	 * @return					í˜ì´ì§• ì²˜ë¦¬ ê²°ê³¼
 	 */
     public String pagingMethod(int current_page, int total_page, String methodName) {
     	StringBuilder sb=new StringBuilder();
 
-        int numPerBlock = 10;   // ¸®½ºÆ®¿¡ ³ªÅ¸³¾ ÆäÀÌÁö ¼ö
+        int numPerBlock = 10;
         int currentPageSetUp;
         int n, page;
         
         if(current_page < 1 || total_page < 1) {
         	return "";
         }
-        
-        // Ç¥½ÃÇÒ Ã¹ ÆäÀÌÁö
+
         currentPageSetUp = (current_page / numPerBlock) * numPerBlock;
         if (current_page % numPerBlock == 0) {
             currentPageSetUp = currentPageSetUp - numPerBlock;
         }
 
 		sb.append("<style type='text/css'>");
-		sb.append("#paginate {clear:both;font:12px \"¸¼Àº °íµñ\",NanumGothic,µ¸¿ò,Dotum,AppleGothic;padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
+		sb.append("#paginate {clear:both;padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
 		sb.append("#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}");
 		sb.append("#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}");
 		sb.append("#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}");
@@ -181,15 +176,13 @@ public class MyUtil {
 		sb.append("</style>");
 		
 		sb.append("<div id='paginate'>");
-        
-        // Ã³À½ÆäÀÌÁö, ÀÌÀü(10ÆäÀÌÁö Àü)
+
         n = current_page - numPerBlock;
         if ((total_page > numPerBlock) && (currentPageSetUp > 0)) {
-			sb.append("<a onclick='"+methodName+"(1);'>Ã³À½</a>");
-			sb.append("<a onclick='"+methodName+"("+n+");'>ÀÌÀü</a>");
+			sb.append("<a onclick='"+methodName+"(1);'>Pre</a>");
+			sb.append("<a onclick='"+methodName+"("+n+");'>NEXT</a>");
         }
 
-        // ¹Ù·Î°¡±â ÆäÀÌÁö ±¸Çö
         page = currentPageSetUp + 1;
         while((page <= total_page) && (page <= currentPageSetUp + numPerBlock)) {
            if(page == current_page) {
@@ -200,23 +193,22 @@ public class MyUtil {
            page++;
         }
 
-        // ´ÙÀ½(10ÆäÀÌÁö ÈÄ), ¸¶Áö¸· ÆäÀÌÁö
         n = current_page + numPerBlock;
 		if(n>total_page) n=total_page;
         if (total_page - currentPageSetUp > numPerBlock) {
-			sb.append("<a onclick='"+methodName+"("+n+");'>´ÙÀ½</a>");
-			sb.append("<a onclick='"+methodName+"("+total_page+");'>³¡</a>");
+			sb.append("<a onclick='"+methodName+"("+n+");'>PRE</a>");
+			sb.append("<a onclick='"+methodName+"("+total_page+");'>NEXT</a>");
         }
 		sb.append("</div>");
 
         return sb.toString();
     }
 
-    /**
-     * Æ¯¼ö¹®ÀÚ¸¦ HTML ¹®ÀÚ·Î º¯°æ ¹× ¿£ÅÍ¸¦ <br>·Î º¯°æ
-     * @param str	º¯°æÇÒ ¹®ÀÚ¿­
-     * @return		HTML ¹®ÀÚ·Î º¯°æµÈ ¹®ÀÚ¿­
-     */
+	/**
+	 * íŠ¹ìˆ˜ë¬¸ìë¥¼ HTML ë¬¸ìë¡œ ë³€ê²½ ë° ì—”í„°ë¥¼ <br>ë¡œ ë³€ê²½
+	 * @param str	ë³€ê²½í•  ë¬¸ìì—´
+	 * @return		HTML ë¬¸ìë¡œ ë³€ê²½ëœ ë¬¸ìì—´
+	 */
      public String htmlSymbols(String str) {
 		if(str==null||str.length()==0)
 			return "";
@@ -227,25 +219,25 @@ public class MyUtil {
     	 str=str.replaceAll("<", "&lt;");
     	 
     	 str=str.replaceAll("\n", "<br>");
-    	 str=str.replaceAll("\\s", "&nbsp;");  // \\s°¡ ¿£ÅÍµµ º¯°æÇÏ¹Ç·Î \nº¸´Ù µÚ¿¡
+    	 str=str.replaceAll("\\s", "&nbsp;");
     	 
     	 return str;
      }
 
-     /**
-      * NULLÀ» ""·Î º¯°æÇÏ±â
-      * @param str	º¯°æÇÒ ¹®ÀÚ¿­
-      * @return		NULLÀ» ""·Î º¯°æµÈ ¹®ÀÚ¿­
-      */
+	/**
+	 * NULLì„ ""ë¡œ ë³€ê²½í•˜ê¸°
+	 * @param str	ë³€ê²½í•  ë¬¸ìì—´
+	 * @return		NULLì„ ""ë¡œ ë³€ê²½ëœ ë¬¸ìì—´
+	 */
      public String checkNull(String str) {
          return str == null ? "" : str;
      }
 
-     /**
-      * E-Mail °Ë»ç
-      * @param email  °Ë»ç ÇÒ E-Mail 
-      * @return E-Mail °Ë»ç °á°ú
-      */
+	/**
+	 * E-Mail ê²€ì‚¬
+	 * @param email  ê²€ì‚¬ í•  E-Mail
+	 * @return E-Mail ê²€ì‚¬ ê²°ê³¼
+	 */
      public boolean isValidEmail(String email) {
          if (email==null) return false;
          

@@ -22,7 +22,6 @@ public abstract class MyServlet extends HttpServlet{
 	}
 
 	protected void forward(HttpServletRequest req, HttpServletResponse resp, String path) throws ServletException, IOException {
-		// 포워딩을 위한 메소드
 		RequestDispatcher rd=req.getRequestDispatcher(path);
 		rd.forward(req, resp);
 	}

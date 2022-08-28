@@ -257,7 +257,7 @@ public class ContactDAO {
 		return list;
 	}
 	
-	// contact ���� ����
+	// contact
 	public ContactDTO readContact(int ctNum) {
 		ContactDTO dto = null;
 		PreparedStatement pstmt=null;
