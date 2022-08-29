@@ -19,7 +19,6 @@
 	background: white;
 }
 
-
 .header-top {
     margin:0px auto;
     width: 1080px;
@@ -58,7 +57,6 @@ ul.nav {
 }
 
 ul.nav2 {
-  padding: 10px;
   list-style: none;
   text-align: right;
 }
@@ -110,6 +108,24 @@ ul.nav li:hover > ul li a:hover {
   text-decoration: none;
 }
 
+.main .clock .nowDate {
+    color: black;
+    width: 300px;
+    height: 100%;
+    font-size: 15px;
+    border: none;
+    text-align: center;
+    display: inline-block;
+    margin: 10px auto;
+    float: right;
+}
+
+.main .clock .nowDate img{
+    width:30px;
+    height: 30px;
+    float: left;
+}
+
 /* navigation */
 .navigation {
     width:1080px;
@@ -134,10 +150,7 @@ ul.nav li:hover > ul li a:hover {
 	min-height: 500px;
 	margin: 10px auto 50px;
 }
-.main img{
-	width: 100%;
-	height: 100%
-}
+
 .main-title h3{
 	text-align: center;
 }
@@ -154,6 +167,32 @@ ul.nav li:hover > ul li a:hover {
 	margin-bottom: 100px;
 }
 
+.main-box1 table{
+    height: 100%;
+    table-layout: fixed;
+}
+
+.main-box1 table tr{
+    border-bottom: 2px solid black;
+}
+
+.main-box1 table tr .title{
+    width: 40%;
+}
+
+.main-box1 table span{
+    display: inline-block;
+    padding:1px 3px;
+    background: #ED4C00;
+    color: #FFFFFF;
+}
+
+.main-box1 .notice {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .main-box2{
 	width: 500px;
 	height: 300px;
@@ -167,6 +206,9 @@ ul.nav li:hover > ul li a:hover {
 	text-decoration: none;
 }
 
+#bxslider {position:relative;margin:0 auto;padding:10px 65px;list-style:none;width:1080px;height:500px;overflow-x:hidden}
+#bxslider li {display:none;position:absolute;left:0;top:0}
+#bxslider img {width:1080px;height:500px;}
 
 /* footer */
 .footer {
