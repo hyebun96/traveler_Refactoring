@@ -1,0 +1,32 @@
+.header-top .header-center a {
+    text-decoration: none;
+}
+
+.header-top .header-center #logo{
+    width: 123px;
+    background-size: cover;
+}
+
+.header-right .header-nav {
+    padding-top: 30px;
+    float: right;
+    margin-right: 50px;
+}
+
+.small-nav-a{
+    margin-left: 100px;
+    padding-left: 100px;
+}
+
+.nav li a{
+    font-size: 12px;
+}
+
+.nav li span{
+    color :blue;
+}
+
+#profile{
+    border-radius: 60%;
+    width: 30px;
+}

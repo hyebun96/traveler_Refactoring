@@ -6,36 +6,21 @@
     String cp = request.getContextPath();
 %>
 
+<link rel="stylesheet" href="<%=cp%>/resource/css/header.css" type="text/css">
 <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
-    //엔터 처리
-    $(function () {
-        $("input").not($(":button")).keypress(function (evt) {
-            if (evt.keyCode === 13) {
-                const fields = $(this).parents('form,body').find('button,input,textarea,select');
-                let index = fields.index(this);
-                if (index > -1 && (index + 1) < fields.length) {
-                    fields.eq(index + 1).focus();
-                }
-                return false;
-            }
-        });
-    });
-
-</script>
+<script src="<%=cp%>/resource/js/header.js"></script>
 
 <div class="header-top">
     <div class="header-center">
         <p style="margin: 2px;">
-            <a href="<%=cp %>/main.do" style="text-decoration: none;">
-                <img alt="HOME" src="<%=cp %>/resource/img/logo.jpeg"
-                     style="width: 123px; margin: 18px 16px; background-size: cover;">
+            <a href="<%=cp %>/main.do">
+                <img id="logo" alt="HOME" src="<%=cp %>/resource/img/logo3.png">
             </a>
         </p>
     </div>
 
     <div class="header-right">
-        <div style="padding-top: 30px;  float: right; margin-right: 50px">
+        <div class="header-nav">
             <div class="menu">
                 <ul class="nav">
                     <li>
@@ -47,56 +32,51 @@
                             <li><a href="<%=cp%>/travel/list.do?type=Gwangju">광주</a></li>
                             <li><a href="<%=cp%>/travel/list.do?type=Gyeongsangbuk-do">경북</a></li>
                             <li><a href="<%=cp%>/travel/list.do?type=Jeju">제주</a></li>
-
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="small-nav">
                         <a href="<%=cp %>/photo/photoMain.do">GALLERY</a>
                         <ul>
-                            <li><a href="<%=cp %>/photo/photoMain.do" style="padding-left: 100px;">사진</a></li>
+                            <li><a class="small-nav-a" href="<%=cp %>/photo/photoMain.do">사진</a></li>
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="small-nav">
                         <a href="<%=cp %>/notice/notice.do">BOARD</a>
                         <ul>
-                            <li><a href="<%=cp %>/notice/notice.do" style="padding-left: 190px;">공지사항</a></li>
-                            <li><a href="<%=cp%>/qna/list.do">Q&amp;A</a></li>
-                            <li><a href="<%=cp %>/board/board.do">자유게시판</a></li>
+                            <li><a class="small-nav-a" href="<%=cp %>/notice/notice.do">공지사항</a></li>
+                            <li><a class="small-nav-a" href="<%=cp%>/qna/list.do">Q&amp;A</a></li>
+                            <li><a class="small-nav-a" href="<%=cp %>/board/board.do">자유게시판</a></li>
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="small-nav">
                         <a href="<%=cp%>/contact/contact.do">CONTACT</a>
                         <ul>
-                            <li><a href="<%=cp%>/contact/contact.do" style="padding-left: 275px;">CONTACT</a></li>
+                            <li><a class="small-nav-a" href="<%=cp%>/contact/contact.do">CONTACT</a></li>
                             <c:if test="${sessionScope.member.userId=='admin'}">
                                 <li><a href="<%=cp%>/contact/list.do">목록확인</a></li>
                             </c:if>
                         </ul>
                     </li>
-
                 </ul>
 
                 <ul class="nav2">
                     <li>
                         <c:if test="${empty sessionScope.member}">
-                            <a href="<%=cp%>/member/login.do" style="font-size: 12px;">login</a>
+                            <a href="<%=cp%>/member/login.do">login</a>
                             &nbsp;
-                            <a href="<%=cp%>/member/member.do" style="font-size: 12px;">sign up</a>
+                            <a href="<%=cp%>/member/member.do">sign up</a>
                         </c:if>
                         <c:if test="${not empty sessionScope.member}">
-                            <span style="color:blue;">${sessionScope.member.userName}</span>님
+                            <span>${sessionScope.member.userName}</span>님
                             &nbsp;
-                            <a href="<%=cp%>/member/logout.do" style="font-size: 12px;">Logout</a>
+                            <a href="<%=cp%>/member/logout.do">Logout</a>
                             &nbsp;
-                            <a href="<%=cp%>/member/pwd.do?mode=update" style="font-size: 12px;">
-                                <img src='<%=cp%>/resource/img/${sessionScope.member.userId != null ?  sessionScope.member.imageFilename :  "user1"}.png'
-                                             style="border-radius: 60%; width: 30px" />
+                            <a href="<%=cp%>/member/pwd.do?mode=update">
+                                <img id="profile" src='<%=cp%>/resource/img/${sessionScope.member.userId != null ?  sessionScope.member.imageFilename :  "user1"}.png' />
                             </a>
-
-
                         </c:if>
                     </li>
                 </ul>
