@@ -1,32 +1,120 @@
-.header-top .header-center a {
+.header-top {
+    margin: 0px auto;
+    width: 1080px;
+    clear: both;
+}
+
+.header-top .header-left {
+    width: 300px;
+    height: 10px;
+    float: left;
+}
+
+.header-top .header-left p {
+    margin: 2px;
+}
+
+.header-top .header-left a {
     text-decoration: none;
 }
 
-.header-top .header-center #logo{
+.header-top .header-left #logo {
     width: 123px;
     background-size: cover;
 }
 
-.header-right .header-nav {
+.header-top .header-right {
     padding-top: 30px;
     float: right;
     margin-right: 50px;
+    width: 780px;
+    height: 50px;
 }
 
-.small-nav-a{
-    margin-left: 100px;
-    padding-left: 100px;
-}
-
-.nav li a{
+.header-top .header-right .menu {
+    margin:0px auto;
+    width: 660px;
+    min-height: 40px;
+    clear: both;
+    box-sizing: border-box;
     font-size: 12px;
 }
 
-.nav li span{
-    color :blue;
+.header-top .header-right .menu .nav .nav-li .nav-a {
+    margin-left: 10px;
+    margin-top : 10px
 }
 
-#profile{
+.header-top .header-right .menu .nav .nav-li2 span {
+    color: #ffa600;
+}
+
+.header-top .header-right .menu .nav .nav-li2 {
+    float:right;
+}
+
+.header-top .header-right .menu .nav .nav-li2 a{
+    line-height: 50px;
+    text-decoration: none;
+    padding: 30px 10px;
+}
+
+#profile {
     border-radius: 60%;
     width: 30px;
 }
+
+
+ul.nav {
+    width:100%;
+    margin-left: 50px;
+    padding: 0;
+    list-style: none;
+}
+
+ul.nav li {
+    display: inline;
+}
+
+ul.nav .nav-li a {
+    line-height: 50px;
+    text-decoration: none;
+    padding: 30px 20px;
+}
+
+ul.nav ul {
+    display: none;
+    height: 30px;
+}
+
+ul.nav li:hover > ul {
+    position: absolute;
+    display: block;
+    width: 800px;
+    height: 20px;
+    z-index: 101;
+    box-sizing: border-box;
+}
+
+ul.nav li:hover > ul li a {
+    line-height: 30px;
+    color: #333333;
+    text-decoration: none;
+    margin: 0;
+    padding: 0 10px 0 20px;
+    font-size: 11px;
+    height: 30px;
+}
+
+ul.nav li:hover > ul li a:hover {
+    color: #333333;
+    text-decoration: none;
+    height: 30px;
+}
+
+
+
+
+
+
+
