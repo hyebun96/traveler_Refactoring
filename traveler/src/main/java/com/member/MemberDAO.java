@@ -88,7 +88,7 @@ public class MemberDAO {
             pstmt.setString(4, dto.getUserTel());
             pstmt.setString(5, dto.getUserEmail());
             pstmt.setString(6, dto.getUserBirth());
-            pstmt.setString(7, "/resources/img/"+ dto.getImageFilename());
+            pstmt.setString(7, dto.getImageFilename());
 
             pstmt.executeUpdate();
         } catch (Exception e) {
@@ -110,16 +110,16 @@ public class MemberDAO {
         String sql;
 
         try {
-            sql = "UPDATE member SET userPwd=?,userTel=?,userEmail=?,userBirth=?,imageFilename=? WHERE userId=?";
+            sql = "UPDATE member SET userTel=?,userEmail=?,userBirth=?,imageFilename=? WHERE userId=?";
 
             pstmt = conn.prepareStatement(sql);
 
-            pstmt.setString(1, dto.getUserPwd());
-            pstmt.setString(2, dto.getUserTel());
-            pstmt.setString(3, dto.getUserEmail());
-            pstmt.setString(4, dto.getUserBirth());
-            pstmt.setString(5, dto.getImageFilename());
-            pstmt.setString(6, dto.getUserId());
+            // pstmt.setString(1, dto.getUserPwd());
+            pstmt.setString(1, dto.getUserTel());
+            pstmt.setString(2, dto.getUserEmail());
+            pstmt.setString(3, dto.getUserBirth());
+            pstmt.setString(4, dto.getImageFilename());
+            pstmt.setString(5, dto.getUserId());
 
             pstmt.executeUpdate();
 

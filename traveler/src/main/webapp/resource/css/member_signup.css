@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+.main .signup{
+	width:400px;
+	margin: 80px auto 10px;
+}
+
+.main .signup .profile{
+	width:70px;
+	height: 70px;
+	float: right;
+}
+
+.main .index{
+	width: 400px;
+	height: 50px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.index .span-id{
+	float: left;
+	width: 15%;
+	padding-top: 20px;
+	text-align: left;
+}
+
+.index input{
+	border: none;
+	border-bottom: 2px solid #999 !important;
+	font-size: 15px;
+	color: #333;
+	outline: none;
+	background: none;
+	padding: 0 5px;
+	height: 45px;
+	float: left;
+	width: 80%;
+}
+
+.index .input-box{
+	width: 80%;
+}
+
+.index .email{
+	width: 94px;
+	float: left;
+}
+
+.index .tel{
+	width: 92px;
+	float: left;
+}
+
+.index .special-ch{
+	float: left;
+	padding-top: 16px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.main .bottom-text{
+	margin-left: 430px;
+	position: relative;
+	margin-top: 200px;
+
+}
+
+.indexBtn{
+	width: 100px; height:50px;
+	border-radius: 15px;
+	border: 1px solid white;
+	margin-top: 22px;
+	margin-right:25px;
+	background: #EFEFEF;
+	font-size: 15px;
+}
+
+.indexBtn2{
+	margin-left: 10px;
+}
+
+.updateBtn {
+	margin-left: 100px;
+}
+
+.selectField{
+	border:1px solid #999999;
+	padding:2px 5px 4px;
+	border-radius:4px;
+	margin-top: 12px;
+}
+
+.index img{
+	 width:70px;
+	 height:70px;
+	 border:0px;
+	 cursor: pointer;
+	margin: 3px;
+}
+
+.index img:hover{
+	width:70px;
+	height:70px;
+	border:0px;
+	cursor: pointer;
+	margin: 3px;
+	background-color: #E8F0FE;
+}

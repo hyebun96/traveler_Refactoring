@@ -13,45 +13,15 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
-    <link rel="stylesheet" href="<%=cp%>/resource/css/login.css" type="text/css">
+    <link rel="stylesheet" href="<%=cp%>/resource/css/member_login.css" type="text/css">
 
-
-    <script type="text/javascript">
-        function bgLabel(ob, id) {
-            if (!ob.value) {
-                document.getElementById(id).style.display = "";
-            } else {
-                document.getElementById(id).style.display = "none";
-            }
-        }
-
-        function sendLogin() {
-            var f = document.loginForm;
-
-            var str = f.userId.value;
-            if (!str) {
-                alert("아이디를 입력하세요. ");
-                f.userId.focus();
-                return;
-            }
-
-            str = f.userPwd.value;
-            if (!str) {
-                alert("패스워드를 입력하세요. ");
-                f.userPwd.focus();
-                return;
-            }
-
-            f.action = "<%=cp%>/member/login_ok.do";
-            f.submit();
-        }
-
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/member.js"></script>
 </head>
 <body>
 
 <div class="header">
-    <jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/layout/header.jsp" />
 </div>
 <div class="navigation">
     <div class="nav-bar">HOME > Login</div>
@@ -61,14 +31,13 @@
 <div class="main">
     <div class="login">
         <h1>Login</h1>
-        <br>
     </div>
 
-    <p><span style="color: blue;">${message}</span>
-    <p>
+    <p class="error-msg"><span>&nbsp;${message}</span></p>
+
     <div class="index">
         <form name="loginForm" action="javascript:send();" method="post">
-            <input type="text" name="userId" required="required" maxlength="10" pattern="[a-zA-Z0-9]+"
+            <input type="text" name="userId" required="required" maxlength="20" pattern="[a-zA-Z0-9]+"
                    placeholder="UserID">
             <span data-placeholder="UserID"></span>
 
@@ -80,15 +49,15 @@
     </div>
 
     <div class="bottom-text">
-        <a href="<%=cp%>/">아이디찾기</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="<%=cp%>/">패스워드찾기</a>&nbsp;&nbsp;&nbsp;<br>
+        <a href="<%=cp%>/">아이디 찾기</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<%=cp%>/">패스워드 찾기</a>&nbsp;&nbsp;&nbsp;
+        <br>
         Don't have account? <a href="<%=cp%>/member/member.do">Sign up</a>
     </div>
 </div>
 
 
 <div class="footer">
-    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/views/layout/footer.jsp" />
 </div>
 </body>
 </html>

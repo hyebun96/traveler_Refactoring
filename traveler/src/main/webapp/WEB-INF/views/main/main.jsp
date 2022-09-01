@@ -38,6 +38,7 @@
     </div>
 
     <hr style="clear: both">
+    <input id="msg" value="${msg}" hidden/>
 
     <ul id="bxslider">
         <c:if test="${travelImageList != null}">

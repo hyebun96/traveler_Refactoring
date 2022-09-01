@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -13,9 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
-import com.util.FileManager;
 import com.util.MyUploadServlet;
 import com.util.MyUtil;
 
@@ -79,8 +76,8 @@ public class MemberServlet extends MyUploadServlet {
 		MemberDTO dto=dao.readMember(userId);
 		
 		if(dto==null || !dto.getUserPwd().equals(userPwd)) {
-			String s="아이디 또는 패스워드가 일치하지 않습니다. 다시 입력해주세요.";
-			req.setAttribute("messege", s);
+			String s="등록된 아이디가 없거나 패스워드가 일치하지 않습니다.";
+			req.setAttribute("message", s);
 			forward(req, resp, "/WEB-INF/views/member/login.jsp");
 			return;
 		}
@@ -142,11 +139,11 @@ public class MemberServlet extends MyUploadServlet {
 		try {
 			dao.insertMember(dto);
 		}catch(Exception e){
-			String message = "회원 가입이 실패 했습니다.";
-						
-			req.setAttribute("title", "회원 정보 수정");
-			req.setAttribute("mode", "회원 탈퇴");
-			req.setAttribute("message", message);
+			String message = "회원 가입에 실패 했습니다.";
+
+			req.setAttribute("title", "Sign up");
+			req.setAttribute("mode", "created");
+			req.setAttribute("msg", message);
 			forward(req, resp, "/WEB-INF/views/member/member.jsp");
 					  
 			return;
@@ -203,13 +200,14 @@ public class MemberServlet extends MyUploadServlet {
 				req.setAttribute("title", "회원 정보 수정");
 			}else {
 				req.setAttribute("title", "회원 탈퇴");
-		}
-		req.setAttribute("mode", mode);
-		req.setAttribute("message","<span style='color:red;'>패스워드가 일치하지 않습니다.</span>");
-		forward(req, resp, "/WEB-INF/views/member/pwd.jsp");
-			return;
+
+			}
+			req.setAttribute("mode", mode);
+			req.setAttribute("message","<span style='color:red;'>패스워드가 일치하지 않습니다.</span>");
+			forward(req, resp, "/WEB-INF/views/member/pwd.jsp");
+				return;
 		}else {
-			myPage(req,resp);
+			updateForm(req,resp);
 		}
 		
 		if(mode.equals("delete")) {
@@ -266,7 +264,7 @@ public class MemberServlet extends MyUploadServlet {
 		MemberDTO dto = new MemberDTO();
 	
 		dto.setUserId(req.getParameter("userId"));
-		dto.setUserPwd(req.getParameter("userPwd"));
+		// dto.setUserPwd(req.getParameter("userPwd"));
 		dto.setUserName(req.getParameter("userName"));
 		String tel1 = req.getParameter("tel1");
 		String tel2 = req.getParameter("tel2");
@@ -299,7 +297,7 @@ public class MemberServlet extends MyUploadServlet {
 			req.setAttribute("title", "회원 정보 수정");
 			req.setAttribute("dto", dto);
 			req.setAttribute("mode", "update");
-			req.setAttribute("message", message);
+			req.setAttribute("msg", message);
 			
 			forward(req, resp, "/WEB-INF/views/member/member.jsp");
 		}
@@ -330,7 +328,8 @@ public class MemberServlet extends MyUploadServlet {
 			
 			session.removeAttribute("member");
 			session.invalidate();
-			
+
+			req.setAttribute("msg", "회원 탈퇴가 완료되었습니다.");
 			resp.sendRedirect(cp);
 
 	}

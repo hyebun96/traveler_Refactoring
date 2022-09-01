@@ -1,10 +1,4 @@
 @charset "UTF-8";
-@import url(//fonts.googleapis.com/earlyaccess/hanna.css);
-
-*{
-	padding: 0; margin: 0;
-    font-family: IM_Hyemin-Bold;
-}
 
 @font-face {
     font-family: 'IM_Hyemin-Bold';
@@ -13,100 +7,17 @@
     font-style: normal;
 }
 
+*{
+	padding: 0; margin: 0;
+    font-family: IM_Hyemin-Bold, serif;
+}
+
 .main-box{
 	width: 50px; height: 30px;
 	border: 2px solid white;
 	background: white;
 }
 
-.header-top {
-    margin:0px auto;
-    width: 1080px;
-    height: 60px;
-    clear: both;
-}
-
-.header-center {
-    width: 300px;
-    height: 60px;
-    padding: 0 auto;
-    float: left;
-}
-
-.header-right {
-    width: 780px;
-    height: 60px;
-    float: left;
-}
-
-/* menu */
-.menu {
-    margin:0px auto;
-    width: 660px;
-    min-height: 40px;
-    clear: both;
-    box-sizing: border-box;
-    float: left
-}
-
-ul.nav {
-  width:100%;
-  margin-left: 50px;
-  padding: 0;
-  list-style: none;
-}
-
-ul.nav2 {
-  list-style: none;
-  text-align: right;
-}
-
-ul.nav li { 
-  display: inline;
-}
-
-ul.nav li a {
-  float: left;
-  line-height: 40px;
-  text-decoration: none;
-  margin: 0;
-  padding: 0 20px;
-}
-
-ul.nav .current a, ul.nav li:hover > a {
-  color: green;
-  font-weight : 900;
-  text-decoration: none;
-}
-
-ul.nav ul {
-  display: none;
-}
-
-ul.nav li:hover > ul {
-  position: absolute;
-  display: block;
-  width: 700px;
-  height: 40px;
-  margin: 40px 0 0 -1px;
-  z-index: 101;
-  box-sizing: border-box;
-}
-
-ul.nav li:hover > ul li a {
-  float: left;
-  line-height: 30px; 
-  color: #333333;
-  text-decoration: none;
-  margin: 0;
-  padding: 0 10px 0 20px;
-  font-size: 11px;
-}
-
-ul.nav li:hover > ul li a:hover {
-  color: #333333;
-  text-decoration: none;
-}
 
 .main .clock .nowDate {
     color: black;
@@ -116,8 +27,8 @@ ul.nav li:hover > ul li a:hover {
     border: none;
     text-align: center;
     display: inline-block;
-    margin: 10px auto;
     float: right;
+    padding: 10px;
 }
 
 .main .clock .nowDate img{
@@ -131,7 +42,7 @@ ul.nav li:hover > ul li a:hover {
     width:1080px;
     height: 40px;
     clear: both;
-    margin: 25px auto;
+    margin: 10px auto;
     border-bottom: 1px solid #cccccc;
 }
 
@@ -148,15 +59,16 @@ ul.nav li:hover > ul li a:hover {
 .main{
 	width:1080px;
 	min-height: 500px;
-	margin: 10px auto 50px;
+	margin: 0px auto 50px;
+}
+
+.main p{
+    text-align: center;
+    color: #999999;
 }
 
 .main-title h3{
 	text-align: center;
-}
-.main p{
-	text-align: center;
-	color: #999;
 }
 
 .main-box1{
@@ -201,11 +113,6 @@ ul.nav li:hover > ul li a:hover {
 	margin-left: 76px;
 }
 
-.main ul li{
-	box-sizing: border-box;
-	text-decoration: none;
-}
-
 #bxslider {position:relative;margin:0 auto;padding:10px 65px;list-style:none;width:1080px;height:500px;overflow-x:hidden}
 #bxslider li {display:none;position:absolute;left:0;top:0}
 #bxslider img {width:1080px;height:500px;}
@@ -229,6 +136,6 @@ ul.nav li:hover > ul li a:hover {
 .footer img{
 	width: 20px;
 	height: 20px;
-	
+
 }
 

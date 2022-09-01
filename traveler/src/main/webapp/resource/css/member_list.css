@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+
+.member {
+    width: 800px;
+    margin: 50px auto;
+}
+
+.member .member-list {
+    text-align: right;
+}
+
+.member .member-list select {
+    height: 23px;
+}
+
+.member .member-list #search-input {
+    vertical-align: bottom;
+    height: 19px;
+}
+
+.member .member-list #search-button {
+    vertical-align: bottom;
+    height: 23px;
+    width: 90px;
+    background: #eee;
+    border: 1px solid #777;
+}
+
+.member .member-list #search-reset {
+    vertical-align: bottom;
+    height: 23px;
+    width: 90px;
+    background: #eee;
+    border: 1px solid #777;
+}
+
+.member-table {
+    clear: both;
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 1px solid black;
+    text-align: center;
+    border-spacing: 0;
+    height: 30px;
+}
+
+.member-table tr:first-child {
+    border-bottom: 2px solid black;
+}
+
+.member-list {
+    width: 100%;
+    margin: 0px auto;
+    border-spacing: 0px;
+}
+
+.number {
+    text-align: center;
+    margin: 20px auto;
+}
+
+.member-table tr {
+    border-bottom: 1px solid black;
+    height: 30px;
+}
+
