@@ -23,7 +23,7 @@
         <div class="menu">
             <ul class="nav">
                 <li class="nav-li">
-                    <a href="<%=cp%>/travel/list.do?type=seoul">여행지</a>
+                    <a href="<%=cp%>/travel/list.do?type=seoul">TRAVEL</a>
                     <ul>
                         <li><a class="nav-a" href="<%=cp%>/travel/list.do?type=Seoul">서울</a></li>
                         <li><a class="nav-a" href="<%=cp%>/travel/list.do?type=Gangwon-do">강원</a></li>
@@ -48,15 +48,24 @@
                     </ul>
                 </li>
 
+                <c:if test="${sessionScope.member.userId!='admin'}">
                 <li class="nav-li">
                     <a href="<%=cp%>/contact/contact.do">CONTACT</a>
                     <ul>
                         <li><a class="nav-a" href="<%=cp%>/contact/contact.do">CONTACT</a></li>
-                        <c:if test="${sessionScope.member.userId=='admin'}">
-                            <li><a class="nav-a" href="<%=cp%>/contact/list.do">목록확인</a></li>
-                        </c:if>
                     </ul>
                 </li>
+                </c:if>
+
+                <c:if test="${sessionScope.member.userId=='admin'}">
+                <li class="nav-li">
+                    <a href="<%=cp%>/member/list.do">ADMIN</a>
+                    <ul>
+                       <li><a class="nav-a"href="<%=cp%>/member/list.do">회원리스트</a></li>
+                       <li><a class="nav-a" href="<%=cp%>/contact/list.do">CANTACT 목록</a></li>
+                    </ul>
+                </li>
+                </c:if>
 
                 <li class="nav-li2" >
                     <c:if test="${empty sessionScope.member}">

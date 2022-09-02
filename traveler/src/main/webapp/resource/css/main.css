@@ -117,6 +117,13 @@
 #bxslider li {display:none;position:absolute;left:0;top:0}
 #bxslider img {width:1080px;height:500px;}
 
+/* page */
+#paginate {clear:both; padding:15px 0px;text-align:center;height:28px;white-space:nowrap;}
+#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}
+#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}
+#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
+#paginate .numBox {border:1px solid #ccc;height:28px;font-weight:bold;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
+
 /* footer */
 .footer {
 	clear:both;

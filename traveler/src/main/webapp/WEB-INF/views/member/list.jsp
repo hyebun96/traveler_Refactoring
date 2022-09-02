@@ -9,7 +9,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Traveler</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
@@ -53,18 +53,16 @@
             <td>생년월일</td>
         </tr>
         <c:forEach var="dto" items="${list}">
-            <tr>
-                <td>${dto.userId}</td>
-                <td>${dto.userName}</td>
-                <td>${dto.userTel}</td>
-                <td>${dto.userEmail}</td>
-                <td>${dto.userBirth}</td>
-            </tr>
+        <tr>
+            <td>${dto.userId}</td>
+            <td>${dto.userName}</td>
+            <td>${dto.userTel}</td>
+            <td>${dto.userEmail}</td>
+            <td>${dto.userBirth}</td>
+        </tr>
         </c:forEach>
         <tr height="35">
-            <td>
-                ${dataCount==0?"등록된 회원이 없습니다.":paging}
-            </td>
+            ${dataCount==0?"등록된 회원이 없습니다.":paging}
         </tr>
     </table>
 

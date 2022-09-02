@@ -34,7 +34,7 @@ public class MyUtil {
 			return "";
 		}
 		
-		if(list_url.indexOf("?")!=-1) {
+		if(list_url.contains("?")) {
 			list_url+="&";
 		} else {
 			list_url+="?";
@@ -45,21 +45,13 @@ public class MyUtil {
 		if(current_page%numPerBlock==0) {
 			currentPageSetup=currentPageSetup-numPerBlock;
 		}
-
-		sb.append("<style type='text/css'>");
-		sb.append("#paginate {clear:both; padding:15px 0px 0px 0px;text-align:center;height:28px;white-space:nowrap;}");
-		sb.append("#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}");
-		sb.append("#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}");
-		sb.append("#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}");
-		sb.append("#paginate .numBox {border:1px solid #ccc;height:28px;font-weight:bold;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}");
-		sb.append("</style>");
 		
-		sb.append("<div id='paginate'>");
+		sb.append("<td id='paginate' colspan='5' >");
+
 		// 처음페이지, 이전(10페이지 전)
 		n=current_page-numPerBlock;
 		if(total_page > numPerBlock && currentPageSetup > 0) {
-			sb.append("<a href='"+list_url+"page=1'></a>");
-			sb.append("<a href='"+list_url+"page="+n+"'></a>");
+			sb.append("<a href='"+list_url+"page="+1+"'>Pre</a>");
 		}
 
 		// 바로가기
@@ -77,10 +69,10 @@ public class MyUtil {
 		n=current_page+numPerBlock;
 		if(n>total_page) n=total_page;
 		if(total_page-currentPageSetup>numPerBlock) {
-			sb.append("<a href='"+list_url+"page="+n+"'>Pre</a>");
+
 			sb.append("<a href='"+list_url+"page="+total_page+"'>Next</a>");
 		}
-		sb.append("</div>");
+		sb.append("</td>");
 	
 		return sb.toString();
 	}
