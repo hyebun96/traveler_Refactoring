@@ -30,7 +30,7 @@
 
 <div class="member">
     <h3>회원정보 리스트</h3>
-    <form name="searchForm" action="<%=cp%>/member/list.do" method="post">
+    <form name="searchForm" class="searchForm" action="<%=cp%>/member/list.do" method="post">
         <div class="member-list">
             <select name="condition">
                 <option value="userId" ${condition=="userId"?"selected='selected'":"" }>회원아이디</option>

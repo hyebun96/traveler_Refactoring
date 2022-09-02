@@ -72,14 +72,9 @@
                 <input type="text" name="userBirth" value="${dto.userBirth}" readonly="readonly" class="input-box"/>
             </p>
 
-            <button class="indexBtn updateBtn" type="button" name="sendButton" onclick="memberOk2('update');"> 정보수정 </button>
-            <c:if test="${sessionScope.member.userId=='admin'}">
-                <a href="<%=cp%>/member/list.do">
-                    <button class="indexBtn" type="button" name="sendButton">회원리스트</button>
-                </a>
-            </c:if>
             <c:if test="${sessionScope.member.userId!='admin'}">
-                <button class="indexBtn" type="button" name="sendButton" onclick="memberOk2('delete');">회원탈퇴</button>
+                <button class="indexBtn updateBtn" type="button" name="sendButton" onclick="memberUpdate('update');"> 정보수정 </button>
+                <button class="indexBtn" type="button" name="sendButton" onclick="memberUpdate('delete');">회원탈퇴</button>
             </c:if>
         </form>
     </div>

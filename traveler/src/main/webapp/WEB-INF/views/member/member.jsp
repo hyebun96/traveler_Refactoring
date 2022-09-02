@@ -39,7 +39,7 @@
     <input id="msg" value="${msg}" hidden/>
 
     <div class="index">
-        <form name="memberForm" action="javascript:send();" method="post" enctype="multipart/form-data">
+        <form name="memberForm" class=""memberForm" action="javascript:send();" method="post" enctype="multipart/form-data">
             <p>
                 <c:if test="${dto.userId != 'admin'}">
                 <input hidden id="upload" name="upload" type="text"  value="${dto.imageFilename}">

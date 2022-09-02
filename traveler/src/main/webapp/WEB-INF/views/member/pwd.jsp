@@ -51,7 +51,7 @@
                    placeholder="Password">
             <span data-placeholder="Password"></span>
             <input type="hidden" name="mode" value="${mode}">
-            <button type="button" onclick="sendLogin2();">확인</button>
+            <button type="button" onclick="pwdOk();">확인</button>
         </form>
 
     </div>

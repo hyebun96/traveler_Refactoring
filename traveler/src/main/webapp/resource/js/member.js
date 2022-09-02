@@ -1,6 +1,7 @@
-/* 자바스크립트는  웹브라우저에 의해 실행되어지는거,전세계적으로 많이 씀*/
-$(function () {  //엔터치면 다음으로 넘어가게함.
+// member.js
 
+//엔터치면 다음으로 넘어가게함.
+$(function () {
     $("input").not($(":button")).not($(":reset")).keypress(function (evt) { //input에서 keypress가 발생했으면(버튼과 리셋은 빼고)
         if (evt.keyCode === 13) {
             const fields = $(this).parents("form,body").find("button,input,select,textarea"); //form또는 body 안에 모든 button,input,select,textarea 찾아라
@@ -15,7 +16,6 @@ $(function () {  //엔터치면 다음으로 넘어가게함.
 });
 
 $(function () {
-
     let msg = $("#msg").val();
     if(msg !== '' && msg !== undefined){
         alert(msg);
@@ -49,29 +49,11 @@ $(function () {
         $("#upload").val('user5');
         $(".user5").css("background-color", "#e7f0fe");
     });
-
 });
 
 function searchList() {
     let f = document.searchForm;
     f.submit();
-}
-
-// 비밀번호 미입력시 경고창
-function checkValue() {
-    let f = document.deleteForm;
-    if (!f.password.value) {
-        alert("비밀번호를 입력하지 않았습니다.");
-        return false;
-    }
-}
-
-function bgLabel(ob, id) {
-    if (!ob.value) {
-        document.getElementById(id).style.display = "";
-    } else {
-        document.getElementById(id).style.display = "none";
-    }
 }
 
 function sendLogin() {
@@ -99,14 +81,14 @@ function memberOk(mode) {
     let f = document.memberForm;
     let str;
 
-    if(!document.getElementById('upload').value){
+    str = f.upload.value;
+    if(!str){
         alert("계정의 이미지를 선택해 주세요.");
         $('#user1').click();
         return;
     }
 
-    str = f.userId.value;
-    str = str.trim();
+    str = f.userId.value.trim();
     if (!str) {
         alert("아이디를 입력하세요. ");
         f.userId.focus();
@@ -117,11 +99,10 @@ function memberOk(mode) {
         f.userId.focus();
         return;
     }
-    f.userId.value = str;
 
     if(mode !== "update"){
-        str = f.userPwd.value;
-        str = str.trim();
+        str = f.userPwd.value.trim();
+        strCheck = f.userPwdCheck.value.trim();
         if (!str) {
             alert("패스워드를 입력하세요. ");
             f.userPwd.focus();
@@ -132,26 +113,21 @@ function memberOk(mode) {
             f.userPwd.focus();
             return;
         }
-        f.userPwd.value = str;
-
-        if (str !== f.userPwdCheck.value) {
+        if (str !== strCheck) {
             alert("패스워드가 일치하지 않습니다. ");
             f.userPwdCheck.focus();
             return;
         }
     }
 
-
-    str = f.userName.value;
-    str = str.trim();
+    str = f.userName.value.trim();
     if (!str) {
         alert("이름을 입력하세요. ");
         f.userName.focus();
         return;
     }
 
-    str = f.userBirth.value;
-    str = str.trim();
+    str = f.userBirth.value.trim();
     if (!str || !isValidDateFormat(str)) {
         alert("생년월일를 입력하세요[YYYY-MM-DD]. ");
         f.userBirth.focus();
@@ -174,7 +150,7 @@ function memberOk(mode) {
         return;
     }
     if (!/^(\d+)$/.test(str)) {
-        alert("숫자만 가능합니다. ");
+        alert("전화번호는 숫자만 가능합니다. ");
         f.tel2.focus();
         return;
     }
@@ -187,7 +163,7 @@ function memberOk(mode) {
         return;
     }
     if (!/^(\d+)$/.test(str)) {
-        alert("숫자만 가능합니다. ");
+        alert("전화번호는 숫자만 가능합니다. ");
         f.tel3.focus();
         return;
     }
@@ -216,7 +192,6 @@ function memberOk(mode) {
         alert("수정하시겠습니까?");
         f.action = "/traveler_war_exploded/member/update_ok.do";
     }
-
     f.submit();
 
 }
@@ -260,8 +235,7 @@ function isValidDateFormat(data) {
     return true;
 }
 
-// myPage
-function memberOk2(mode) {
+function memberUpdate(mode) {
     let f = document.memberForm;
     let str;
 
@@ -273,12 +247,10 @@ function memberOk2(mode) {
         alert("수정하시겠습니까?");
         f.action = "/traveler_war_exploded/member/pwd.do?mode=update";
     }
-
     f.submit();
 }
 
-// Pwd
-function sendLogin2() {
+function pwdOk() {
     const f = document.pwdForm
 
     let str = f.userPwd.value;
@@ -289,6 +261,5 @@ function sendLogin2() {
     }
 
     f.action = "/traveler_war_exploded/member/pwd_ok.do";
-
     f.submit();
 }

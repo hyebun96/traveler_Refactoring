@@ -51,7 +51,7 @@ public class MemberServlet extends MyUploadServlet {
 			updateForm(req,resp);
 		} else if(uri.contains("update_ok.do")) {
 			updateSubmit(req, resp);
-		} else if(uri.contains("delete.do")) {
+		} else if(uri.contains("delete_ok.do")) {
 			deleteSubmit(req, resp);
 		} else if(uri.contains("myPage.do")) {
 			myPage(req, resp);
@@ -139,7 +139,7 @@ public class MemberServlet extends MyUploadServlet {
 		try {
 			dao.insertMember(dto);
 		}catch(Exception e){
-			String message = "회원 가입에 실패 했습니다.";
+			String message = "이미 존재하는 아이디로 회원 가입에 실패 했습니다.";
 
 			req.setAttribute("title", "Sign up");
 			req.setAttribute("mode", "created");

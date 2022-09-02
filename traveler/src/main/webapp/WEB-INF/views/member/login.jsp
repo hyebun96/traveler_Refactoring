@@ -17,6 +17,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/member.js"></script>
+
 </head>
 <body>
 
@@ -36,7 +37,7 @@
     <p class="error-msg"><span>&nbsp;${message}</span></p>
 
     <div class="index">
-        <form name="loginForm" action="javascript:send();" method="post">
+        <form name="loginForm" class="loginForm" action="javascript:send();" method="post">
             <input type="text" name="userId" required="required" maxlength="20" pattern="[a-zA-Z0-9]+"
                    placeholder="UserID">
             <span data-placeholder="UserID"></span>
@@ -49,8 +50,6 @@
     </div>
 
     <div class="bottom-text">
-        <a href="<%=cp%>/">아이디 찾기</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<%=cp%>/">패스워드 찾기</a>&nbsp;&nbsp;&nbsp;
-        <br>
         Don't have account? <a href="<%=cp%>/member/member.do">Sign up</a>
     </div>
 </div>
