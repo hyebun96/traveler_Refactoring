@@ -1,0 +1,86 @@
+@charset "UTF-8";
+
+.board {
+	width: 800px;
+	margin: 50px auto;
+}
+
+.board div {
+	text-align: right;
+}
+
+.board div select {
+	height: 25px;
+	border: none;
+	border-bottom: 1px solid black;
+	margin-right: 6px;
+}
+
+.board div input {
+	height: 23px;
+	width: 136px;
+	border: none;
+	border-bottom: 1px solid black;
+	background: aliceblue;
+}
+
+.board .board-button {
+	height: 30px;
+	width: 90px;
+	background: #EFEFEF;
+	border: 1px solid white;
+	border-radius: 5px;
+}
+
+.board-table {
+	clear: both;
+	width: 100%;
+	border-collapse: collapse;
+	text-align: center;
+	border-spacing: 0;
+	height: 30px;
+}
+
+.board-table tr:first-child {
+	border-bottom: 2px solid black;
+}
+
+.board-table tr:first-child {
+	border-bottom: 2px solid black;
+}
+
+.board-title {
+	width: 240px;
+	text-align: left;
+}
+
+#board-must {
+	display: inline-block;
+	padding: 1px 3px;
+	background: #ED4C00;
+	color: #FFFFFF;
+}
+
+.number {
+	text-align: center;
+	margin: 20px auto;
+}
+
+.board-table tr:last-child {
+	border-bottom: none;
+}
+
+.board-table .board-created td{
+	padding: 10px;
+	text-align: right;
+}
+
+.board-table .board-paging{
+	border-bottom: none;
+}
+
+.board-table tr {
+	border-bottom: 1px solid black;
+	height: 30px;
+}
+

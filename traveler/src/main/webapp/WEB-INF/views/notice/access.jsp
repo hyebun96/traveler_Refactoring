@@ -9,11 +9,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Traveler</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
-<p>권한이 존재하지 않습니다.</p>
-<button type="button" onclick="javascript:location.href='<%=cp%>/notice/notice.do?${query}';">목록으로</button>
+    <p>권한이 존재하지 않습니다.</p>
+    <button type="button" onclick="javascript:location.href='<%=cp%>/notice/notice.do?${query}';">목록으로</button>
 </body>
 </html>
