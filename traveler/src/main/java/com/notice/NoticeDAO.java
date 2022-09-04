@@ -1,5 +1,7 @@
 package com.notice;
 
+import com.util.DBConn;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,20 +9,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.util.DBConn;
-
 public class NoticeDAO {
-    private Connection conn = DBConn.getConnection();
+    private final Connection conn = DBConn.getConnection();
+    private StringBuilder sb;
+    private PreparedStatement pstmt;
+    private ResultSet rs;
 
     public void insertNotice(NoticeDTO dto) {
-        StringBuilder sb = new StringBuilder();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String sql;
-        try {
+        sb = new StringBuilder();
+        pstmt = null;
 
-            sb.append("INSERT INTO notice");
-            sb.append("(num,id,name,title,content,important) ");
+        try {
+            sb.append("INSERT INTO notice(num,id,name,title,content,important) ");
             sb.append("VALUES(?,?,?,?,?,?)");
 
             pstmt = conn.prepareStatement(sb.toString());
@@ -46,19 +46,18 @@ public class NoticeDAO {
     }
 
     public void insertNoticeFile(NoticeDTO dto) {
-        StringBuilder sb = new StringBuilder();
-        PreparedStatement pstmt = null;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sb.append("INSERT INTO noticeFile");
-            sb.append("(num, saveFilename,originalFilename,filesize) ");
-            sb.append("VALUES(?,?,?,?)");
+            sb.append("INSERT INTO noticeFile(num, saveFilename, originalFilename, filesize) ");
+            sb.append(" VALUES( (SELECT MAX(num) FROM notice ),?,?,?)");
 
             pstmt = conn.prepareStatement(sb.toString());
-            pstmt.setInt(1, dto.getNum());
-            pstmt.setString(2, dto.getSaveFileName());
-            pstmt.setString(3, dto.getOriginalFileName());
-            pstmt.setLong(4, dto.getFileSize());
+            pstmt.setString(1, dto.getSaveFileName());
+            pstmt.setString(2, dto.getOriginalFileName());
+            pstmt.setLong(3, dto.getFileSize());
+
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,28 +74,23 @@ public class NoticeDAO {
 
     public int dataCount() {
         int result = 0;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sql = "SELECT COALESCE(COUNT(*), 0) FROM notice";
-            pstmt = conn.prepareStatement(sql);
+            sb.append("SELECT COALESCE(COUNT(*), 0) FROM notice");
+
+            pstmt = conn.prepareStatement(sb.toString());
             rs = pstmt.executeQuery();
-            if (rs.next())
+
+            if (rs.next()) {
                 result = rs.getInt(1);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -104,16 +98,22 @@ public class NoticeDAO {
                     e.printStackTrace();
                 }
             }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return result;
     }
 
     public int dataCount(String condition, String keyword) {
         int result = 0;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
             sb.append("SELECT COALESCE(COUNT(*),0) FROM notice ");
@@ -135,19 +135,18 @@ public class NoticeDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -156,9 +155,9 @@ public class NoticeDAO {
 
     public List<NoticeDTO> listNotice(int offset, int rows) {
         List<NoticeDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
             sb.append("SELECT num, id, name, title, ");
@@ -185,21 +184,19 @@ public class NoticeDAO {
 
                 list.add(dto);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
+            if (pstmt != null) {
                 try {
-                    rs.close();
+                    pstmt.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-
-            if (pstmt != null) {
+            if (rs != null) {
                 try {
-                    pstmt.close();
+                    rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -210,9 +207,9 @@ public class NoticeDAO {
 
     public List<NoticeDTO> listNotice(int offset, int rows, String condition, String keyword) {
         List<NoticeDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
             sb.append("SELECT num, id, name, title, ");
@@ -247,18 +244,9 @@ public class NoticeDAO {
 
                 list.add(dto);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -266,26 +254,32 @@ public class NoticeDAO {
                     e.printStackTrace();
                 }
             }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return list;
     }
 
     public NoticeDTO readNotice(int num) {
         NoticeDTO dto = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
+
         try {
             sb.append("SELECT num,important,id,name,title,content,viewCount,created ");
-            sb.append("FROM notice ");
-            sb.append("WHERE num = ?");
+            sb.append(" FROM notice ");
+            sb.append(" WHERE num = ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
 
             rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 dto = new NoticeDTO();
 
@@ -297,18 +291,10 @@ public class NoticeDAO {
                 dto.setContent(rs.getString("content"));
                 dto.setViewCount(rs.getInt("viewCount"));
                 dto.setCreated(rs.getString("created"));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -316,20 +302,27 @@ public class NoticeDAO {
                     e.printStackTrace();
                 }
             }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return dto;
     }
 
     public List<NoticeDTO> fileList(int num) {
         List<NoticeDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
+
         try {
             sb.append("SELECT fileNum, num, saveFileName, originalFileName, fileSize ");
-            sb.append("FROM noticeFile ");
-            sb.append("WHERE num = ?");
+            sb.append(" FROM noticeFile ");
+            sb.append(" WHERE num = ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
@@ -349,17 +342,16 @@ public class NoticeDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
+            if (pstmt != null) {
                 try {
-                    rs.close();
+                    pstmt.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-
-            if (pstmt != null) {
+            if (rs != null) {
                 try {
-                    pstmt.close();
+                    rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -370,16 +362,16 @@ public class NoticeDAO {
     }
 
     public void updateHitCount(int num) {
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "UPDATE notice SET viewCount = notice.viewCount+1 WHERE num=?";
+            sb.append("UPDATE notice SET viewCount = notice.viewCount+1 WHERE num=?");
 
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sb.toString());
+
             pstmt.setInt(1, num);
             pstmt.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -396,9 +388,9 @@ public class NoticeDAO {
 
     public List<NoticeDTO> importantList() {
         List<NoticeDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
             sb.append("SELECT num,id,name,title,viewCount,created ");
@@ -409,7 +401,6 @@ public class NoticeDAO {
             pstmt = conn.prepareStatement(sb.toString());
 
             rs = pstmt.executeQuery();
-
             while (rs.next()) {
                 NoticeDTO dto = new NoticeDTO();
 
@@ -445,14 +436,15 @@ public class NoticeDAO {
     }
 
     public void updateNotice(NoticeDTO dto) {
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "UPDATE notice SET important=?, title=?, content=?, created = NOW()";
-            sql += " WHERE num=?";
+            sb.append("UPDATE notice");
+            sb.append(" SET important=?, title=?, content=?, created = NOW()");
+            sb.append(" WHERE num=?");
 
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, dto.getImportant());
             pstmt.setString(2, dto.getTitle());
             pstmt.setString(3, dto.getContent());
@@ -472,23 +464,22 @@ public class NoticeDAO {
         }
     }
 
-    public int deleteNotice(int num) {
-        int result = 0;
-        PreparedStatement pstmt = null;
-        String sql;
+    public void deleteNotice(int num) {
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "DELETE FROM noticeFile WHERE num = ? ";
-            pstmt = conn.prepareStatement(sql);
+            sb.append("DELETE FROM noticeFile WHERE num = ? ");
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
-            result = pstmt.executeUpdate();
+            pstmt.executeUpdate();
             pstmt.close();
 
-            sql = "DELETE FROM notice WHERE num = ? ";
+            sb.append("DELETE FROM notice WHERE num = ? ");
 
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
-            result = pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -501,24 +492,23 @@ public class NoticeDAO {
                 }
             }
         }
-        return result;
     }
 
     public NoticeDTO readFileNum(int fileNum) {
         NoticeDTO dto = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
+
         try {
-            sb.append("SELECT fileNum,num,saveFileName, originalFileName, fileSize ");
-            sb.append("FROM noticefile ");
-            sb.append("WHERE fileNum = ?");
+            sb.append("SELECT fileNum, num, saveFileName, originalFileName, fileSize ");
+            sb.append(" FROM noticeFile ");
+            sb.append(" WHERE fileNum = ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, fileNum);
 
             rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 dto = new NoticeDTO();
 
@@ -527,7 +517,6 @@ public class NoticeDAO {
                 dto.setSaveFileName(rs.getString("saveFileName"));
                 dto.setOriginalFileName(rs.getString("originalFileName"));
                 dto.setFileSize(rs.getLong("fileSize"));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -539,7 +528,6 @@ public class NoticeDAO {
                     e.printStackTrace();
                 }
             }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -548,21 +536,20 @@ public class NoticeDAO {
                 }
             }
         }
-
         return dto;
     }
 
-    public int deleteNoticeFile(int fileNum) {
+    public void deleteNoticeFile(int fileNum) {
         int result = 0;
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "DELETE FROM noticeFile WHERE fileNum = ? ";
+            sb.append("DELETE FROM noticeFile WHERE fileNum = ? ");
 
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, fileNum);
-            result = pstmt.executeUpdate();
+            pstmt.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -575,7 +562,5 @@ public class NoticeDAO {
                 }
             }
         }
-        return result;
     }
-
 }

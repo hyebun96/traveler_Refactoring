@@ -1,11 +1,11 @@
 // notice.js
 
-function searchList() {
+function searchNoticeList() {
     let f = document.searchForm;
     f.submit();
 }
 
-function writeNotice(userId, page) {
+function createNoticeForm(userId, page) {
     const query = "page=" + page;
     let url;
 
@@ -17,7 +17,7 @@ function writeNotice(userId, page) {
     location.href = url;
 }
 
-function sendOk(mode) {
+function createNotice(mode) {
     const f = document.writeBoardForm;
     let str;
 
@@ -39,17 +39,25 @@ function sendOk(mode) {
     f.submit();
 }
 
-function deleteFile(fileNum, mode) {
 
-    if(mode === 'update'){
-        const url = "/traveler_war_exploded/notice/deleteFile.do?num=${dto.num}&page=${page}&fileNum=" + fileNum;
+
+function updateNotice(num, loginUserId, boardWriteId, page, query) {
+    let url;
+
+    if(loginUserId === boardWriteId){
+        query = "num=" + num + "&page=" + page;
+        url = "/traveler_war_exploded/notice/update.do?" + query;
+
         location.href = url;
     }
-
+    if(loginUserId !== boardWriteId){
+        query = "num=" + num + "&" + query;
+        url = "/traveler_war_exploded/notice/access.do?" + query;
+        location.href = url;
+    }
 }
 
-function deleteBoard(num, loginUserId, boardWriteId, query) {
-
+function deleteNotice(num, loginUserId, boardWriteId, query) {
     let url;
 
     if(loginUserId === 'admin' || loginUserId === boardWriteId){
@@ -66,24 +74,15 @@ function deleteBoard(num, loginUserId, boardWriteId, query) {
         url = "/traveler_war_exploded/notice/access.do?" + query;
         location.href = url;
     }
-
 }
 
-function updateBoard(num, loginUserId, boardWriteId, page, query) {
+function deleteNoticeFile(num, fileNum, mode, page) {
+    const query = "num=" + num + "&fileNum=" + fileNum + "&page=" + page;
 
-    let url;
-
-    if(loginUserId === boardWriteId){
-        query = "num=" + num + "&page=" + page;
-        url = "/traveler_war_exploded/notice/update.do?" + query;
-
-        location.href = url;
+    if(mode === 'update') {
+        if (confirm("파일을 삭제 하시겠습니까?")) {
+            const url = "/traveler_war_exploded/notice/deleteFile.do?" + query;
+            location.href = url;
+        }
     }
-    if(loginUserId !== boardWriteId){
-        query = "num=" + num + "&" + query;
-        url = "/traveler_war_exploded/notice/access.do?" + query;
-        location.href = url;
-    }
-
 }
-

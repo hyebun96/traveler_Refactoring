@@ -1,13 +1,9 @@
 package com.notice;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
-import java.util.List;
-import java.util.Map;
+import com.member.SessionInfo;
+import com.util.FileManager;
+import com.util.MyUploadServlet;
+import com.util.MyUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,17 +11,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.member.SessionInfo;
-import com.util.FileManager;
-import com.util.MyUploadServlet;
-import com.util.MyUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet("/notice/*")
 @MultipartConfig
 public class NoticeServlet extends MyUploadServlet {
 
-    private static final long serialVersionUID = 1L;
     private String pathname;
 
     @Override
@@ -33,7 +30,6 @@ public class NoticeServlet extends MyUploadServlet {
         req.setCharacterEncoding("utf-8");
 
         String uri = req.getRequestURI();
-
         HttpSession session = req.getSession();
 
         String root = session.getServletContext().getRealPath("/");
@@ -45,8 +41,8 @@ public class NoticeServlet extends MyUploadServlet {
             writeForm(req, resp);
         } else if (uri.contains("write_ok.do")) {
             writeSubmit(req, resp);
-        } else if (uri.contains("viewNotice.do")) {
-            viewNotice(req, resp);
+        } else if (uri.contains("view.do")) {
+            viewForm(req, resp);
         } else if (uri.contains("update.do")) {
             updateForm(req, resp);
         } else if (uri.contains("update_ok.do")) {
@@ -76,6 +72,7 @@ public class NoticeServlet extends MyUploadServlet {
 
         String condition = req.getParameter("condition");
         String keyword = req.getParameter("keyword");
+
         if (condition == null) {
             condition = "title";
             keyword = "";
@@ -92,17 +89,23 @@ public class NoticeServlet extends MyUploadServlet {
             dataCount = dao.dataCount(condition, keyword);
         }
 
-        int rows = 5;
+        int rows = 10;
         int total_page = util.pageCount(rows, dataCount);
-        if (current_page > total_page)
+        if (current_page > total_page) {
             current_page = total_page;
+        }
 
         int offset = (current_page - 1) * rows;
+        if(offset < 0){
+            offset = 0;
+        }
+
         List<NoticeDTO> list;
-        if (keyword.length() != 0)
+        if (keyword.length() != 0) {
             list = dao.listNotice(offset, rows, condition, keyword);
-        else
+        } else {
             list = dao.listNotice(offset, rows);
+        }
 
         int listNum, n = 0;
         for (NoticeDTO dto : list) {
@@ -110,13 +113,14 @@ public class NoticeServlet extends MyUploadServlet {
             dto.setListNum(listNum);
             n++;
         }
+
         String query = "";
         if (keyword.length() != 0) {
             query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
         }
 
         String listUrl = cp + "/notice/notice.do";
-        String articleUrl = cp + "/notice/viewNotice.do?page=" + current_page;
+        String articleUrl = cp + "/notice/view.do?page=" + current_page;
         if (query.length() != 0) {
             listUrl += "?" + query;
             articleUrl += "&" + query;
@@ -190,7 +194,7 @@ public class NoticeServlet extends MyUploadServlet {
         resp.sendRedirect(cp + "/notice/notice.do");
     }
 
-    protected void viewNotice(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void viewForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NoticeDAO dao = new NoticeDAO();
         String cp = req.getContextPath();
 
@@ -226,7 +230,7 @@ public class NoticeServlet extends MyUploadServlet {
         req.setAttribute("page", page);
         req.setAttribute("list", list);
 
-        forward(req, resp, "/WEB-INF/views/notice/viewNotice.jsp");
+        forward(req, resp, "/WEB-INF/views/notice/view.jsp");
     }
 
     protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -393,7 +397,6 @@ public class NoticeServlet extends MyUploadServlet {
         dtofile.setOriginalFileName("");
         dtofile.setSaveFileName("");
         dtofile.setFileSize(0);
-
 
         dao.deleteNoticeFile(fileNum);
         List<NoticeDTO> list = dao.fileList(num);

@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+.viewport{
+	width: 800px;
+	margin: 50px auto;
+}
+
+.view-table{
+	clear:both;
+	width: 100%;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	border-collapse: collapse;
+}
+
+.board-title{
+	vertical-align: top;
+	text-align: center;
+}
+
+.view-table tr{
+	height: 35px;
+	border-bottom: 1px solid black;
+}
+
+.title{
+	background: aliceblue;
+}
+
+.view{
+	width: 24%;
+	text-align: center;
+	padding: 10px 10px 10px 10px;
+}
+
+.view-title{
+	text-align: center;
+}
+
+.view-content{
+	height: 200px;
+	padding: 10px 10px 10px 0;
+	float: left;
+	width: 100%;
+	text-align: left;
+}
+
+.viewport .div-button{
+	float: right;
+	margin: 15px;
+}

@@ -9,14 +9,19 @@
 	height: 20px;
 }
 
+.writeBoardForm{
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+}
+
 .writeBoardForm p{
 	padding: 10px;
 	display: inline-block;
-	width: 40px;
+	width: 70px;
 }
 
-.writeBoardForm input{
-	width: 90%;
+.writeBoardForm .write-title{
+	width: 86%;
 	margin: 15px 0;
 	border: none;
 	border-bottom: 1px solid black;
@@ -35,7 +40,7 @@
 
 .writeBoardForm .write-content textarea{
 	resize: none;
-	width: 705px;
+	width: 675px;
 	height: 260px;
 	display: inline-table;
 	padding: 10px;
@@ -47,13 +52,5 @@
 
 .writeBoardForm .div-button{
 	float: right;
-	margin-right: 15px;
-}
-
-.writeBoardForm .div-button button{
-	height: 30px;
-	width: 90px;
-	background: #EFEFEF;
-	border: 1px solid white;
-	border-radius: 5px;
+	margin: 15px;
 }
