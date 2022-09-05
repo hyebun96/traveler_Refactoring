@@ -68,8 +68,7 @@ function deleteNotice(num, loginUserId, boardWriteId, query) {
             location.href = url;
         }
     }
-
-    if(loginUserId === 'admin' && loginUserId !== boardWriteId){
+    if(loginUserId !== 'admin' && loginUserId !== boardWriteId){
         query = "num=" + num + "&" + query;
         url = "/traveler_war_exploded/notice/access.do?" + query;
         location.href = url;

@@ -411,7 +411,7 @@ public class NoticeServlet extends MyUploadServlet {
 
     protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String page = req.getParameter("page");
-        String query = "page=" + page;
+        String query =  "/notice/notice.do?" + "page=" + page;
         String condition = req.getParameter("condition");
         String keyword = req.getParameter("keyword");
         if (condition == null) {
@@ -425,7 +425,7 @@ public class NoticeServlet extends MyUploadServlet {
 
         req.setAttribute("query", query);
 
-        forward(req, resp, "/WEB-INF/views/notice/access.jsp");
+        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
     }
 
 }

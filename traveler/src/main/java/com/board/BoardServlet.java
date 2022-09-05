@@ -271,7 +271,7 @@ public class BoardServlet extends HttpServlet {
     protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cp = req.getContextPath();
         String page = req.getParameter("page");
-        String query = "page=" + page;
+        String query = "/board/board.do?" + "page=" + page;
         String condition = req.getParameter("condition");
         String keyword = req.getParameter("keyword");
         if (condition == null) {

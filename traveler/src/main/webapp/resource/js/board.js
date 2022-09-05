@@ -32,7 +32,6 @@ function updateBoard(num, loginUserId, boardWriteId, page, query) {
 
     if(loginUserId === boardWriteId){
         url = "/traveler_war_exploded/board/update.do?" + query;
-
         location.href = url;
     }
     if(loginUserId !== boardWriteId){
@@ -48,10 +47,11 @@ function deleteBoard(num, loginUserId, boardWriteId, query) {
     
     if(loginUserId === 'admin' || loginUserId === boardWriteId){
         url = "/traveler_war_exploded/board/delete.do?" + query;
-
         if (confirm("자료를 삭제 하시 겠습니까 ? "))
             location.href = url;
-    } else if(loginUserId === 'admin' && loginUserId !== boardWriteId){
+    }
+
+    if(loginUserId !== 'admin' && loginUserId !== boardWriteId){
         url = "/traveler_war_exploded/board/access.do?" + query;
         location.href = url;
     }
