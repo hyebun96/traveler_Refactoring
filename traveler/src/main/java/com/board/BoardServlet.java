@@ -1,9 +1,7 @@
 package com.board;
 
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.List;
+import com.member.SessionInfo;
+import com.util.MyUtil;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-import com.member.SessionInfo;
-import com.util.MyUtil;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
 
 @WebServlet("/board/*")
 public class BoardServlet extends HttpServlet {
@@ -99,6 +97,9 @@ public class BoardServlet extends HttpServlet {
             current_page = total_page;
 
         int offset = (current_page - 1) * rows;
+        if(offset < 0){
+            offset = 0;
+        }
 
         List<BoardDTO> list;
         if (keyword.length() == 0) {
@@ -192,7 +193,7 @@ public class BoardServlet extends HttpServlet {
         req.setAttribute("dto", dto);
         req.setAttribute("page", page);
         req.setAttribute("query", query);
-        forward(req, resp, "/WEB-INF/views/board/viewBoard.jsp");
+        forward(req, resp, "/WEB-INF/views/board/view.jsp");
     }
 
     protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -283,6 +284,6 @@ public class BoardServlet extends HttpServlet {
         }
 
         req.setAttribute("query", query);
-        forward(req, resp, "/WEB-INF/views/board/access.jsp");
+        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
     }
 }

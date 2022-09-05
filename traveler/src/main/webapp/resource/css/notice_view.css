@@ -33,6 +33,11 @@
 	padding: 10px 10px 10px 10px;
 }
 
+.viewCount{
+	text-align: right;
+	padding-right: 25px;
+}
+
 .view-title{
 	text-align: center;
 }
@@ -40,7 +45,6 @@
 .view-content{
 	height: 200px;
 	padding: 10px 10px 10px 0;
-	float: left;
 	width: 100%;
 	text-align: left;
 }

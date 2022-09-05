@@ -62,6 +62,7 @@
 #profile {
     border-radius: 60%;
     width: 30px;
+    vertical-align: middle;
 }
 
 .main ul li{

@@ -9,96 +9,76 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Traveler</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
-    <link rel="stylesheet" href="<%=cp%>/resource/css/board.css" type="text/css">
-    <link rel="stylesheet" href="<%=cp%>/resource/jquery/css/smoothness/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="<%=cp%>/resource/css/notice_list.css" type="text/css">
 
-    <script type="text/javascript" src="<%=cp%>/resource/js/util.js"></script>
-    <script type="text/javascript" src="<%=cp%>/resource/jquery/js/jquery.min.js"></script>
-    <script type="text/javascript">
-        function searchList() {
-            var f = document.searchForm;
-            f.submit();
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/board.js"></script>
 </head>
 <body>
 
-<div class="header">
-    <jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
-</div>
+    <div class="header">
+        <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+    </div>
+    <div class="navigation">
+        <div class="nav-bar">HOME > 자유게시판</div>
+    </div>
 
-<div class="navigation">
-    <div class="nav-bar">HOME > 자유게시판</div>
-</div>
+    <div class="board">
+        <h3>자유게시판</h3>
+        <form name="searchForm" action="<%=cp%>/board/board.do" method="post">
+            <div>
+                <label>
+                    <select name="condition">
+                        <option value="title" ${condition == "title" ? "selected='selected'" : ""}>글제목</option>
+                        <option value="contents" ${condition == "contents" ? "selected='selected'" : ""}>글내용</option>
+                        <option value="writer" ${condition == "writer" ? "selected='selected'" : ""}>작성자</option>
+                    </select>
+                </label>
+                <input type="text" name="keyword">
+                <button onclick="searchList()">검색</button>
+                <button type="button" onclick="location.href='<%=cp%>/board/board.do';">새로고침</button>
+            </div>
+        </form>
+        
+        <br>
+        <br>
 
-<div class="board">
-    <h3>자유게시판</h3>
-    <form name="searchForm" action="<%=cp%>/board/board.do" method="post">
-        <div style="text-align: right;">
-            <select name="condition" style="height: 23px;">
-                <option value="title" ${condition=="title"?"selected='selected'":"" }>글제목</option>
-                <option value="contents" ${condition=="contents"?"selected='selected'":"" }>글내용</option>
-                <option value="writer" ${condition=="writer"?"selected='selected'":"" }>작성자</option>
-            </select>
-            <input type="text" name="keyword" style="vertical-align: bottom; height: 19px;">
-            <button style="vertical-align: bottom; height: 23px; width: 100px; background: #eee; border: 1px solid #777;"
-                    onclick="searchList()">검색
-            </button>
-        </div>
-    </form>
-
-    <table class="board-table">
-        <tr style="border-bottom: 2px solid black;">
-            <td>글번호</td>
-            <td style="width: 50%"><a>제목</a></td>
-            <td>작성자</td>
-            <td>작성일</td>
-            <td>조회수</td>
-        </tr>
-        <c:forEach var="dto" items="${list }">
-            <tr>
-                <td>${dto.listNum }</td>
-                <td class="board-title"><a href="${articleUrl }&num=${dto.num}">${dto.title }</a></td>
-                <td>${dto.name }</td>
-                <td>${dto.created }</td>
-                <td>${dto.viewCount }</td>
+        <table class="board-table">
+            <tr class="board-tr">
+                <td>글번호</td>
+                <td class="board-title"><a>제목</a></td>
+                <td class="board-writer">작성자</td>
+                <td>작성일</td>
+                <td>조회수</td>
             </tr>
-        </c:forEach>
+            <c:forEach var="dto" items="${list}">
+                <tr class="board-tr">
+                    <td>${dto.listNum}</td>
+                    <td class="board-title"><a href="${articleUrl}&num=${dto.num}">${dto.title}</a></td>
+                    <td class="board-writer"><img id="profile" src="<%=cp%>/resource/img/${dto.imageFilename}">${dto.name}</td>
+                    <td>${dto.created}</td>
+                    <td>${dto.viewCount}</td>
+                </tr>
+            </c:forEach>
+            <tr class="board-paging" height="35">
+                ${dataCount == 0 ? "<td colspan='5'>등록된 게시물이 없습니다.<td>" : paging}
+            </tr>
+            <tr height="35" class="board-created">
+                <td colspan="5">
+                    <button type="button" onclick="location.href='<%=cp%>/board/write.do';">글등록</button>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-    </table>
-
-    <table style="width: 100%; margin: 0px auto; border-spacing: 0px;">
-        <tr height="35">
-            <td align="center">
-                ${dataCount==0?"등록된 게시물이 없습니다.":paging}
-            </td>
-        </tr>
-    </table>
-
-
-    <table style="width: 100%; margin: 0px auto; border-spacing: 0px;">
-        <tr height="35">
-            <td>
-                <button type="button" onclick="javascript:location.href='<%=cp%>/board/board.do';">새로고침</button>
-            </td>
-            <td align="right">
-                <button type="button" onclick="javascript:location.href='<%=cp%>/board/write.do';">글등록</button>
-            </td>
-        </tr>
-    </table>
-
-</div>
-
-<div class="footer">
-    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
-</div>
-<script type="text/javascript" src="<%=cp%>/resource/jquery/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="<%=cp%>/resource/jquery/js/jquery.ui.datepicker-ko.js"></script>
-
+    <div class="footer">
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+    </div>
 
 </body>
 </html>

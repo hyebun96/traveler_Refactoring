@@ -50,7 +50,11 @@ button {
 }
 
 .board-title {
-	width: 240px;
+	width: 270px;
+	text-align: left;
+}
+
+.board-writer{
 	text-align: left;
 }
 
@@ -82,5 +86,10 @@ button {
 .board-table tr {
 	border-bottom: 1px solid black;
 	height: 30px;
+	width: auto;
 }
 
+.board-table .board-tr {
+	border-bottom: 1px solid black;
+	height: 40px;
+}

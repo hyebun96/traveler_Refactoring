@@ -1,5 +1,7 @@
 package com.board;
 
+import com.util.DBConn;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,16 +9,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.util.DBConn;
-
 public class BoardDAO {
     private final Connection conn = DBConn.getConnection();
+    private StringBuilder sb;
+    private PreparedStatement pstmt;
+    private ResultSet rs;
 
     public void inputBoard(BoardDTO dto) {
-        PreparedStatement pstmt = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        
         try {
             sb.append("INSERT INTO board(name, id, title, content) VALUES(?,?,?,?)");
+            
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setString(1, dto.getName());
             pstmt.setString(2, dto.getId());
@@ -40,13 +45,14 @@ public class BoardDAO {
     // 전체 데이터 갯수
     public int dataCount() {
         int result = 0;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sql = "SELECT COALESCE(COUNT(*),0) FROM board";
-            pstmt = conn.prepareStatement(sql);
+            sb.append("SELECT COALESCE(COUNT(*),0) FROM board");
+
+            pstmt = conn.prepareStatement(sb.toString());
 
             rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -55,18 +61,18 @@ public class BoardDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -76,18 +82,18 @@ public class BoardDAO {
     // 검색했을 때 데이터 갯수
     public int dataCount(String condition, String keyword) {
         int result = 0;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
             sb.append("SELECT COALESCE(COUNT(*),0) FROM board ");
             if (condition.equals("writer")) {
-                sb.append("WHERE INSTR(name, ? ) = 1");
+                sb.append("  WHERE INSTR(name, ? ) = 1");
             } else if (condition.equals("contents")) {
-                sb.append("WHERE INSTR(content,?) >=1");
+                sb.append("  WHERE INSTR(content,?) >=1");
             } else {
-                sb.append("WHERE INSTR(").append(condition).append(", ?) >= 1");
+                sb.append("  WHERE INSTR(").append(condition).append(", ?) >= 1");
             }
 
             pstmt = conn.prepareStatement(sb.toString());
@@ -100,19 +106,18 @@ public class BoardDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
 		}
@@ -121,15 +126,16 @@ public class BoardDAO {
 
 	public List<BoardDTO> allBoard(int offset, int rows) {
 		List<BoardDTO> list = new ArrayList<>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
+		pstmt= null;
+		rs = null;
+		sb = new StringBuilder();
 
 		try {
-			sb.append("SELECT boardNum, title, name, DATE_FORMAT(created,'%Y-%m-%d') created, viewCount ");
-			sb.append("FROM board ");
-			sb.append("ORDER BY boardNum DESC ");
-			sb.append("LIMIT ? OFFSET ? ");
+			sb.append("SELECT boardNum, title, name, DATE_FORMAT(created,'%Y-%m-%d') created, viewCount, imageFilename");
+			sb.append("  FROM board b");
+			sb.append("  JOIN member m on b.id = m.userId");
+			sb.append("  ORDER BY boardNum DESC ");
+			sb.append("  LIMIT ? OFFSET ? ");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, rows);
@@ -144,6 +150,7 @@ public class BoardDAO {
                 dto.setTitle(rs.getString("title"));
                 dto.setCreated(rs.getString("created"));
                 dto.setViewCount(rs.getInt("viewCount"));
+                dto.setImageFilename(rs.getString("imageFilename") + ".png");
 
                 list.add(dto);
             }
@@ -151,19 +158,18 @@ public class BoardDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -173,22 +179,23 @@ public class BoardDAO {
 
     public List<BoardDTO> allBoard(int offset, int rows, String condition, String keyword) {
         List<BoardDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sb.append("SELECT boardNum, title,name, DATE_FORMAT(created,'%Y-%m-%d') created, viewCount ");
-            sb.append("FROM board ");
+            sb.append("SELECT boardNum, title,name, DATE_FORMAT(created,'%Y-%m-%d') created, viewCount, imageFilename ");
+            sb.append("  FROM board b");
+            sb.append("  JOIN member m on b.id = m.userId");
             if (condition.equals("writer")) {
-                sb.append("WHERE INSTR(name, ? ) = 1");
+                sb.append("  WHERE INSTR(name, ? ) = 1");
             } else if (condition.equals("contents")) {
-                sb.append("WHERE INSTR(content,?) >=1");
+                sb.append("  WHERE INSTR(content,?) >=1");
             } else {
-                sb.append("WHERE INSTR(").append(condition).append(", ?) >= 1");
+                sb.append("  WHERE INSTR(").append(condition).append(", ?) >= 1");
             }
-            sb.append("ORDER BY boardNum DESC ");
-            sb.append("LIMIT ? OFFSET ?");
+            sb.append("  ORDER BY boardNum DESC ");
+            sb.append("  LIMIT ? OFFSET ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setString(1, keyword);
@@ -204,41 +211,41 @@ public class BoardDAO {
                 dto.setTitle(rs.getString("title"));
                 dto.setCreated(rs.getString("created"));
                 dto.setViewCount(rs.getInt("viewCount"));
+                dto.setImageFilename(rs.getString("imageFilename") + ".png");
 
                 list.add(dto);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
-
         return list;
     }
 
     public void updateViewCount(int num) {
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "UPDATE board SET viewCount=viewCount+1 WHERE boardNum = ?";
-            pstmt = conn.prepareStatement(sql);
+            sb.append("UPDATE board SET viewCount=viewCount+1 WHERE boardNum = ?");
+
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
+
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -255,20 +262,20 @@ public class BoardDAO {
 
     public BoardDTO readBoard(int num) {
         BoardDTO dto = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sb.append("SELECT boardNum, id, name, title, content, created, viewCount ");
-            sb.append("FROM board ");
-            sb.append("WHERE boardNum = ?");
+            sb.append("SELECT boardNum, id, name, title, content, created, viewCount, imageFilename");
+            sb.append("  FROM board b ");
+            sb.append("  JOIN member m on b.id = m.userId ");
+            sb.append("  WHERE boardNum = ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
 
             rs = pstmt.executeQuery();
-
             if (rs.next()) {
                 dto = new BoardDTO();
                 dto.setNum(rs.getInt("boardNum"));
@@ -278,44 +285,43 @@ public class BoardDAO {
                 dto.setContent(rs.getString("content"));
                 dto.setCreated(rs.getString("created"));
                 dto.setViewCount(rs.getInt("viewCount"));
+                dto.setImageFilename(rs.getString("imageFilename") + ".png");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
-
         return dto;
     }
 
     public void updateBoard(BoardDTO dto) {
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
-        sql = "UPDATE board SET title=?, content=? WHERE boardNum=? AND id=?";
         try {
-            pstmt = conn.prepareStatement(sql);
+            sb.append("UPDATE board SET title=?, content=? WHERE boardNum=? AND id=?");
+
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setString(1, dto.getTitle());
             pstmt.setString(2, dto.getContent());
             pstmt.setInt(3, dto.getNum());
             pstmt.setString(4, dto.getId());
-            pstmt.executeUpdate();
 
+            pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -330,17 +336,17 @@ public class BoardDAO {
     }
 
     public void deleteBoard(int num, String userId) {
-        PreparedStatement pstmt = null;
-        String sql;
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
             if (userId.equals("admin")) {
-                sql = "DELETE FROM board WHERE boardNum=?";
-                pstmt = conn.prepareStatement(sql);
+                sb.append("DELETE FROM board WHERE boardNum=?");
+                pstmt = conn.prepareStatement(sb.toString());
                 pstmt.setInt(1, num);
             } else {
-                sql = "DELETE FROM board WHERE boardNum=? AND id=?";
-                pstmt = conn.prepareStatement(sql);
+                sb.append("DELETE FROM board WHERE boardNum=? AND id=?");
+                pstmt = conn.prepareStatement(sb.toString());
                 pstmt.setInt(1, num);
                 pstmt.setString(2, userId);
             }

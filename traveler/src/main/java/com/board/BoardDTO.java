@@ -9,6 +9,7 @@ public class BoardDTO {
     private int viewCount;
     private String created;
     private int listNum;
+    private String imageFilename;
 
     public int getListNum() {
         return listNum;
@@ -74,4 +75,7 @@ public class BoardDTO {
         this.created = created;
     }
 
+    public String getImageFilename() { return imageFilename; }
+
+    public void setImageFilename(String imageFilename) { this.imageFilename = imageFilename; }
 }
