@@ -578,10 +578,10 @@ public class TravelDAO {
 			JSONObject jsonObj = (JSONObject) jsonParser.parse(result);
 
 			JSONObject WeatherObj = (JSONObject) ((JSONArray) jsonObj.get("weather")).get(0);
-			JSONObject CoordObj = (JSONObject) jsonObj.get("coord");
+			JSONObject CoordObj = (JSONObject) jsonObj.get("main");
 
 			dto.setWeather(WeatherObj.get("main").toString() + ".svg");
-			dto.setTem(String.format("%.2f" , Float.parseFloat(String.valueOf(CoordObj.get("lat")))) );
+			dto.setTem(String.format("%.2f" , Float.parseFloat(String.valueOf(CoordObj.get("temp")))-273.15) );
 
 		} catch (Exception e) {
 			e.printStackTrace();
