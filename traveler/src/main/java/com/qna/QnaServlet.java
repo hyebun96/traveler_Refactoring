@@ -57,6 +57,8 @@ public class QnaServlet extends HttpServlet {
             replySubmit(req, resp);
         } else if (uri.contains("delete.do")) {
             delelte(req, resp);
+        } else if (uri.contains("access.do")) {
+            access(req, resp);
         }
     }
 
@@ -94,12 +96,15 @@ public class QnaServlet extends HttpServlet {
             current_page = total_page;
 
         int offset = (current_page - 1) * rows;
+        if(offset < 0){
+            offset = 0;
+        }
 
         List<QnaDTO> list;
         if (keyword.length() == 0) {
-            list = dao.listQna(offset, rows);
+            list = dao.listQna(offset, rows, 0);
         } else {
-            list = dao.listQna(offset, rows, condition, keyword);
+            list = dao.listQna(offset, rows, condition, keyword, 0);
         }
 
         int listNum, n = 0;
@@ -107,6 +112,13 @@ public class QnaServlet extends HttpServlet {
             listNum = dataCount - (offset + n);
             dto.setListNum(listNum);
             n++;
+        }
+
+        List<QnaDTO> replyList;
+        if (keyword.length() == 0) {
+            replyList = dao.listQna(offset, rows, 1);
+        } else {
+            replyList = dao.listQna(offset, rows, condition, keyword, 1);
         }
 
         String query = "";
@@ -124,6 +136,7 @@ public class QnaServlet extends HttpServlet {
         String paging = util.paging(current_page, total_page, listUrl);
 
         req.setAttribute("list", list);
+        req.setAttribute("replyList", replyList);
         req.setAttribute("dataCount", dataCount);
         req.setAttribute("page", current_page);
         req.setAttribute("total_page", total_page);
@@ -197,7 +210,7 @@ public class QnaServlet extends HttpServlet {
         req.setAttribute("query", query);
         req.setAttribute("page", page);
 
-        forward(req, resp, "/WEB-INF/views/qna/viewQna.jsp");
+        forward(req, resp, "/WEB-INF/views/qna/view.jsp");
     }
 
     protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -287,7 +300,7 @@ public class QnaServlet extends HttpServlet {
         }
         String s = "\n --------------------------------original message--------------------------------\n re: ";
         String s1 = "\n --------------------------------------------------------------------------------\n";
-        String s2 = dto.getSubject() + "�� ���� �亯�Դϴ�.";		// TODO : 뭔지 알아내야함
+        String s2 = dto.getSubject() + "답변입니다.";		// TODO : 뭔지 알아내야함
         dto.setContent(s + dto.getContent() + s1);
         dto.setSubject(s2);
         req.setAttribute("mode", "reply");
@@ -348,6 +361,29 @@ public class QnaServlet extends HttpServlet {
 
         dao.deleteQna(qnaNum, info.getUserId());
         resp.sendRedirect(cp + "/qna/list.do?" + query);
+    }
+
+    protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String page = req.getParameter("page");
+        if(page == null){
+            page = "1";
+        }
+        String query =  "/qna/list.do?" + "page=" + page;
+        String condition = req.getParameter("condition");
+        String keyword = req.getParameter("keyword");
+        if (condition == null) {
+            condition = "subject";
+            condition = "subject";
+            keyword = "";
+        }
+        keyword = URLDecoder.decode(keyword, "utf-8");
+        if (keyword.length() != 0) {
+            query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
+        }
+
+        req.setAttribute("query", query);
+
+        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
     }
 
 }

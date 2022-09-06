@@ -4,9 +4,10 @@ public class QnaDTO {
     private int listNum, qnaNum;
     private String userId, userName;
     private String subject, content;
-    private String qnaDate;
+    private String created;
     private int hitCount;
     private int groupNum, depth, parent;
+    private String imageFilename;
 
     public int getListNum() {
         return listNum;
@@ -56,12 +57,12 @@ public class QnaDTO {
         this.content = content;
     }
 
-    public String getQnaDate() {
-        return qnaDate;
+    public String getCreated() {
+        return created;
     }
 
-    public void setQnaDate(String qnaDate) {
-        this.qnaDate = qnaDate;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     public int getHitCount() {
@@ -96,5 +97,7 @@ public class QnaDTO {
         this.parent = parent;
     }
 
+    public String getImageFilename() { return imageFilename; }
 
+    public void setImageFilename(String imageFilename) { this.imageFilename = imageFilename; }
 }

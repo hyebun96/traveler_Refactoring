@@ -93,3 +93,17 @@ button {
 	border-bottom: 1px solid black;
 	height: 40px;
 }
+
+/* qna */
+.qna-title{
+	width: 300px;
+	text-align: left;
+}
+
+.qna-num{
+	width: 100px;
+}
+
+.qna .question{
+	background: aliceblue;
+}
