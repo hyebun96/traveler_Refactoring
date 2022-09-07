@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -28,6 +27,7 @@
 
     <div class="viewport">
         <h3>Q & A</h3>
+
         <br>
         <br>
 
@@ -36,8 +36,7 @@
                 <td class="view"></td>
                 <td class="view"></td>
                 <td class="view">
-                    <img id="profile" src="<%=cp%>/resource/img/${dto.imageFilename}"/>
-                    ${dto.userId}
+                    <img id="profile" src="<%=cp%>/resource/img/${dto.imageFilename}"/>${dto.userId}
                 </td>
                 <td class="view">${dto.created}</td>
             </tr>
@@ -54,8 +53,7 @@
         <div class="div-button">
             <button type="button" onclick="location.href='<%=cp%>/qna/list.do?${query}';">목록으로</button>
             <c:if test="${sessionScope.member.userId == 'admin' && dto.depth==0}">
-                <button type="button" class="btn" onclick="location.href='<%=cp%>/qna/reply.do?qnaNum=${dto.qnaNum}&page=${page}';">답변
-                </button>
+                <button type="button" class="btn" onclick="location.href='<%=cp%>/qna/reply.do?qnaNum=${dto.qnaNum}&page=${page}';">답변</button>
             </c:if>
             <c:if test="${sessionScope.member.userId == dto.userId}">
                 <button type="button" class="btn" onclick="updateQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">수정</button>
@@ -66,6 +64,7 @@
             <button type="button" class="btn" onclick="deleteQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">삭제</button>
         </div>
     </div>
+
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>

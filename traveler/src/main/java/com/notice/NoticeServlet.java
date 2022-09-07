@@ -35,7 +35,7 @@ public class NoticeServlet extends MyUploadServlet {
         String root = session.getServletContext().getRealPath("/");
         pathname = root + "uploads" + File.separator + "notice";
 
-        if (uri.contains("notice.do")) {
+        if (uri.contains("list.do")) {
             notice(req, resp);
         } else if (uri.contains("write.do")) {
             writeForm(req, resp);
@@ -119,7 +119,7 @@ public class NoticeServlet extends MyUploadServlet {
             query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
         }
 
-        String listUrl = cp + "/notice/notice.do";
+        String listUrl = cp + "/notice/list.do";
         String articleUrl = cp + "/notice/view.do?page=" + current_page;
         if (query.length() != 0) {
             listUrl += "?" + query;
@@ -191,7 +191,7 @@ public class NoticeServlet extends MyUploadServlet {
             }
         }
 
-        resp.sendRedirect(cp + "/notice/notice.do");
+        resp.sendRedirect(cp + "/notice/list.do");
     }
 
     protected void viewForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -245,7 +245,7 @@ public class NoticeServlet extends MyUploadServlet {
 
         NoticeDTO dto = dao.readNotice(num);
         if (dto == null) {
-            resp.sendRedirect(cp + "/notice/notice.do?page=" + page);
+            resp.sendRedirect(cp + "/notice/list.do?page=" + page);
             return;
         }
 
@@ -272,7 +272,7 @@ public class NoticeServlet extends MyUploadServlet {
         }
 
         if (req.getMethod().equalsIgnoreCase("GET")) {
-            resp.sendRedirect(cp + "/notice/notice.do?page=" + page);
+            resp.sendRedirect(cp + "/notice/list.do?page=" + page);
             return;
         }
 
@@ -303,7 +303,7 @@ public class NoticeServlet extends MyUploadServlet {
             }
         }
 
-        resp.sendRedirect(cp + "/notice/notice.do?page=" + page);
+        resp.sendRedirect(cp + "/notice/list.do?page=" + page);
     }
 
     protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -348,7 +348,7 @@ public class NoticeServlet extends MyUploadServlet {
 
         dao.deleteNotice(num);
 
-        resp.sendRedirect(cp + "/notice/notice.do?" + query);
+        resp.sendRedirect(cp + "/notice/list.do?" + query);
     }
 
     protected void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -382,12 +382,12 @@ public class NoticeServlet extends MyUploadServlet {
 
         NoticeDTO dto = dao.readNotice(num);
         if (dto == null) {
-            resp.sendRedirect(cp + "/notice/notice.do?page=" + page);
+            resp.sendRedirect(cp + "/notice/list.do?page=" + page);
             return;
         }
 
         if (!info.getUserId().equals(dto.getId())) {
-            resp.sendRedirect(cp + "/notice/notice.do?page=" + page);
+            resp.sendRedirect(cp + "/notice/list.do?page=" + page);
             return;
         }
 
@@ -411,7 +411,7 @@ public class NoticeServlet extends MyUploadServlet {
 
     protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String page = req.getParameter("page");
-        String query =  "/notice/notice.do?" + "page=" + page;
+        String query =  "/notice/list.do?" + "page=" + page;
         String condition = req.getParameter("condition");
         String keyword = req.getParameter("keyword");
         if (condition == null) {

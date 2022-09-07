@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -19,7 +18,6 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/notice.js"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
@@ -40,7 +38,7 @@
                 </label>
                 <input type="text" name="keyword">
                 <button class="board-button" type="button" onclick="searchNoticeList()">검색</button>
-                <button class="board-button" type="button" onclick="javascript:location.href='<%=cp%>/notice/notice.do';">
+                <button class="board-button" type="button" onclick="javascript:location.href='<%=cp%>/notice/list.do';">
                     새로고침
                 </button>
             </div>
@@ -87,10 +85,7 @@
             <c:if test="${sessionScope.member.userId == 'admin'}">
                 <tr height="35" class="board-created">
                     <td colspan="5">
-                        <button class="board-button" type="button"
-                                onclick="createNoticeForm('${sessionScope.member.userId}', '${page}');">
-                            글등록
-                        </button>
+                        <button class="board-button" type="button" onclick="createNoticeForm('${sessionScope.member.userId}', '${page}');">글등록</button>
                     </td>
                 </tr>
             </c:if>

@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -35,26 +34,29 @@
         <br>
 
         <form class="writeBoardForm" name="writeBoardForm" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="page" value="${page}">
+            <c:if test="${mode =='update'}">
+                <input type="hidden" name="num" value="${dto.num}">
+                <input type="hidden" name="page" value="${page}">
+            </c:if>
+
             <div>
                 <p>제목</p>
                 <label>
                     <input class="write-title" name="title" type="text" value="${dto.title}">
                 </label>
                 <br>
-
                 <p>중요</p>
                 <label>
                     <input type="checkbox" name="important" value="1" ${dto.important==1 ? "checked='checked' ":"" }>
                     체크하면 공지사항 상단에 계속 표시됩니다.
                 </label>
                 <br>
-
                 <div class="write-content">
                     <p>내용 </p>
                     <textarea name="content">${dto.content}</textarea>
                 </div>
                 <br>
-
                 <p>첨부</p>
                     <input class="upload" type="file" name="upload" multiple="multiple">
                 <br>
@@ -63,25 +65,19 @@
                     <c:forEach var="dto" items="${list}">
                         <c:if test="${not empty list}">
                             ${dto.originalFileName}
-                            | <a href="javascript:deleteNoticeFile('${dto.num}', '${dto.fileNum}', '${mode}', '${page}');">삭제</a><br>
+                            | <a href="javascript:deleteNoticeFile('${dto.num}', '${dto.fileNum}', '${mode}', '${page}');">삭제</a>
+                            <br>
                         </c:if>
                     </c:forEach>
                 </c:if>
-
-                <input type="hidden" name="page" value="${page}">
             </div>
-
-            <c:if test="${mode =='update'}">
-                <input type="hidden" name="num" value="${dto.num}">
-                <input type="hidden" name="page" value="${page}">
-            </c:if>
-
             <div class="div-button">
                 <button type="button" onclick="createNotice('${mode}');">${mode=='update'?'수정':'등록'}</button>
-                <button type="button" onclick="javascript:location.href='<%=cp%>/notice/notice.do';">목록으로</button>
+                <button type="button" onclick="location.href='<%=cp%>/notice/list.do';">목록으로</button>
             </div>
         </form>
     </div>
+
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>

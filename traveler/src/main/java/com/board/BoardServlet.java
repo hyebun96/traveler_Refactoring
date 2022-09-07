@@ -42,13 +42,13 @@ public class BoardServlet extends HttpServlet {
 
         String uri = req.getRequestURI();
 
-        if (uri.contains("board.do")) {
+        if (uri.contains("list.do")) {
             board(req, resp);
         } else if (uri.contains("write.do")) {
             writeForm(req, resp);
         } else if (uri.contains("write_ok.do")) {
             writeSubmit(req, resp);
-        } else if (uri.contains("viewBoard.do")) {
+        } else if (uri.contains("view.do")) {
             viewBoard(req, resp);
         } else if (uri.contains("update.do")) {
             updateForm(req, resp);
@@ -91,13 +91,13 @@ public class BoardServlet extends HttpServlet {
             dataCount = dao.dataCount(condition, keyword);
         }
 
-        int rows = 5;
+        int rows = 10;
         int total_page = util.pageCount(rows, dataCount);
         if (current_page > total_page)
             current_page = total_page;
 
         int offset = (current_page - 1) * rows;
-        if(offset < 0){
+        if (offset < 0) {
             offset = 0;
         }
 
@@ -120,8 +120,8 @@ public class BoardServlet extends HttpServlet {
             query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
         }
 
-        String listUrl = cp + "/board/board.do";
-        String articleUrl = cp + "/board/viewBoard.do?page=" + current_page;
+        String listUrl = cp + "/board/list.do";
+        String articleUrl = cp + "/board/view.do?page=" + current_page;
         if (query.length() != 0) {
             listUrl += "?" + query;
             articleUrl += "&" + query;
@@ -160,7 +160,7 @@ public class BoardServlet extends HttpServlet {
         dto.setName(info.getUserName());
 
         dao.inputBoard(dto);
-        resp.sendRedirect(cp + "/board/board.do");
+        resp.sendRedirect(cp + "/board/list.do");
     }
 
     protected void viewBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -185,7 +185,7 @@ public class BoardServlet extends HttpServlet {
         dao.updateViewCount(num);
         BoardDTO dto = dao.readBoard(num);
         if (dto == null) {
-            resp.sendRedirect(cp + "/board/board.do?" + query);
+            resp.sendRedirect(cp + "/board/list.do?" + query);
             return;
         }
         dto.setContent(util.htmlSymbols(dto.getContent()));
@@ -207,7 +207,7 @@ public class BoardServlet extends HttpServlet {
         BoardDTO dto = dao.readBoard(num);
 
         if (dto == null) {
-            resp.sendRedirect(cp + "/board/board.do?page=" + page);
+            resp.sendRedirect(cp + "/board/list.do?page=" + page);
             return;
         }
 
@@ -238,7 +238,7 @@ public class BoardServlet extends HttpServlet {
         dto.setContent(req.getParameter("content"));
         dto.setId(info.getUserId());
         dao.updateBoard(dto);
-        resp.sendRedirect(cp + "/board/board.do?page=" + page);
+        resp.sendRedirect(cp + "/board/list.do?page=" + page);
     }
 
 
@@ -265,13 +265,13 @@ public class BoardServlet extends HttpServlet {
         }
 
         dao.deleteBoard(num, info.getUserId());
-        resp.sendRedirect(cp + "/board/board.do?" + query);
+        resp.sendRedirect(cp + "/board/list.do?" + query);
     }
 
     protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cp = req.getContextPath();
         String page = req.getParameter("page");
-        String query = "/board/board.do?" + "page=" + page;
+        String query = "/board/list.do?" + "page=" + page;
         String condition = req.getParameter("condition");
         String keyword = req.getParameter("keyword");
         if (condition == null) {

@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,6 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/board.js"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
@@ -59,7 +57,7 @@
         </table>
 
         <div class="div-button">
-            <button type="button" onclick="location.href='<%=cp%>/board/board.do?${query}';">목록으로</button>
+            <button type="button" onclick="location.href='<%=cp%>/board/list.do?${query}';">목록으로</button>
             <button type="button" class="btn" onclick="updateBoard('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', ${page}, '${query}');">수정</button>
             <button type="button" class="btn" onclick="deleteBoard('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${query}');">삭제</button>
         </div>

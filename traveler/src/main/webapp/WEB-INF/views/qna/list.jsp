@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -19,7 +18,6 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/qna.js"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
@@ -58,43 +56,40 @@
                 <td class="qna-num">조회수</td>
             </tr>
             <c:forEach var="dto" items="${list}">
-            <tr class="question">
-                <td>질문🙋🏻</td>
-                <td>${dto.listNum}</td>
-                <td class="qna-title">
-                    <c:if test="${sessionScope.member.userId == 'admin' || sessionScope.member.userId == dto.userId}">
-                        <a href="${viewUrl}&qnaNum=${dto.qnaNum}">${dto.subject}</a>
-                    </c:if>
-                    <c:if test="${sessionScope.member.userId != dto.userId && sessionScope.member.userId != 'admin'}">
-                        <a onclick="memberOnly();">${dto.subject}🔒</a></c:if>
-                </td>
-                <td>${dto.userName}</td>
-                <td>${dto.created}</td>
-                <td>${dto.hitCount}</td>
-            </tr>
-
+                <tr class="question">
+                    <td>질문🙋🏻</td>
+                    <td>${dto.listNum}</td>
+                    <td class="qna-title">
+                        <c:if test="${sessionScope.member.userId == 'admin' || sessionScope.member.userId == dto.userId}">
+                            <a href="${viewUrl}&qnaNum=${dto.qnaNum}">${dto.subject}</a>
+                        </c:if>
+                        <c:if test="${sessionScope.member.userId != dto.userId && sessionScope.member.userId != 'admin'}">
+                            <a onclick="memberOnly();">${dto.subject}🔒</a></c:if>
+                    </td>
+                    <td>${dto.userName}</td>
+                    <td>${dto.created}</td>
+                    <td>${dto.hitCount}</td>
+                </tr>
                 <c:forEach var="replyDto" items="${replyList}">
                     <c:if test="${replyDto.parent == dto.qnaNum}">
-                    <tr>
-                        <td>답변🍀</td>
-                        <td></td>
-                        <td class="qna-title">
-                        &nbsp;└&nbsp;re:
-                        <c:if test="${sessionScope.member.userId == 'admin' || sessionScope.member.userId == qnaId}">
-                            <a href="${viewUrl}&qnaNum=${replyDto.qnaNum}">${replyDto.subject}</a>
-                        </c:if>
-                        <c:if test="${sessionScope.member.userId != qnaId && sessionScope.member.userId != 'admin'}">
-                            <a onclick="memberOnly();">${replyDto.subject}🔒</a></c:if>
-                        </td>
-                        <td>${replyDto.userName}</td>
-                        <td>${replyDto.created}</td>
-                        <td>${replyDto.hitCount}</td>
-                    </tr>
+                        <tr>
+                            <td>답변🍀</td>
+                            <td></td>
+                            <td class="qna-title">
+                            &nbsp;└&nbsp;re:
+                            <c:if test="${sessionScope.member.userId == 'admin' || sessionScope.member.userId == qnaId}">
+                                <a href="${viewUrl}&qnaNum=${replyDto.qnaNum}">${replyDto.subject}</a>
+                            </c:if>
+                            <c:if test="${sessionScope.member.userId != qnaId && sessionScope.member.userId != 'admin'}">
+                                <a onclick="memberOnly();">${replyDto.subject}🔒</a></c:if>
+                            </td>
+                            <td>${replyDto.userName}</td>
+                            <td>${replyDto.created}</td>
+                            <td>${replyDto.hitCount}</td>
+                        </tr>
                     </c:if>
                 </c:forEach>
-
             </c:forEach>
-
             <tr class="board-paging" height="35">
                 ${dataCount == 0 ? "<td colspan='6'>등록된 게시물이 없습니다.<td>" : paging}
             </tr>

@@ -1,20 +1,5 @@
 // member.js
 
-//엔터치면 다음으로 넘어가게함.
-$(function () {
-    $("input").not($(":button")).not($(":reset")).keypress(function (evt) { //input에서 keypress가 발생했으면(버튼과 리셋은 빼고)
-        if (evt.keyCode === 13) {
-            const fields = $(this).parents("form,body").find("button,input,select,textarea"); //form또는 body 안에 모든 button,input,select,textarea 찾아라
-            const index = fields.index(this);
-
-            if (index > -1 && (index + 1) < fields.length) {
-                fields.eq(index + 1).focus();
-            }
-            return false; //엔터 이벤트 취소
-        }
-    });
-});
-
 $(function () {
     let msg = $("#msg").val();
     if(msg !== '' && msg !== undefined){
@@ -52,12 +37,12 @@ $(function () {
 });
 
 function searchList() {
-    let f = document.searchForm;
+    const f = document.searchForm;
     f.submit();
 }
 
 function sendLogin() {
-    let f = document.loginForm;
+    const f = document.loginForm;
 
     let str = f.userId.value;
     if (!str) {
@@ -78,7 +63,7 @@ function sendLogin() {
 }
 
 function memberOk(mode) {
-    let f = document.memberForm;
+    const f = document.memberForm;
     let str;
 
     str = f.upload.value;
@@ -103,6 +88,7 @@ function memberOk(mode) {
     if(mode !== "update"){
         str = f.userPwd.value.trim();
         strCheck = f.userPwdCheck.value.trim();
+
         if (!str) {
             alert("패스워드를 입력하세요. ");
             f.userPwd.focus();
@@ -197,8 +183,9 @@ function memberOk(mode) {
 }
 
 function changeEmail() {
-    let f = document.memberForm;
+    const f = document.memberForm;
     let str = f.selectEmail.value;
+
     if (str !== "direct") {
         f.email2.value = str;
         f.email2.readOnly = true;
@@ -220,14 +207,14 @@ function isValidDateFormat(data) {
     p = /(\.)|(\-)|(\/)/g;
     data = data.replace(p, "");
 
-    let y = parseInt(data.substr(0,4));
-    let m = parseInt(data.substr(4, 2));
+    const y = parseInt(data.substr(0,4));
+    const m = parseInt(data.substr(4, 2));
     if (m < 1 || m > 12) {
         return false;
     }
 
-    let d = parseInt(data.substr(6));
-    let lastDay = (new Date(y, m, 0)).getDate();
+    const d = parseInt(data.substr(6));
+    const lastDay = (new Date(y, m, 0)).getDate();
     if (d < 1 || d > lastDay) {
         f.birth.focus();
         return false;
@@ -236,15 +223,13 @@ function isValidDateFormat(data) {
 }
 
 function memberUpdate(mode) {
-    let f = document.memberForm;
-    let str;
+    const f = document.memberForm;
 
     if (mode === "delete") {
         alert("탈퇴하시겠습니까?");
         f.action = "/traveler_war_exploded/member/delete.do";
 
     } else if (mode === "update") {
-        alert("수정하시겠습니까?");
         f.action = "/traveler_war_exploded/member/pwd.do?mode=update";
     }
     f.submit();
@@ -253,7 +238,7 @@ function memberUpdate(mode) {
 function pwdOk() {
     const f = document.pwdForm
 
-    let str = f.userPwd.value;
+    const str = f.userPwd.value;
     if (!str) {
         alert("패스워드를 입력하세요. ");
         f.userPwd.focus();

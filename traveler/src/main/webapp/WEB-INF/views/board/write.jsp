@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,6 @@
            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/board.js"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
@@ -40,28 +38,26 @@
                 <input type="hidden" name="num" value="${dto.num}">
                 <input type="hidden" name="page" value="${page}">
             </c:if>
-
             <div>
                 <p>제목</p>
                 <label>
                     <input class="write-title" name="title" type="text" value="${dto.title}">
                 </label>
                 <br>
-
                 <div class="write-content">
                     <p>내용 </p>
                     <textarea name="content">${dto.content}</textarea>
                 </div>
                 <br>
-
             </div>
 
             <div class="div-button">
-                <button type="button" onclick="sendOk('${mode}');">${mode=='update'?'수정':'등록'}</button>
-                <button type="button" onclick="location.href='<%=cp%>/board/board.do';">목록으로</button>
+                <button type="button" onclick="createBoard('${mode}');">${mode=='update'?'수정':'등록'}</button>
+                <button type="button" onclick="location.href='<%=cp%>/board/list.do';">목록으로</button>
             </div>
         </form>
     </div>
+
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>

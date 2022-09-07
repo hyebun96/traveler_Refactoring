@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -28,6 +27,7 @@
 
     <div class="write">
         <h3>Q & A</h3>
+
         <br>
         <br>
 
@@ -57,16 +57,15 @@
                 </div>
                 <br>
             </div>
-
             <div class="div-button">
-                <button type="button" onclick="sendOk('${mode}');">${mode=='update'?'수정':'등록'}</button>
+                <button type="button" onclick="createQNA('${mode}');">${mode=='update'?'수정':'등록'}</button>
                 <button type="button" onclick="location.href='<%=cp%>/qna/list.do';">목록으로</button>
             </div>
         </form>
     </div>
+
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>
-
 </body>
 </html>

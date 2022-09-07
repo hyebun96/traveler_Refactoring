@@ -8,6 +8,27 @@ function memberOnly() {
     location.href = url;
 }
 
+function createQNA(mode) {
+    const f = document.writeBoardForm;
+
+    let str = f.subject.value;
+    if (!str) {
+        alert("제목을 입력하세요. ");
+        f.subject.focus();
+        return;
+    }
+
+    str = f.content.value;
+    if (!str) {
+        alert("내용을 입력하세요. ");
+        f.content.focus();
+        return;
+    }
+
+    f.action = "/traveler_war_exploded/qna/" + mode + "_ok.do";
+    f.submit();
+}
+
 function updateQna(qnaNum, loginUserId, qnaWriteId, page, query) {
 
     if(loginUserId === qnaWriteId){
@@ -36,25 +57,4 @@ function deleteQna(qnaNum, loginUserId, qnaWriteId, page, query) {
     if(loginUserId !== 'admin' && loginUserId !== qnaWriteId) {
         memberOnly()
     }
-}
-
-function sendOk(mode) {
-    const f = document.writeBoardForm;
-
-    let str = f.subject.value;
-    if (!str) {
-        alert("제목을 입력하세요. ");
-        f.subject.focus();
-        return;
-    }
-
-    str = f.content.value;
-    if (!str) {
-        alert("내용을 입력하세요. ");
-        f.content.focus();
-        return;
-    }
-
-    f.action = "/traveler_war_exploded/qna/" + mode + "_ok.do";
-    f.submit();
 }

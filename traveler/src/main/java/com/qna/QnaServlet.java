@@ -373,7 +373,6 @@ public class QnaServlet extends HttpServlet {
         String keyword = req.getParameter("keyword");
         if (condition == null) {
             condition = "subject";
-            condition = "subject";
             keyword = "";
         }
         keyword = URLDecoder.decode(keyword, "utf-8");

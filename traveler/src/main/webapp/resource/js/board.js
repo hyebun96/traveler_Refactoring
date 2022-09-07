@@ -1,11 +1,11 @@
 // board.js
 
 function searchList() {
-    var f = document.searchForm;
+    const f = document.searchForm;
     f.submit();
 }
 
-function sendOk(mode) {
+function createBoard(mode) {
     const f = document.writeBoardForm;
 
     let str = f.title.value;

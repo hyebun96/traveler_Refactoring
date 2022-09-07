@@ -1,7 +1,7 @@
 // notice.js
 
 function searchNoticeList() {
-    let f = document.searchForm;
+    const f = document.searchForm;
     f.submit();
 }
 

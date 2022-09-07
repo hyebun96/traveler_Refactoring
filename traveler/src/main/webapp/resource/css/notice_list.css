@@ -39,6 +39,7 @@ button {
 	text-align: center;
 	border-spacing: 0;
 	height: 30px;
+	font-size: 13px;
 }
 
 .board-table tr:first-child {
@@ -91,7 +92,7 @@ button {
 
 .board-table .board-tr {
 	border-bottom: 1px solid black;
-	height: 40px;
+	height: 30px;
 }
 
 /* qna */

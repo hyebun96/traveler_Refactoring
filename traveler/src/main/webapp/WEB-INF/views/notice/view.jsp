@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,6 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/notice.js"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
@@ -39,8 +37,7 @@
                 <td class="view"></td>
                 <td class="view"></td>
                 <td class="view">
-                    <img id="profile" src="<%=cp%>/resource/img/user.png"/>
-                    ${dto.name}
+                    <img id="profile" src="<%=cp%>/resource/img/user.png"/>${dto.name}
                 </td>
                 <td class="view">${dto.created}</td>
             </tr>
@@ -69,16 +66,12 @@
         </table>
 
         <div class="div-button">
-            <button type="button" onclick="javascript:location.href='<%=cp%>/notice/notice.do?${query}';">목록으로</button>
-            <button type="button" class="btn"
-                    onclick="updateNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${page}', '${query}');">
-                수정
-            </button>
-            <button type="button" class="btn"
-                    onclick="deleteNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${query}');">삭제
-            </button>
+            <button type="button" onclick="location.href='<%=cp%>/notice/list.do?${query}';">목록으로</button>
+            <button type="button" class="btn" onclick="updateNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${page}', '${query}');">수정</button>
+            <button type="button" class="btn" onclick="deleteNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${query}');">삭제</button>
         </div>
     </div>
+
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>

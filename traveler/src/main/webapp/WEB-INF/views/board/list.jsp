@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,6 @@
     <script type="text/javascript" src="<%=cp%>/resource/js/board.js"></script>
 </head>
 <body>
-
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
     </div>
@@ -30,7 +28,7 @@
 
     <div class="board">
         <h3>자유게시판</h3>
-        <form name="searchForm" action="<%=cp%>/board/board.do" method="post">
+        <form name="searchForm" action="<%=cp%>/board/list.do" method="post">
             <div>
                 <label>
                     <select name="condition">
@@ -41,7 +39,7 @@
                 </label>
                 <input type="text" name="keyword">
                 <button onclick="searchList()">검색</button>
-                <button type="button" onclick="location.href='<%=cp%>/board/board.do';">새로고침</button>
+                <button type="button" onclick="location.href='<%=cp%>/board/list.do';">새로고침</button>
             </div>
         </form>
         
@@ -51,7 +49,7 @@
         <table class="board-table">
             <tr class="board-tr">
                 <td>글번호</td>
-                <td class="board-title"><a>제목</a></td>
+                <td class="board-title">제목</td>
                 <td class="board-writer">작성자</td>
                 <td>작성일</td>
                 <td>조회수</td>
@@ -59,8 +57,12 @@
             <c:forEach var="dto" items="${list}">
                 <tr class="board-tr">
                     <td>${dto.listNum}</td>
-                    <td class="board-title"><a href="${articleUrl}&num=${dto.num}">${dto.title}</a></td>
-                    <td class="board-writer"><img id="profile" src="<%=cp%>/resource/img/${dto.imageFilename}">${dto.name}</td>
+                    <td class="board-title">
+                        <a href="${articleUrl}&num=${dto.num}">${dto.title}</a>
+                    </td>
+                    <td class="board-writer">
+                        <img id="profile" src="<%=cp%>/resource/img/${dto.imageFilename}">${dto.name}
+                    </td>
                     <td>${dto.created}</td>
                     <td>${dto.viewCount}</td>
                 </tr>
@@ -79,6 +81,5 @@
     <div class="footer">
         <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
     </div>
-
 </body>
 </html>

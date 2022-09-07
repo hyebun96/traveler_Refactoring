@@ -23,6 +23,7 @@ public class MemberServlet extends MyUploadServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private String pathname;
+	private MyUtil myUtil = new MyUtil();
 
 	protected void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("utf-8");
@@ -363,7 +364,6 @@ public class MemberServlet extends MyUploadServlet {
 		HttpSession session=req.getSession();
 		MemberDAO dao = new MemberDAO();
 		String cp=req.getContextPath();
-		MyUtil myUtil=new MyUtil();
 		
 		SessionInfo info=(SessionInfo)session.getAttribute("member");
 		if(info==null) {
@@ -396,13 +396,13 @@ public class MemberServlet extends MyUploadServlet {
 		}
 		
 		int rows=10;
-		int total_page=myUtil.pageCount(rows, dataCount);
+		int total_page = myUtil.pageCount(rows, dataCount);
 		if(current_page>total_page) {
 			current_page=total_page;
 		}
 		
 		int offset = (current_page - 1) * rows;
-	
+
 		List<MemberDTO> list;
 		if (keyword.length() != 0)
 			list = dao.listBoard(offset, rows, condition, keyword);
