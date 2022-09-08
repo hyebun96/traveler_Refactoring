@@ -59,6 +59,7 @@ body {
     box-sizing: border-box;
  	padding: 10px;
 }
+
 .main{
 	width:1080px;
 	min-height: 500px;
@@ -126,6 +127,20 @@ body {
 #paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}
 #paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
 #paginate .numBox {border:1px solid #ccc;height:28px;font-weight:bold;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
+
+/* 게시판에서 많이 쓰는 형식 */
+.div-button{
+    float: right;
+    margin: 15px;
+}
+
+.div-button button{
+    height: 30px;
+    width: 90px;
+    background: #EFEFEF;
+    border: 1px solid white;
+    border-radius: 5px;
+}
 
 /* footer */
 .footer {

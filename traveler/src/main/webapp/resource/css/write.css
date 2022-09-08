@@ -32,13 +32,14 @@
 .writeBoardForm input[type=checkbox]{
 	width: 15px;
 }
+
 .writeBoardForm .write-content span{
 	display: inline-block;
 	height: 260px;
 	width: 43px;
 }
 
-.writeBoardForm .write-content textarea{
+.writeBoardForm textarea{
 	resize: none;
 	width: 675px;
 	height: 260px;
@@ -50,7 +51,22 @@
 	height: 25px;
 }
 
-.writeBoardForm .div-button{
-	float: right;
-	margin: 15px;
+/* travel */
+.writeBoardForm .travel-box p{
+	text-align: center;
+}
+
+.writeBoardForm .travel-box img{
+	width: 30px;
+	height : 30px;
+	border-radius : 100px;
+}
+
+.writeBoardForm .travel-box .place{
+	width: 62%;
+	margin: 15px 0;
+	border: none;
+	border-bottom: 1px solid black;
+	background: aliceblue;
+	padding: 3px 0 3px 10px;
 }

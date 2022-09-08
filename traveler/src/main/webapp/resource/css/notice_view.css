@@ -3,6 +3,7 @@
 .viewport{
 	width: 800px;
 	margin: 50px auto;
+	font-size: 13px;
 }
 
 .view-table{
@@ -47,9 +48,4 @@
 	padding: 10px 10px 10px 0;
 	width: 100%;
 	text-align: left;
-}
-
-.viewport .div-button{
-	float: right;
-	margin: 15px;
 }

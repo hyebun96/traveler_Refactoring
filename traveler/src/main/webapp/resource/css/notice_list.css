@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/* notice, board */
 .board {
 	width: 800px;
 	margin: 50px auto;
@@ -107,4 +108,137 @@ button {
 
 .qna .question{
 	background: aliceblue;
+}
+
+/* tavel_list */
+.travel{
+	width:800px;
+	margin: 10px auto 50px;
+}
+
+.travel .weather{
+	width: 100%;
+	height: 90px;
+	float: left;
+	margin-bottom: 5px;
+}
+
+.travel .weather>img{
+	float : left;
+	height: 70px;
+	width: 70px;
+	margin-top: 10px;
+	margin-left: 20px;
+}
+
+.travel .weather .location{
+	float : left;
+	font-size: 30px;
+	margin-top: 30px;
+	margin-left: 10px;
+	display: block;
+}
+
+.travel .weather .location span{
+	font-size: 20px;
+}
+
+.travel .weather .date{
+	font-size: 15px;
+	padding: 40px;
+	float: right;
+}
+
+.travel .travel-box img{
+	width: 100%;
+	height: 400px;
+}
+
+.travel .travel-box2{
+	margin-top: 20px;
+}
+
+.travel .travel-box2 img{
+	width: 40px;
+	height : 40px;
+	float : left;
+	border-radius : 100px;
+}
+
+.travel .travel-box2 span{
+	padding-top: 20px;
+	padding-left: 10px;
+}
+
+.travel .travel-box2 .content{
+	padding: 24px 0;
+}
+
+.travel .like-box{
+	margin-bottom: 50px;
+}
+
+.travel .like-box hr{
+	clear: both;
+}
+
+.travel .like-box a{
+	color: #f8a371;
+	text-decoration: none;
+	font-size: 15px;
+}
+
+.travel .like-box a:hover{
+	color: #f8a371;
+	text-decoration: none;
+	font-size: 50px;
+}
+
+.travel .div-button{
+	float: right;
+	margin: 15px;
+}
+
+.travel .div-button button{
+	height: 30px;
+	width: 90px;
+	background: #EFEFEF;
+	border: 1px solid white;
+	border-radius: 5px;
+}
+
+.travel .div-button button:hover, button:active{
+	background: green;
+}
+
+/* 하트 CSS 추가 */
+.ico_like {
+	width: 25px;
+	height: 25px;
+	margin: 0 auto;
+	position: relative;
+	animation: ico_like 1s infinite;
+}
+
+.ico_like:before, .ico_like:after{
+	position: absolute;
+	content: "";
+	top : 0;
+	-webkit-transform-origin: 0 100%;
+	transform-origin: 0 100%;
+}
+
+.ico_like:after{
+	left: 0;
+	-webkit-transform-origin:100% 100%;
+	transform-origin: 100% 100%;
+}
+
+@keyframes ico_like {
+	0% {transform: scale( .75 ); }
+	20% {transform : scale( 1 );}
+	40% {transform: scale( .75 ); }
+	60% {transform: scale( 1 ); }
+	80% {transform: scale( .75 ); }
+	100% {transform: scale( .75 ); }
 }
