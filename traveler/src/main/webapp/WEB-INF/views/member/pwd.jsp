@@ -52,7 +52,7 @@
                 <input type="password" name="userPwd" required="required" maxlength="10" pattern="[a-zA-Z0-9]+" placeholder="Password">
                 <span data-placeholder="Password"></span>
                 <input type="hidden" name="mode" value="${mode}">
-                <button type="button" onclick="pwdOk();">확인</button>
+                <button class="btn-hover" type="button" onclick="pwdOk();">확인</button>
             </form>
         </div>
     </div>

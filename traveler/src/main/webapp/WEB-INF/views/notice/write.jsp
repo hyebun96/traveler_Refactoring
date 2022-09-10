@@ -72,8 +72,8 @@
                 </c:if>
             </div>
             <div class="div-button">
-                <button type="button" onclick="createNotice('${mode}');">${mode=='update'?'수정':'등록'}</button>
-                <button type="button" onclick="location.href='<%=cp%>/notice/list.do';">목록으로</button>
+                <button class="btn-hover" type="button" onclick="createNotice('${mode}');">${mode=='update'?'수정':'등록'}</button>
+                <button class="btn-hover" type="button" onclick="location.href='<%=cp%>/notice/list.do';">목록으로</button>
             </div>
         </form>
     </div>

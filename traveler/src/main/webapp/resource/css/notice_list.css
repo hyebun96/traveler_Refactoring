@@ -199,20 +199,9 @@ button {
 	margin: 15px;
 }
 
-.travel .div-button button{
-	height: 30px;
-	width: 90px;
-	background: #EFEFEF;
-	border: 1px solid white;
-	border-radius: 5px;
-}
-
-.travel .div-button button:hover, button:active{
-	background: green;
-}
-
 /* 하트 CSS 추가 */
 .ico_like {
+	cursor: pointer;
 	width: 25px;
 	height: 25px;
 	margin: 0 auto;

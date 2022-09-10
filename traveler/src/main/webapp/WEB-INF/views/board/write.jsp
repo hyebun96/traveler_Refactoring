@@ -52,8 +52,8 @@
             </div>
 
             <div class="div-button">
-                <button type="button" onclick="createBoard('${mode}');">${mode=='update'?'수정':'등록'}</button>
-                <button type="button" onclick="location.href='<%=cp%>/board/list.do';">목록으로</button>
+                <button type="button" class="btn-hover" onclick="createBoard('${mode}');">${mode=='update'?'수정':'등록'}</button>
+                <button type="button" class="btn-hover" onclick="location.href='<%=cp%>/board/list.do';">목록으로</button>
             </div>
         </form>
     </div>

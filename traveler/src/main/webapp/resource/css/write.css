@@ -70,3 +70,11 @@
 	background: aliceblue;
 	padding: 3px 0 3px 10px;
 }
+
+.writeBoardForm .travel-box .imageList{
+	display: inline-block;
+}
+
+.writeBoardForm .travel-box .imageList a{
+	color: crimson;
+}

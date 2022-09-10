@@ -61,8 +61,8 @@
                 </p>
 
                 <c:if test="${sessionScope.member.userId!='admin'}">
-                    <button class="indexBtn updateBtn" type="button" name="sendButton" onclick="memberUpdate('update');"> 정보수정 </button>
-                    <button class="indexBtn" type="button" name="sendButton" onclick="memberUpdate('delete');">회원탈퇴</button>
+                    <button class="indexBtn updateBtn btn-hover" type="button" name="sendButton" onclick="memberUpdate('update');"> 정보수정 </button>
+                    <button class="indexBtn btn-hover" type="button" name="sendButton" onclick="memberUpdate('delete');">회원탈퇴</button>
                 </c:if>
             </form>
         </div>

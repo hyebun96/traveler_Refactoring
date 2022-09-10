@@ -97,20 +97,20 @@
                         <input type="text" name="tel3" value="${dto.tel3}" required="required" maxlength="11" pattern="[0-9]+" placeholder="" class="tel">
                 </div>
                 <div>
-                    <button class="indexBtn indexBtn2" type="button" name="sendButton" onclick="memberOk('${mode}');">
+                    <button class="indexBtn indexBtn2 btn-hover" type="button" name="sendButton" onclick="memberOk('${mode}');">
                         ${mode=="created"?"sign up":"수정완료"}
                     </button>
-                    <button class="indexBtn" type="reset">
+                    <button class="indexBtn btn-hover" type="reset">
                         다시입력
                     </button>
                     <c:if test="${mode=='created'}">
-                    <button class="indexBtn" type="button" onclick="location.href='<%=cp%>/';">
+                    <button class="indexBtn btn-hover" type="button" onclick="location.href='<%=cp%>/';">
                         가입취소
                     </button>
                     </c:if>
                     <c:if test="${mode!='created'}">
                     <input type="hidden" name="imageFilename" value="${dto.imageFilename}">
-                    <button class="indexBtn" type="button" onclick="location.href='<%=cp%>/member/myPage.do/';">
+                    <button class="indexBtn btn-hover" type="button" onclick="location.href='<%=cp%>/member/myPage.do/';">
                         수정취소
                     </button>
                 </div>

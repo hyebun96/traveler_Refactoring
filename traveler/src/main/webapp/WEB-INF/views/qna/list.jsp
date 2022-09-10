@@ -38,8 +38,8 @@
                     </select>
                 </label>
                 <input type="text" name="keyword">
-                <button class="board-button"onclick="searchList()">검색</button>
-                <button class="board-button" type="button" onclick="location.href='<%=cp%>/qna/list.do';">새로고침</button>
+                <button class="board-button btn-hover" onclick="searchList()">검색</button>
+                <button class="board-button btn-hover" type="button" onclick="location.href='<%=cp%>/qna/list.do';">새로고침</button>
             </div>
         </form>
 
@@ -95,7 +95,7 @@
             </tr>
             <tr class="board-created">
                 <td colspan="6">
-                    <button class="board-button" type="button" onclick="location.href='<%=cp%>/qna/write.do';">글등록</button>
+                    <button class="board-button btn-hover" type="button" onclick="location.href='<%=cp%>/qna/write.do';">글등록</button>
                 </td>
             </tr>
         </table>

@@ -37,8 +37,8 @@
                     </select>
                 </label>
                 <input type="text" name="keyword">
-                <button class="board-button" type="button" onclick="searchNoticeList()">검색</button>
-                <button class="board-button" type="button" onclick="javascript:location.href='<%=cp%>/notice/list.do';">
+                <button class="board-button btn-hover" type="button" onclick="searchNoticeList()">검색</button>
+                <button class="board-button btn-hover" type="button" onclick="javascript:location.href='<%=cp%>/notice/list.do';">
                     새로고침
                 </button>
             </div>
@@ -85,7 +85,7 @@
             <c:if test="${sessionScope.member.userId == 'admin'}">
                 <tr height="35" class="board-created">
                     <td colspan="5">
-                        <button class="board-button" type="button" onclick="createNoticeForm('${sessionScope.member.userId}', '${page}');">글등록</button>
+                        <button class="board-button btn-hover" type="button" onclick="createNoticeForm('${sessionScope.member.userId}', '${page}');">글등록</button>
                     </td>
                 </tr>
             </c:if>

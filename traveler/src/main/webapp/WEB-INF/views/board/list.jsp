@@ -38,8 +38,8 @@
                     </select>
                 </label>
                 <input type="text" name="keyword">
-                <button onclick="searchList()">검색</button>
-                <button type="button" onclick="location.href='<%=cp%>/board/list.do';">새로고침</button>
+                <button class="btn-hover" onclick="searchList()">검색</button>
+                <button class="btn-hover" type="button" onclick="location.href='<%=cp%>/board/list.do';">새로고침</button>
             </div>
         </form>
         
@@ -72,7 +72,7 @@
             </tr>
             <tr height="35" class="board-created">
                 <td colspan="5">
-                    <button type="button" onclick="location.href='<%=cp%>/board/write.do';">글등록</button>
+                    <button class="btn-hover" type="button" onclick="location.href='<%=cp%>/board/write.do';">글등록</button>
                 </td>
             </tr>
         </table>

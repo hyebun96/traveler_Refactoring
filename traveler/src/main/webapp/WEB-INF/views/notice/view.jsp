@@ -66,9 +66,9 @@
         </table>
 
         <div class="div-button">
-            <button type="button" onclick="location.href='<%=cp%>/notice/list.do?${query}';">목록으로</button>
-            <button type="button" class="btn" onclick="updateNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${page}', '${query}');">수정</button>
-            <button type="button" class="btn" onclick="deleteNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${query}');">삭제</button>
+            <button type="button" class="btn-hover" onclick="location.href='<%=cp%>/notice/list.do?${query}';">목록으로</button>
+            <button type="button" class="btn btn-hover" onclick="updateNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${page}', '${query}');">수정</button>
+            <button type="button" class="btn btn-hover" onclick="deleteNotice('${dto.num}', '${sessionScope.member.userId}', '${dto.id}', '${query}');">삭제</button>
         </div>
     </div>
 

@@ -23,7 +23,7 @@
         <jsp:include page="/WEB-INF/views/layout/header.jsp" />
     </div>
     <div class="navigation">
-        <div class="nav-bar">HOME > Login</div>
+        <div class="nav-bar">HOME > LOGIN</div>
     </div>
 
     <div class="main">
@@ -39,10 +39,10 @@
                 <span data-placeholder="UserID"></span>
                 <input type="password" name="userPwd" required="required" maxlength="10" pattern="[a-zA-Z0-9]+" placeholder="Password">
                 <span data-placeholder="Password"></span>
-                <button type="button" onclick="sendLogin();">Login</button>
+                <button class="btn-hover" type="button" onclick="sendLogin();">Login</button>
             </form>
         </div>
-        <div class="bottom-text"`>
+        <div class="bottom-text">
             Don't have account? <a href="<%=cp%>/member/member.do">Sign up</a>
         </div>
     </div>

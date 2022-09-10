@@ -47,7 +47,7 @@
 		<c:forEach var="dto" items="${list}">
 			<div>
 				<div class="travel-box">
-					<c:forEach var="image" items="${dto.saveFileName}"> <%-- TODO : 변수 선언 지저분함 --%>
+					<c:forEach var="image" items="${dto.saveFileName}">
 						<img src="<%=cp%>/uploads/travel/${image}" alt=""/>
 					</c:forEach>
 				</div>

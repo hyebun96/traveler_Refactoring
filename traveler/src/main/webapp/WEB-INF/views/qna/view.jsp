@@ -51,17 +51,17 @@
         </table>
 
         <div class="div-button">
-            <button type="button" onclick="location.href='<%=cp%>/qna/list.do?${query}';">목록으로</button>
-            <c:if test="${sessionScope.member.userId == 'admin' && dto.depth==0}">
-                <button type="button" class="btn" onclick="location.href='<%=cp%>/qna/reply.do?qnaNum=${dto.qnaNum}&page=${page}';">답변</button>
+            <button class="btn btn-hover" type="button" onclick="location.href='<%=cp%>/qna/list.do?${query}';">목록으로</button>
+            <c:if  test="${sessionScope.member.userId == 'admin' && dto.depth==0}">
+                <button type="button" class="btn btn-hover" onclick="location.href='<%=cp%>/qna/reply.do?qnaNum=${dto.qnaNum}&page=${page}';">답변</button>
             </c:if>
             <c:if test="${sessionScope.member.userId == dto.userId}">
-                <button type="button" class="btn" onclick="updateQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">수정</button>
+                <button type="button" class="btn btn-hover" onclick="updateQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">수정</button>
             </c:if>
             <c:if test="${sessionScope.member.userId != dto.userId}">
-                <button type="button" class="btn" disabled="disabled" hidden="hidden">수정</button>
+                <button type="button" class="btn btn-hover" disabled="disabled" hidden="hidden">수정</button>
             </c:if>
-            <button type="button" class="btn" onclick="deleteQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">삭제</button>
+            <button type="button" class="btn btn-hover" onclick="deleteQna('${dto.qnaNum}', '${sessionScope.member.userId}', '${dto.userId}', '${page}');">삭제</button>
         </div>
     </div>
 

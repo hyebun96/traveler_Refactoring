@@ -37,8 +37,8 @@
                     </select>
                 </label>
                 <input id="search-input" type="text" name="keyword">
-                <button id="search-button" onclick="searchList()">검색</button>
-                <button id="search-reset" type="button" onclick="location.href='<%=cp%>/member/list.do';">새로고침</button>
+                <button id="search-button" class="btn-hover" onclick="searchList()">검색</button>
+                <button id="search-reset" class="btn-hover" ype="button" onclick="location.href='<%=cp%>/member/list.do';">새로고침</button>
                 <br>
             </div>
         </form>
