@@ -13,13 +13,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet("/travel/*")
 @MultipartConfig
@@ -55,7 +50,6 @@ public class TravelServlet extends MyUploadServlet {
 		} else if (uri.contains("like.do")) {
 			like(req, resp);
 		}
-
 	}
 
 	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -64,65 +58,28 @@ public class TravelServlet extends MyUploadServlet {
 
 		String type = req.getParameter("type");
 
-		String condition = req.getParameter("condition");
-		String keyword = req.getParameter("keyword");
-
-		if (condition == null) {
-			condition = "subject";
-			keyword = "";
-		}
-
-		if (req.getMethod().equalsIgnoreCase("GET")) {
-			keyword = URLDecoder.decode(keyword, "utf-8");
-		}
-
 		Date nowTime = new Date();
 		SimpleDateFormat day = new SimpleDateFormat("MM dd, yyyy");
-		String date = day.format(nowTime);
+		WeatherDTO weatherDTO = dao.listWeather(type);
+		weatherDTO.setDate(day.format(nowTime));
 
 		int dataCount;
 		List<TravelDTO> list;
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-		if(info == null){
-			dataCount = dao.dataCount();
-			list = dao.listTravel(type);
-		} else if(info != null && keyword.length() != 0){
-			dataCount = dao.dataCount(condition, keyword);
-			list = dao.listTravel(condition, keyword, info.getUserId());
-		} else {
-			dataCount = dao.dataCount();
+		dataCount = dao.dataCount();
+		if (info != null) {
 			list = dao.listTravel(type, info.getUserId());
+		} else {
+			list = dao.listTravel(type, null);
 		}
-
-		String query = "";
-		String listUrl = "";
-		String articleUrl = "";
-
-		listUrl = cp + "/travel/list.do";
-		articleUrl = cp + "/travel/article.do";
-		if (keyword.length() != 0) {
-			query = "condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "utf-8");
-
-			listUrl += "?" + query;
-			articleUrl += "?" + query;
-		}
-		
-		WeatherDTO weatherDTO = dao.listWeather(type);
 
 		req.setAttribute("list", list);
-		req.setAttribute("vo", weatherDTO);
-		req.setAttribute("articleUrl", articleUrl);
-		req.setAttribute("listUrl", listUrl);
-		req.setAttribute("dataCount", dataCount);
-		req.setAttribute("condition", condition);
-		req.setAttribute("keyword", keyword);
-		req.setAttribute("date", date);
+		req.setAttribute("weatherDTO", weatherDTO);
 		req.setAttribute("type", type);
 
-		forward(req, resp, "/WEB-INF/views/travel/list.jsp?type="+type);
-
+		forward(req, resp, "/WEB-INF/views/travel/list.jsp?type=" + type);
 	}
 
 	protected void createdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -135,7 +92,6 @@ public class TravelServlet extends MyUploadServlet {
 			resp.sendRedirect(req.getContextPath() + "/travel/list.do?type="+type);
 			return;
 		}
-		
 
 		TravelDTO dto = new TravelDTO();
 
@@ -145,51 +101,51 @@ public class TravelServlet extends MyUploadServlet {
 		req.setAttribute("type", type);
 		req.setAttribute("dto", dto);
 		req.setAttribute("mode", "created");
-		forward(req, resp, "/WEB-INF/views/travel/created.jsp");
+
+		forward(req, resp, "/WEB-INF/views/travel/write.jsp");
 	}
 
-	protected void createdSubmit(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void createdSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String cp = req.getContextPath();
 
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
-		
+
 		String type = req.getParameter("type");
-		
+
 		if (!info.getUserId().equals("admin")) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
-		TravelDTO dto = new TravelDTO();
 		TravelDAO dao = new TravelDAO();
+		TravelDTO dto = new TravelDTO();
 
 		dto.setUserId(info.getUserId());
-
 		dto.setPlace(req.getParameter("place"));
 		dto.setInformation(req.getParameter("information"));
 		dto.setType(req.getParameter("type"));
 
 		dao.insertTravel(dto);
 
-		List<Part> list = new ArrayList<>();
+		if (req.getParts() != null) {
 
-		for (Part part : req.getParts()) {
-			list.add(part);
-		}
-
-		Map<String, String[]> map = doFileUpload(list, pathname);
-		if (map != null) {
-			String[] saveFilenames = map.get("saveFilenames");
-
-			for (String s : saveFilenames) {
-				dao.insertImage(dto,s);
+			List<Part> list = new ArrayList<>();
+			for (Part part : req.getParts()) {
+				list.add(part);
 			}
 
+			Map<String, String[]> map = doFileUpload(list, pathname);
+			if (map != null) {
+				String[] originalFileNames = map.get("originalFilenames");
+				String[] saveFileNames = map.get("saveFileNames");
+				for (int i = 0; i < originalFileNames.length; i++) {
+					dao.insertImage(dto, originalFileNames[i], saveFileNames[i]);
+				}
+			}
 		}
 
-		resp.sendRedirect(cp + "/travel/list.do?type="+type);
+		resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 	}
 
 	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -197,29 +153,37 @@ public class TravelServlet extends MyUploadServlet {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-		TravelDAO dao = new TravelDAO();
 		String cp = req.getContextPath();
 
 		int num = Integer.parseInt(req.getParameter("num"));
 		String type = req.getParameter("type");
+
+		TravelDAO dao = new TravelDAO();
 		TravelDTO dto = dao.readTravel(num);
 
 		if (dto == null) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
 		if (!info.getUserId().equals(dto.getUserId())) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
+		}
+
+		Map<String, String> imageList = new HashMap<>();
+		if (dto.getSaveFileName() != null) {
+			for (int i = 0; i < dto.getSaveFileName().length; i++) {
+				imageList.put(dto.getOriginalFileName()[i], dto.getSaveFileName()[i]);
+			}
 		}
 
 		req.setAttribute("type", type);
 		req.setAttribute("dto", dto);
+		req.setAttribute("imageList", imageList);
 		req.setAttribute("mode", "update");
 
-		forward(req, resp, "/WEB-INF/views/travel/created.jsp");
-
+		forward(req, resp, "/WEB-INF/views/travel/write.jsp");
 	}
 
 	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -228,13 +192,11 @@ public class TravelServlet extends MyUploadServlet {
 
 		TravelDTO dto = new TravelDTO();
 
-		int num = Integer.parseInt(req.getParameter("num"));
-
 		if (req.getMethod().equalsIgnoreCase("GET")) {
 			resp.sendRedirect(cp + "/travel/list.do");
 		}
 
-		dto.setNum(num);
+		dto.setNum(Integer.parseInt(req.getParameter("num")));
 		dto.setPlace(req.getParameter("place"));
 		dto.setInformation(req.getParameter("information"));
 		dto.setUserName(req.getParameter("name"));
@@ -245,24 +207,23 @@ public class TravelServlet extends MyUploadServlet {
 		if (req.getParts() != null) {
 
 			List<Part> list = new ArrayList<>();
-
 			for (Part part : req.getParts()) {
 				list.add(part);
 			}
 
 			Map<String, String[]> map = doFileUpload(list, pathname);
 			if (map != null) {
-				dto.setImageFilename(map.get("saveFilenames"));
-
-				for (String s : dto.getImageFilename()) {
-					dao.insertImage(dto,s);
+				String[] originalFileNames = map.get("originalFilenames");
+				String[] saveFileNames = map.get("saveFileNames");
+				for (int i = 0; i < originalFileNames.length; i++) {
+					dao.insertImage(dto, originalFileNames[i], saveFileNames[i]);
 				}
 			}
 		}
 
 		dao.updateTravel(dto);
 
-		resp.sendRedirect(cp + "/travel/list.do?type="+type);
+		resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 
 	}
 
@@ -270,36 +231,33 @@ public class TravelServlet extends MyUploadServlet {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-		TravelDAO dao = new TravelDAO();
 		String cp = req.getContextPath();
+		TravelDAO dao = new TravelDAO();
 
 		int num = Integer.parseInt(req.getParameter("num"));
-		
 		String type = req.getParameter("type");
-		
 		TravelDTO dto = dao.readTravel(num);
-		
 
 		if (dto == null) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
 		if (!info.getUserId().equals(dto.getUserId())) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
-		if (dto.getImageFilename() != null ) {
-			for(int i=0; i<dto.getImageFilename().length; i++) {
-				FileManager.doFiledelete(pathname, dto.getImageFilename()[i]);
-				dao.deleteImage(dto.getImageFilename()[i]);
+		if (dto.getSaveFileName() != null) {
+			for (int i = 0; i < dto.getSaveFileName().length; i++) {
+				FileManager.doFiledelete(pathname, dto.getSaveFileName()[i]);
+				dao.deleteImage(dto.getSaveFileName()[i]);
 			}
 		}
 
 		dao.deleteTravel(num);
 
-		resp.sendRedirect(cp + "/travel/list.do?type="+type);
+		resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 
 	}
 
@@ -317,13 +275,12 @@ public class TravelServlet extends MyUploadServlet {
 		TravelDTO dto = dao.readTravel(num);
 
 		if (dto == null) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
-
 		if (!info.getUserId().equals(dto.getUserId())) {
-			resp.sendRedirect(cp + "/travel/list.do?type="+type);
+			resp.sendRedirect(cp + "/travel/list.do?type=" + type);
 			return;
 		}
 
@@ -333,10 +290,10 @@ public class TravelServlet extends MyUploadServlet {
 		dto = dao.readTravel(num);
 		
 		req.setAttribute("dto", dto);
+		req.setAttribute("type", type);
 		req.setAttribute("mode", "update");
 
-		forward(req, resp, "/WEB-INF/views/travel/created.jsp?num="+num);
-
+		forward(req, resp,   "/travel/update.do?num=" + num);
 	}
 
 	protected void like(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -348,10 +305,11 @@ public class TravelServlet extends MyUploadServlet {
 
 		int num = Integer.parseInt(req.getParameter("num"));
 		String type = req.getParameter("type");
-		
-		dao.likeInsert(num, info.getUserId());
+
+		int likeCount = dao.searchTravelLike(num, info.getUserId());
+		dao.insertLike(likeCount, num, info.getUserId());
+		dao.insertLikeCount(likeCount, num);
 
 		resp.sendRedirect(cp + "/travel/list.do?type="+type);
 	}
-
 }

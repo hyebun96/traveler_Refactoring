@@ -8,10 +8,11 @@ public class TravelDTO {
     private String place;
     private String information;
     private String created;
-    private int likeNum;
-    private String imageFilename[];
+    private int likeCount;
+    private String[] saveFileName;
+    private String[] originalFileName;
     private String type;
-    private int travelLike;
+    private int likeNum;
 
     public int getNum() {
         return num;
@@ -69,20 +70,28 @@ public class TravelDTO {
         this.created = created;
     }
 
-    public int getLikeNum() {
-        return likeNum;
+    public int getLikeCount() {
+        return likeCount;
     }
 
-    public void setLikeNum(int likeNum) {
-        this.likeNum = likeNum;
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
-    public String[] getImageFilename() {
-        return imageFilename;
+    public String[] getSaveFileName() {
+        return saveFileName;
     }
 
-    public void setImageFilename(String[] imageFilename) {
-        this.imageFilename = imageFilename;
+    public void setSaveFileName(String[] saveFileName) {
+        this.saveFileName = saveFileName;
+    }
+
+    public String[] getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String[] originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public String getType() {
@@ -93,11 +102,11 @@ public class TravelDTO {
         this.type = type;
     }
 
-    public int getTravelLike() {
-        return travelLike;
+    public int getLikeNum() {
+        return likeNum;
     }
 
-    public void setTravelLike(int travelLike) {
-        this.travelLike = travelLike;
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
     }
 }

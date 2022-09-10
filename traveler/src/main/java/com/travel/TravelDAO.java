@@ -1,617 +1,509 @@
 package com.travel;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.util.DBConn;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class TravelDAO {
-	private final Connection conn=DBConn.getConnection();
-	private final String BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
-	private final String apiKey = "5e12679699fcfba7406abda339c17eb4";
+    private final Connection conn = DBConn.getConnection();
+    private StringBuilder sb;
+    private PreparedStatement pstmt;
+    private ResultSet rs;
+    private final String apiKey = "5e12679699fcfba7406abda339c17eb4";
 
-	public int dataCount() {
-		int result = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		
-		try {
-			sql = "SELECT COALESCE(COUNT(*),0) FROM travel ";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				result = rs.getInt(1);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-		return result;
-	}
+    public int dataCount() {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
-	public int dataCount(String condition, String keyword) {
-		int result = 0;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		
-		try {
-			sql = "SELECT COALESCE(COUNT(*),0) FROM travel t JOIN member m ON t.userId = m.userId ";
-			
-			if(condition.equals("userName"))sql+= "WHERE INSTR(userName, ?) = 1 ";
-			else if(condition.equals("created")) {
-				keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sql+=  "WHERE DATE_FORMAT(created,'%Y-%m-%d') = ?";
-			}else sql += "WHERE INSTR("+condition+",?) >= 1";
-			
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				result = rs.getInt(1);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-		
-		return result;
-	}
+        try {
+            sb.append("SELECT COALESCE(COUNT(*),0) FROM travel");
+            pstmt = conn.prepareStatement(sb.toString());
 
-	public List<TravelDTO> listTravel(String type) {
-		List<TravelDTO> list = new ArrayList<>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 
-		try {
-			sb.append("SELECT t.travelNum, place, information, t.userid, username, likeNum, ");
-			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename");
-			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
-			sb.append("  LEFT OUTER JOIN ( ");
-			sb.append("  	SELECT travelNum, group_concat(saveFilename) AS saveFilename ");
-			sb.append(" 	FROM travelFile f  ");
-			sb.append("     GROUP BY travelNum ");
-			sb.append("   	) img ON t.travelNum = img.travelNum");
-			sb.append("	 WHERE type=? ");
+    public List<TravelDTO> listTravel(String type, String userId) {
+        List<TravelDTO> list = new ArrayList<>();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
+        try {
+            sb.append("SELECT t.travelNum, t.userId, place, information, likeCount,DATE_FORMAT(created, '%Y-%m-%d') AS created, f.saveFileName");
+            if (userId != null) {
+                sb.append("       , l.likeNum");
+            }
+            sb.append("   FROM travel t");
+            sb.append("   LEFT OUTER JOIN (");
+            sb.append("      SELECT travelNum, group_concat(saveFileName) AS saveFileName");
+            sb.append(" 	 FROM travelFile");
+            sb.append("      GROUP BY travelNum ");
+            sb.append("   	 ) f on t.travelNum = f.travelNum");
+            if (userId != null) {
+                sb.append("   LEFT OUTER JOIN ( ");
+                sb.append("   	 SELECT travelNum, likeNum ");
+                sb.append("   	 FROM travelLike");
+                sb.append("   	 WHERE userId = ? ");
+                sb.append("   	 ) l on t.travelNum = l.travelNum ");
+            }
+            sb.append("	  WHERE type=? ");
 
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setString(1, type);
+            pstmt = conn.prepareStatement(sb.toString());
+            if (userId != null) {
+                pstmt.setString(1, userId);
+                pstmt.setString(2, type);
+            } else {
+                pstmt.setString(1, type);
+            }
 
-			rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
 
-			if(rs == null){
-				return null;
-			}
+                TravelDTO dto = new TravelDTO();
+                dto.setNum(rs.getInt("travelNum"));
+                dto.setPlace(rs.getString("place"));
+                dto.setInformation(rs.getString("information"));
+                dto.setUserId(rs.getString("userId"));
+                dto.setCreated(rs.getString("created"));
+                dto.setLikeCount(Math.max(rs.getInt("likeCount"), 0));
+                if (rs.getString("saveFileName") != null) {
+                    dto.setSaveFileName(rs.getString("saveFileName").split(","));
+                }
+                if (userId != null) {
+                    dto.setLikeNum(rs.getInt("likeNum"));
+                } else {
+                    dto.setLikeNum(0);
+                }
+                list.add(dto);
+            }
 
-			while(rs.next()) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
 
-				TravelDTO dto = new TravelDTO();
-				dto.setNum(rs.getInt("travelNum"));
-				dto.setPlace(rs.getString("place"));
-				dto.setInformation(rs.getString("information"));
-				dto.setUserId(rs.getString("userId"));
-				dto.setUserName(rs.getString("username"));
-				if(rs.getString("saveFilename")!=null) {
-					dto.setImageFilename(rs.getString("saveFilename").split(","));
-				}
-				dto.setCreated(rs.getString("created"));
-				dto.setLikeNum(rs.getInt("likeNum"));
-				dto.setTravelLike(0);
+    public int insertTravel(TravelDTO dto) {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
 
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+        try {
+            sb.append("INSERT INTO travel(place, information, userid, type) VALUES(?,?,?,?) ");
 
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return list;
-	}
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, dto.getPlace());
+            pstmt.setString(2, dto.getInformation());
+            pstmt.setString(3, dto.getUserId());
+            pstmt.setString(4, dto.getType());
 
-	public List<TravelDTO> listTravel(String type, String userId) {
-		List<TravelDTO> list = new ArrayList<>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
-		
-		try {
-			sb.append("SELECT t.travelNum, place, information, t.userid, username, likeNum, ");
-			sb.append("  	DATE_FORMAT(created, '%Y-%m-%d') AS created, img.saveFilename, tL.travelNum AS travelLike");
-			sb.append("  FROM travel t  JOIN member m on t.userId = m.userId ");
-			sb.append("  LEFT OUTER JOIN ( ");
-			sb.append("  	SELECT travelNum, group_concat(saveFilename) AS saveFilename ");
-			sb.append(" 	FROM travelFile f  ");
-			sb.append("     GROUP BY travelNum ");
-			sb.append("   	) img ON t.travelNum = img.travelNum");
-			sb.append("   	LEFT OUTER JOIN ( ");
-			sb.append("   	  SELECT travelNum ");
-			sb.append("   	  FROM travelLike");
-			sb.append("   	  WHERE userId = ? ");
-			sb.append("   	) tL on t.travelNum = tL.travelNum ");
-			sb.append("	 WHERE type=? ");
-			
-			
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setString(1, userId);
-			pstmt.setString(2, type);
+            result = pstmt.executeUpdate();
 
-			rs = pstmt.executeQuery();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
 
-			if(rs == null){
-				return null;
-			}
-			
-			while(rs.next()) {
-				
-				TravelDTO dto = new TravelDTO();
-				dto.setNum(rs.getInt("travelNum"));
-				dto.setPlace(rs.getString("place"));
-				dto.setInformation(rs.getString("information"));
-				dto.setUserId(rs.getString("userId"));
-				dto.setUserName(rs.getString("username"));	
-				if(rs.getString("saveFilename")!=null) {
-					dto.setImageFilename(rs.getString("saveFilename").split(","));
-				}
-				dto.setCreated(rs.getString("created"));
-				dto.setLikeNum(rs.getInt("likeNum"));
-				dto.setTravelLike(rs.getInt("travelLike"));
-				
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-				
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return list;
-	}
-	
-	public List<TravelDTO> listTravel(String condition, String keyword, String userId) {
-		List<TravelDTO> list = new ArrayList<>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
-		
-		try {
-			sb.append("SELECT travelNum, place, information, t.userid, username, likeNum, ");
-			sb.append("         DATE_FORMAT(created, '%Y-%m-%d') created, subquery1.saveFilename saveFilename ");
-			sb.append("  FROM travel t JOIN member m ON t.userId = m.userId, ");
-			sb.append("   (SELECT GROUP_CONCAT(SAVEFILENAME) AS saveFilename");
-			sb.append(" FROM TRAVELFILE ");
-			sb.append(" GROUP BY travelNum ");
-			sb.append("   ) subquery1 ");
-			if(condition.equalsIgnoreCase("created")) {
-				keyword.replaceAll("(\\-|\\/|\\.)", "");
-				sb.append(" WHERE DATE_FORMAT(created, '%Y-%m-%d') = ?   ");
-			}else if(condition.equalsIgnoreCase("userid")) {
-				sb.append(" WHERE INSTR(userid,?) > 0 ");
-			}else {
-				sb.append(" WHERE INSTR(").append(condition).append(",?) >= 1 ");
-			}
-			
-			pstmt = conn.prepareStatement(sb.toString());
-			
-			pstmt.setString(1, keyword);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				TravelDTO dto = new TravelDTO();
-				dto.setNum(rs.getInt("travelNum"));
-				dto.setPlace(rs.getString("place"));
-				dto.setInformation(rs.getString("information"));
-				dto.setUserId(rs.getString("userId"));
-				if(rs.getString("saveFilename")!=null) {
-					dto.setImageFilename(rs.getString("saveFilename").split(","));
-				}
-				dto.setCreated(rs.getString("created"));
-				dto.setLikeNum(rs.getInt("likeNum"));
-				dto.setTravelLike(rs.getInt("travelLike"));
-				
-				list.add(dto);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-				
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return list;
-	}
-	
-	public int insertTravel(TravelDTO dto) {
-		int result = 0;
-		StringBuilder sb = new StringBuilder();
-		PreparedStatement pstmt = null;
-		
-		try {
-			sb.append("INSERT INTO travel ");
-			sb.append(" (place, information, userid, type) ");
-			sb.append(" VALUES(?,?,?,?) ");
-			
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setString(1, dto.getPlace());
-			pstmt.setString(2, dto.getInformation());
-			pstmt.setString(3, dto.getUserId());
-			pstmt.setString(4, dto.getType());
-			
-			result = pstmt.executeUpdate();
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			
-		}
-		return result;
-	}
-	
-	public TravelDTO readTravel(int num) {
-		TravelDTO dto = null;
-		PreparedStatement pstmt=null;
-		ResultSet rs = null;
-		StringBuilder sb = new StringBuilder();
-		
-		try {
-			sb.append("SELECT t.travelNum, place, information, t.userid, userName , saveFilename, type ");
-			sb.append(" FROM travel t JOIN member m ON t.userid = m.userid ");
-			sb.append(" LEFT OUTER JOIN ( ");
-			sb.append("    SELECT travelNum, GROUP_CONCAT(SAVEFILENAME) AS saveFilename");
-			sb.append("    FROM TRAVELFILE f ");
-			sb.append("    WHERE f.travelNum = ? ");
-			sb.append("    GROUP BY travelNum ");
-			sb.append(") img ON t.travelNum = img.travelNum ");
-			sb.append("	WHERE t.travelNum =? ");
-			
-			pstmt = conn.prepareStatement(sb.toString());
-			pstmt.setInt(1, num);
-			pstmt.setInt(2, num);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				dto = new TravelDTO();
-				
-				dto.setNum(rs.getInt("travelNum"));
-				dto.setPlace(rs.getString("place"));
-				dto.setInformation(rs.getString("information"));
-				dto.setUserId(rs.getString("userid"));
-				dto.setUserName(rs.getString("userName"));
-				if(rs.getString("saveFilename")!=null) {
-					dto.setImageFilename(rs.getString("saveFilename").split(","));
-				}
-				dto.setType(rs.getString("type"));
-			}
+        }
+        return result;
+    }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(rs!=null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-				
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return dto;
-	}
-	
-	public int updateTravel(TravelDTO dto) {
-		int result = 0;
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			sql = "UPDATE travel SET place=?, information=? WHERE travelNum=?";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, dto.getPlace());
-			pstmt.setString(2, dto.getInformation());
-			pstmt.setInt(3, dto.getNum());
-			
-			result = pstmt.executeUpdate();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	public int deleteTravel(int num) {
-		int result=0;
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			
-			sql = "DELETE FROM travel WHERE travelNum= ?";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
-			result = pstmt.executeUpdate();
-			
-				
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	public void likeInsert(int num, String userId) {
-		PreparedStatement pstmt = null;
-		String sql;
-		String sql2;
-		ResultSet rs = null;
+    public TravelDTO readTravel(int num) {
+        TravelDTO dto = null;
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
-		try {
-			sql = "SELECT * FROM travelLike WHERE travelNum = ? AND userId = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
-			pstmt.setString(2, userId);
+        try {
+            sb.append("SELECT t.travelNum, place, information, t.userid, userName, f.saveFileName, f.originalFileName, type ");
+            sb.append("   FROM travel t JOIN member m ON t.userid = m.userid");
+            sb.append("   LEFT OUTER JOIN (");
+            sb.append("      SELECT travelNum, GROUP_CONCAT(saveFileName) AS saveFileName, group_concat(originalFileName) AS originalFileName");
+            sb.append("      FROM travelFile");
+            sb.append("      WHERE travelNum = ? ");
+            sb.append("   GROUP BY travelNum ");
+            sb.append("   ) f ON t.travelNum = f.travelNum ");
+            sb.append("	  WHERE t.travelNum =? ");
 
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, num);
+            pstmt.setInt(2, num);
 
-			rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
 
-			if(!rs.next()){
-				sql = "INSERT INTO travelLike(travelNum, userId) VALUES (?,?)";
-				sql2 = "UPDATE travel SET likeNum=likeNum+1 WHERE travelNum=?";
-			} else {
-				sql = "DELETE FROM travelLike WHERE travelNum = ? AND userId = ?";
-				sql2 = "UPDATE travel SET likeNum=likeNum-1 WHERE travelNum=?";
-			}
+            if (rs.next()) {
+                dto = new TravelDTO();
 
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
-			pstmt.setString(2, userId);
-			pstmt.executeUpdate();
-			pstmt = conn.prepareStatement(sql2);
-			pstmt.setInt(1, num);
-			pstmt.executeUpdate();
+                dto.setNum(rs.getInt("travelNum"));
+                dto.setPlace(rs.getString("place"));
+                dto.setInformation(rs.getString("information"));
+                dto.setUserId(rs.getString("userid"));
+                dto.setUserName(rs.getString("userName"));
+                if (rs.getString("saveFileName") != null) {
+                    dto.setOriginalFileName(rs.getString("originalFileName").split(","));
+                    dto.setSaveFileName(rs.getString("saveFileName").split(","));
+                }
+                dto.setType(rs.getString("type"));
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	public void insertImage(TravelDTO dto ,String s) {
-		int result = 0;
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			if(dto.getNum() == 0){
-				sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( (SELECT MAX(travelNum) from travel), ?)";
-			} else {
-				sql = "INSERT INTO travelFile(travelNum, saveFilename) VALUES( "+ dto.getNum()  +", ?)";
-			}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return dto;
+    }
 
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, s);
+    public int updateTravel(TravelDTO dto) {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
 
-			result = pstmt.executeUpdate();
+        try {
+            sb.append("UPDATE travel SET place=?, information=? WHERE travelNum=?");
 
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, dto.getPlace());
+            pstmt.setString(2, dto.getInformation());
+            pstmt.setInt(3, dto.getNum());
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	public int deleteImage(String name) {
-		int result = 0;
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			
-			sql = "DELETE FROM travelFile WHERE saveFilename=? ";
-				
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, name);
-			result = pstmt.executeUpdate();
-		
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if(pstmt!=null) {
-				try {
-					pstmt.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
-		}
-		return result;
-	}	
-	
-	public WeatherDTO listWeather(String area) {
-		StringBuilder urlBuilder = new StringBuilder(BASE_URL);
-		URL url;
-		BufferedReader bf;
-		String line;
-		String result = "";
-		WeatherDTO dto = new WeatherDTO();
+            result = pstmt.executeUpdate();
 
-		try {
-			urlBuilder.append("?" + URLEncoder.encode("q", "UTF-8") + "=" + area);
-			urlBuilder.append("&" + URLEncoder.encode("appid", "UTF-8") + "=" + apiKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 
-			url = new URL(urlBuilder.toString());
+    public int deleteTravel(int num) {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
 
-			// openStream 메소드로 날씨 정보를 받아옴
-			bf = new BufferedReader(new InputStreamReader(url.openStream()));
+        try {
+            sb.append("DELETE FROM travel WHERE travelNum= ?");
 
-			// 버퍼에 있는 정보를 문자열로 변환
-			while((line = bf.readLine()) != null){
-				result = result.concat(line);
-			}
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, num);
 
-			JSONParser jsonParser = new JSONParser();
-			// To JSONObject
-			JSONObject jsonObj = (JSONObject) jsonParser.parse(result);
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 
-			JSONObject WeatherObj = (JSONObject) ((JSONArray) jsonObj.get("weather")).get(0);
-			JSONObject CoordObj = (JSONObject) jsonObj.get("main");
+    public int searchTravelLike(int num, String userId){
+        pstmt = null;
+        sb = new StringBuilder();
+        rs = null;
 
-			dto.setWeather(WeatherObj.get("main").toString() + ".svg");
-			dto.setTem(String.format("%.2f" , Float.parseFloat(String.valueOf(CoordObj.get("temp")))-273.15) );
+        try {
+            sb.append("SELECT * FROM travelLike WHERE travelNum = ? AND userId = ?");
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, num);
+            pstmt.setString(2, userId);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dto;
-	}
+            rs = pstmt.executeQuery();
 
-	public List<Map<String, String>> allTravelImage(){
+            if(rs.next()){
+                return 1;
+            }
 
-		String sql;
-		PreparedStatement pstmt = null;
-		ResultSet rs;
-		List<Map<String, String>> list = new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return 0;
+    }
 
-		try{
-			sql = "SELECT saveFilename, type FROM travelFile JOIN travel t ON travelFile.travelNum = t.travelNum";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
+    public void insertLike(int likeCount, int num, String userId) {
+        pstmt = null;
+        sb = new StringBuilder();
+        rs = null;
 
-			while(rs.next()){
-				Map<String, String> map = new HashMap<>();
-				map.put("saveFileName", rs.getString("saveFileName"));
-				map.put("type", rs.getString("type"));
-				list.add(map);
-			}
+        try {
+            if (likeCount <= 0) {
+                sb.append("INSERT INTO travelLike(travelNum, userId) VALUES (?,?)");
+            } else {
+                sb.append("DELETE FROM travelLike WHERE travelNum = ? AND userId = ?");
+            }
 
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, num);
+            pstmt.setString(2, userId);
+            pstmt.executeUpdate();
 
-		return list;
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertLikeCount(int likeCount, int num){
+        pstmt = null;
+        sb = new StringBuilder();
+        rs = null;
+
+        try {
+            if (likeCount <= 0) {
+                sb.append("UPDATE travel SET likeCount=likeCount+1 WHERE travelNum=?");
+            } else {
+                sb.append("UPDATE travel SET likeCount=likeCount-1 WHERE travelNum=?");
+            }
+
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, num);
+            pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertImage(TravelDTO dto, String originalFileName, String saveFileName) {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
+
+        try {
+            if (dto.getNum() == 0) {
+                sb.append("INSERT INTO travelFile(travelNum, originalFileName, saveFileName) VALUES((SELECT MAX(travelNum) from travel), ?, ?)");
+            } else {
+                sb.append("INSERT INTO travelFile(travelNum, originalFileName, saveFileName) VALUES(" + dto.getNum() + ", ?, ?)");
+            }
+
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, originalFileName);
+            pstmt.setString(2, saveFileName);
+
+            result = pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public int deleteImage(String name) {
+        int result = 0;
+        sb = new StringBuilder();
+        pstmt = null;
+
+        try {
+
+            sb.append("DELETE FROM travelFile WHERE saveFileName = ? ");
+
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, name);
+            result = pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
+    public WeatherDTO listWeather(String area) {
+        StringBuilder urlBuilder = new StringBuilder("https://api.openweathermap.org/data/2.5/weather");
+        URL url;
+        BufferedReader bf;
+        String line;
+        String result = "";
+        WeatherDTO dto = new WeatherDTO();
+
+        try {
+            urlBuilder.append("?" + URLEncoder.encode("q", "UTF-8") + "=" + area);
+            urlBuilder.append("&" + URLEncoder.encode("appid", "UTF-8") + "=" + apiKey);
+
+            url = new URL(urlBuilder.toString());
+
+            // openStream 메소드로 날씨 정보를 받아옴
+            bf = new BufferedReader(new InputStreamReader(url.openStream()));
+
+            // 버퍼에 있는 정보를 문자열로 변환
+            while ((line = bf.readLine()) != null) {
+                result = result.concat(line);
+            }
+
+            JSONParser jsonParser = new JSONParser();
+            // To JSONObject
+            JSONObject jsonObj = (JSONObject) jsonParser.parse(result);
+
+            JSONObject WeatherObj = (JSONObject) ((JSONArray) jsonObj.get("weather")).get(0);
+            JSONObject CoordObj = (JSONObject) jsonObj.get("main");
+
+            dto.setWeather(WeatherObj.get("main").toString() + ".svg");
+            dto.setTem(String.format("%.2f", Float.parseFloat(String.valueOf(CoordObj.get("temp"))) - 273.15));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    public List<Map<String, String>> allTravelImage() {
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
+        List<Map<String, String>> list = new ArrayList<>();
+
+        try {
+            sb.append("SELECT saveFileName, place, type FROM travelFile JOIN travel t ON travelFile.travelNum = t.travelNum");
+            pstmt = conn.prepareStatement(sb.toString());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String type = "";
+                Map<String, String> map = new HashMap<>();
+                map.put("saveFileName", rs.getString("saveFileName"));
+                map.put("place", rs.getString("place"));
+                switch (rs.getString("type")) {
+                    case "seoul":
+                        type = "서울";
+                        break;
+                    case "gangwon-do":
+                        type = "강원";
+                        break;
+                    case "chungcheongbuk-do":
+                        type = "충북";
+                        break;
+                    case "gwangju":
+                        type = "경주";
+                        break;
+                    case "gyeongsangbuk-do":
+                        type = "경북";
+                        break;
+                    case "jeju":
+                        type = "제주";
+                        break;
+                }
+                map.put("type", type);
+
+                list.add(map);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
