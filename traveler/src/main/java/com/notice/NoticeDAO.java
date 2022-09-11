@@ -469,14 +469,7 @@ public class NoticeDAO {
         pstmt = null;
 
         try {
-            sb.append("DELETE FROM noticeFile WHERE num = ? ");
-            pstmt = conn.prepareStatement(sb.toString());
-            pstmt.setInt(1, num);
-            pstmt.executeUpdate();
-            pstmt.close();
-
             sb.append("DELETE FROM notice WHERE num = ? ");
-
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, num);
             pstmt.executeUpdate();

@@ -62,13 +62,12 @@
                 <br>
                 <c:if test="${mode=='update'}">
                     <p>첨부된 파일</p>
+                    <div class="imageList">
                     <c:forEach var="dto" items="${list}">
-                        <c:if test="${not empty list}">
-                            ${dto.originalFileName}
-                            | <a href="javascript:deleteNoticeFile('${dto.num}', '${dto.fileNum}', '${mode}', '${page}');">삭제</a>
-                            <br>
-                        </c:if>
+                        ${dto.originalFileName} | <a href="javascript:deleteNoticeFile('${dto.num}', '${dto.fileNum}', '${mode}', '${page}');">삭제</a>
+                        <br>
                     </c:forEach>
+                    </div>
                 </c:if>
             </div>
             <div class="div-button">

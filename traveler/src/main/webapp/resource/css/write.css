@@ -26,7 +26,7 @@
 	border: none;
 	border-bottom: 1px solid black;
 	background: aliceblue;
-	padding: 3px 0px 3px 10px;
+	padding: 3px 0 3px 10px;
 }
 
 .writeBoardForm input[type=checkbox]{
@@ -71,10 +71,10 @@
 	padding: 3px 0 3px 10px;
 }
 
-.writeBoardForm .travel-box .imageList{
+.writeBoardForm .imageList{
 	display: inline-block;
 }
 
-.writeBoardForm .travel-box .imageList a{
+.writeBoardForm .imageList a{
 	color: crimson;
 }
