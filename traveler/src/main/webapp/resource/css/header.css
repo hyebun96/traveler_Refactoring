@@ -1,5 +1,5 @@
 .header-top {
-    margin: 0px auto;
+    margin: 0 auto;
     width: 1080px;
     clear: both;
 }
@@ -32,7 +32,7 @@
 }
 
 .header-top .header-right .menu {
-    margin:0px auto;
+    margin:0 auto;
     width: 660px;
     min-height: 40px;
     clear: both;
