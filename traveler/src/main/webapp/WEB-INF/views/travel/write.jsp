@@ -41,12 +41,12 @@
                 <label>
                     <select name="type">
                         <option value="${dto.type}">::지역선택::</option>
-                        <option value="Seoul" ${dto.type == "seoul" ? "selected='selected'" : ""}>서울</option>
-                        <option value="Gangwon-do" ${dto.type == "gangwon-do" ? "selected='selected'" : ""}>강원</option>
-                        <option value="Chungcheongbuk-do" ${dto.type == "chungcheongbuk-do" ? "selected='selected'" : ""}>충북</option>
-                        <option value="Gwangju" ${dto.type == "gwangju" ? "selected='selected'" : ""}>광주</option>
-                        <option value="Gyeongsangbuk-do" ${dto.type == "gyeongsangbuk-do" ? "selected='selected'" : ""}>경북</option>
-                        <option value="Jeju" ${dto.type == "jeju" ? "selected='selected'" : ""}>제주</option>
+                        <option value="Seoul" ${dto.type == "Seoul" ? "selected='selected'" : ""}>서울</option>
+                        <option value="Gangwon-do" ${dto.type == "Gangwon-do" ? "selected='selected'" : ""}>강원</option>
+                        <option value="Chungcheongbuk-do" ${dto.type == "Chungcheongbuk-do" ? "selected='selected'" : ""}>충북</option>
+                        <option value="Gwangju" ${dto.type == "Gwangju" ? "selected='selected'" : ""}>광주</option>
+                        <option value="Gyeongsangbuk-do" ${dto.type == "Gyeongsangbuk-do" ? "selected='selected'" : ""}>경북</option>
+                        <option value="Jeju" ${dto.type == "Jeju" ? "selected='selected'" : ""}>제주</option>
                     </select>
                 </label>
                 <p>장&nbsp;&nbsp;&nbsp;소 </p>

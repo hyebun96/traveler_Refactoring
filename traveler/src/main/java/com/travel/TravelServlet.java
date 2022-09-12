@@ -138,7 +138,7 @@ public class TravelServlet extends MyUploadServlet {
 			Map<String, String[]> map = doFileUpload(list, pathname);
 			if (map != null) {
 				String[] originalFileNames = map.get("originalFilenames");
-				String[] saveFileNames = map.get("saveFileNames");
+				String[] saveFileNames = map.get("saveFilenames");
 				for (int i = 0; i < originalFileNames.length; i++) {
 					dao.insertImage(dto, originalFileNames[i], saveFileNames[i]);
 				}
@@ -214,7 +214,7 @@ public class TravelServlet extends MyUploadServlet {
 			Map<String, String[]> map = doFileUpload(list, pathname);
 			if (map != null) {
 				String[] originalFileNames = map.get("originalFilenames");
-				String[] saveFileNames = map.get("saveFileNames");
+				String[] saveFileNames = map.get("saveFilenames");
 				for (int i = 0; i < originalFileNames.length; i++) {
 					dao.insertImage(dto, originalFileNames[i], saveFileNames[i]);
 				}

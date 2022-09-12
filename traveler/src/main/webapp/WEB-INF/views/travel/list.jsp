@@ -16,6 +16,7 @@
 
 	<script src="https://code.jquery.com/jquery-3.6.0.js"
 			integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="<%=cp%>/resource/js/travel.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -59,8 +60,8 @@
 				</div>
 				<c:if test="${sessionScope.member.userId == 'admin'}">
 				<div class="div-button">
-					<button type="button" onclick="location.href='<%=cp%>/travel/update.do?num=${dto.num}&type=${type}'">글수정</button>
-					<button type="button" onclick="location.href='<%=cp%>/travel/delete.do?num=${dto.num}&type=${type}'">글삭제</button>
+					<button type="button" onclick="updateTravel('${dto.num}', '${type}')">글수정</button>
+					<button type="button" onclick="deleteTravel('${dto.num}', '${type}')">글삭제</button>
 				</div>
 				</c:if>
 				<br>
