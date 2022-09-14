@@ -110,7 +110,7 @@ button {
 	background: aliceblue;
 }
 
-/* tavel_list */
+/* tavel */
 .travel{
 	width:800px;
 	margin: 10px auto 50px;
@@ -199,7 +199,7 @@ button {
 	margin: 15px;
 }
 
-/* 하트 CSS 추가 */
+/* Travel 하트 CSS 추가 */
 .ico_like {
 	cursor: pointer;
 	width: 25px;
@@ -230,4 +230,35 @@ button {
 	60% {transform: scale( 1 ); }
 	80% {transform: scale( .75 ); }
 	100% {transform: scale( .75 ); }
+}
+
+/* contact */
+.board .menu {
+	width: 100%;
+	margin : 0;
+	padding : 0;
+}
+
+.board .menu td{
+	width: 120px;
+	height: 32px;
+	font-size: 13px;
+	text-align: center;
+	border: 1px solid black;
+	background: aliceblue;
+}
+
+.board .menu td:last-child, .board .menu td:last-child:hover {
+	width: 400px;
+	border: none;
+	background: white;
+	border-bottom: 1px solid black;
+}
+
+.board .menu td:hover, .board .menu .active{
+	border: none;
+	border-top: 2px solid black;
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+	background: white;
 }

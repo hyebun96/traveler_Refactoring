@@ -5,94 +5,99 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Traveler</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
-    <link rel="stylesheet" href="<%=cp %>/resource/css/contact_view.css" type="text/css">
-    <script type="text/javascript">
-        function deleteContact(ctNum) {
-            <c:if test="${sessionScope.member.userId=='admin'}">
-            var query = "ctNum=" + ctNum + "&${query}";
-            var url = "<%=cp%>/contact/delete.do?" + query;
+    <link rel="stylesheet" href="<%=cp%>/resource/css/contact.css" type="text/css">
 
-            if (confirm("자료를 삭제 하시 겠습니까 ? "))
-                location.href = url;
-            </c:if>
-        }
-
-        function finContact(ctNum) {
-            <c:if test="${sessionScope.member.userId=='admin'}">
-            var query = "ctNum=" + ctNum + "&${query}";
-            var url = "<%=cp%>/contact/update.do?" + query;
-
-            if (confirm("완료처리 하시 겠습니까 ? "))
-                location.href = url;
-            </c:if>
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/contact.js"></script>
 </head>
-
 <body>
+    <div class="header">
+        <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+    </div>
+    <div class="navigation">
+        <div class="nav-bar">HOME > CONTACT 목록 확인</div>
+    </div>
 
-<div class="header">
-    <jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
-</div>
-<div class="navigation">
-    <div class="nav-bar">HOME > CONTACT목록확인</div>
-</div>
+    <div class="contact">
+        <h3>CONTACT</h3>
+        <br>
 
-
-<div class="viewboard">
-    <table class="view-table">
-        <tr style="border-top: 2px solid black;">
-            <td class="viewbox">작성자</td>
-            <td class="viewcontent">${dto.ctName}</td>
-        </tr>
-        <tr>
-            <td class="viewbox">전화번호</td>
-            <td class="viewcontent">${dto.ctTel}</td>
-        </tr>
-        <tr>
-            <td class="viewbox">이메일</td>
-            <td class="viewcontent">${dto.ctEmail}</td>
-        </tr>
-        <tr>
-
-            <td class="viewbox">작성시간</td>
-            <td class="viewcontent">${dto.ctDate}</td>
-        </tr>
-        <tr>
-            <td class="viewbox">제목</td>
-            <td class="viewcontent">${dto.ctSort=='sugg' ? '제안':(dto.ctSort=='edit' ? '정보수정요청': (dto.ctSort=='ad'?'광고문의' : '기타'))}| ${dto.ctSubject}</td>
-        </tr>
-        <tr>
-            <td class="viewbox" style="height: 200px;">내용</td>
-            <td style="height: 200px;">${dto.ctContent }</td>
-
-        </tr>
-
-    </table>
-
-    <div align="right">
-        <button type="button" onclick="javascript:location.href='<%=cp%>/contact/list.do?${query}';">목록으로</button>
-        <c:if test="${dto.fin==0}">
-            <button type="button" class="btn" onclick="finContact('${dto.ctNum}');">완료처리</button>
-        </c:if>
-        <button type="button" class="btn" onclick="deleteContact('${dto.ctNum}');">삭제</button>
         <input type="hidden" name="ctNum" value="${dto.ctNum}">
         <input type="hidden" name="page" value="${page}">
         <input type="hidden" name="rows" value="${rows}">
+
+        <div class="contactView">
+        <ul class="list-row">
+            <li class="col-sub2">작성자</li>
+            <li class="col-input2">${dto.ctName}</li>
+            <li class="col-sub2">분류</li>
+            <li class="col-input2">${dto.ctSort}</li>
+        </ul>
+        <ul class="list-row">
+            <li class="col-sub2">전화번호</li>
+            <li class="col-input3">${dto.ctTel}</li>
+        </ul>
+        <ul class="list-row">
+            <li class="col-sub2">작성시간</li>
+            <li class="col-input3">${dto.ctDate}</li>
+        </ul>
+        <ul class="list-row">
+            <li class="col-sub2">제목</li>
+            <li class="col-input3">${dto.ctSubject}</li>
+        </ul>
+        <ul class="list-row">
+            <li class="col-sub2">내용</li><br>
+            <li class="col-text">${dto.ctContent}</li>
+            <li class="div-button">
+                <button type="button" class="btn-hover" onclick="javascript:location.href='<%=cp%>/contact/list.do?${query}';">목록으로</button>
+                <button type="button" class="btn btn-hover" onclick="deleteContact('${dto.ctNum}', '${sessionScope.member.userId}', '${query}');">삭제</button>
+            </li>
+        </ul>
+        </div>
+
+        <form class="contactView" name="mailForm" method="post">
+            <ul class="list-row">
+                <li class="col-input3">관리자는 이메일로 회신이 가능합니다.</li>
+            </ul>
+            <ul class="list-row">
+                <li class="col-sub2">보내는 사람</li>
+                <li class="col-input3"><input name="senderEmail" value="hyebun1996@gmail.com" readonly></li>
+            </ul>
+            <ul class="list-row">
+                <li class="col-sub2">받는 사람</li>
+                <li class="col-input3"><input name="receiverEmail" value="${dto.ctEmail}"></li>
+            </ul>
+            <ul class="list-row">
+                <li class="col-sub2">제목</li>
+                <li class="col-input3">
+                    <input type="text" name="subject" value="Re : '${dto.ctSubject}' 대한 답변입니다.">
+                </li>
+            </ul>
+            <ul class="list-row">
+                <li class="col-sub2">내용</li><br>
+                <li class="col-input3">
+                    <textarea name="contant"></textarea>
+                </li>
+                <li class="div-button">
+                    <button type="button" class="btn-hover" onclick="mailContact('${query}')">메일전송</button>
+                    <button type="button" class="btn btn-hover" onclick="doneORUndoneContact('${dto.ctNum}', '${sessionScope.member.userId}', ${dto.fin}, '${query}');">
+                        ${dto.fin == 0 ? '완료 처리' : '미완료처리' }
+                    </button>
+                </li>
+            </ul>
+        </form>
     </div>
-</div>
-<div class="footer">
-    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
-</div>
-<script type="text/javascript" src="<%=cp%>/resource/jquery/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="<%=cp%>/resource/jquery/js/jquery.ui.datepicker-ko.js"></script>
+
+    <div class="footer">
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+    </div>
 </body>
 </html>

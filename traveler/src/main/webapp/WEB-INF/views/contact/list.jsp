@@ -5,107 +5,86 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Traveler</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
-    <link rel="stylesheet" href="<%=cp%>/resource/css/contact_list.css" type="text/css">
-    <script type="text/javascript">
-        function searchList() {
-            var f = document.searchForm;
-            f.action = "<%=cp%>/contact/list.do"
-            f.submit();
-        }
+    <link rel="stylesheet" href="<%=cp%>/resource/css/notice_list.css" type="text/css">
 
-        function searchList2(ctSort) {
-            var f = document.searchForm;
-            f.ctSort.value = ctSort;
-            f.action = "<%=cp%>/contact/list.do"
-            f.submit();
-        }
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/contact.js"></script>
 </head>
 <body>
+    <div class="header">
+        <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+    </div>
+    <div class="navigation">
+        <div class="nav-bar">HOME > CONTACT목록확인</div>
+    </div>
 
-<div class="header">
-    <jsp:include page="/WEB-INF/views/layout/header.jsp"></jsp:include>
-</div>
-<div class="navigation">
-    <div class="nav-bar">HOME > CONTACT목록확인</div>
-</div>
-
-<div class="board">
-    <div>
+    <div class="board">
         <h3>CONTACT 목록 확인</h3>
-    </div>
-    <div style="text-align: right;">
-        <table>
+        <form name="searchForm" action="<%=cp%>/contact/list.do" method="post">
+            <div>
+                <label>
+                    <select name="condition">
+                        <option value="ctSubject" ${condition=="ctSubject"?"selected='selected'":""}>글제목</option>
+                        <option value="ctContent" ${condition=="ctContent"?"selected='selected'":""}>글내용</option>
+                        <option value="ctName" ${condition=="ctName"?"selected='selected'":""}>작성자</option>
+                    </select>
+                </label>
+                <input type="text" name="keyword" value="${keyword}">
+                <input type="hidden" name="ctSort" value="${ctSort}">
+                <button class="btn btn-hover" type="button" onclick="searchList()">검색</button>
+                <button class="btn-hover" type="button" onclick="location.href='<%=cp%>/contact/list.do';">새로고침</button>
+            </div>
+        </form>
+
+        <br>
+        <br>
+
+        <table class="menu">
             <tr>
-                <td>
-                    <form name="searchForm" action="<%=cp%>/contact/list.do" method="post">
-                        <select name="condition" style="height: 23px;">
-                            <option value="ctSubject" ${condition=="ctSubject"?"selected='selected'":""}>글제목</option>
-                            <option value="ctContent" ${condition=="ctContent"?"selected='selected'":""}>글내용</option>
-                            <option value="ctName" ${condition=="ctName"?"selected='selected'":""}>작성자</option>
-                        </select>
-                        <input type="hidden" name="rows" value="${rows}">
-                        <input type="hidden" name="ctNum" value="${ctNum}">
-                        <input type="hidden" name="ctSort" value="${ctSort}">
-                        <input type="text" name="keyword" value="${keyword}">
-                        <button type="button" class="btn" onclick="searchList()">검색</button>
-                    </form>
-                </td>
+                <td id="menu-all"><a href="javascript:searchList2('all');">전체</a></td>
+                <td id="menu-sugg"><a href="javascript:searchList2('sugg');">제안</a></td>
+                <td id="menu-edit"><a href="javascript:searchList2('edit');">정보 수정 요청</a></td>
+                <td id="menu-ad"><a href="javascript:searchList2('ad');">광고문의</a></td>
+                <td id="menu-etc"><a href="javascript:searchList2('etc');">기타</a></td>
+                <td><input hidden id="ctSort" type="hidden" name="ctSort" value="${ctSort}"></td>
             </tr>
         </table>
-        <table style="margin-bottom: 20px;">
-            <tr>
-                <td style="padding-right: 20px;"><a href="javascript:searchList2('sugg');">제안</a></td>
-                <td style="padding-right: 20px;"><a href="javascript:searchList2('edit');">정보수정요청</a></td>
-                <td style="padding-right: 20px;"><a href="javascript:searchList2('ad');">광고문의</a></td>
-                <td style="padding-right: 20px;"><a href="javascript:searchList2('etc');">기타</a></td>
-                <td><a onclick="javascript:location.href='<%=cp%>/contact/list.do';">새로고침</a></td>
-            </tr>
-        </table>
-    </div>
-    <div>
+
+        <br>
+
         <table class="board-table">
-            <tr style="border-bottom: 2px solid black;">
-                <td width="100">분류</td>
-                <td width="50">번호</td>
-                <td style="width: 50%">제목</td>
-                <td>작성자</td>
+            <tr class="board-tr">
+                <td>분류</td>
+                <td>번호</td>
+                <td class="board-title">제목</td>
+                <td class="board-writer">작성자</td>
                 <td>작성일</td>
             </tr>
             <c:forEach var="dto" items="${list}">
-                <tr style="background-color:${dto.fin==1 ? '#85C1E9 ':''}">
-                    <td>${dto.ctSort=='sugg' ? '제안':(dto.ctSort=='edit' ? '정보수정요청': (dto.ctSort=='ad'?'광고문의' : '기타'))}</td>
+                <tr style="background-color:${dto.fin==1 ? '#efefef':''}">
+                    <td>${dto.ctSort}</td>
                     <td>${dto.ctNum }</td>
                     <td class="board-title"><a href="${viewUrl}&ctNum=${dto.ctNum}">${dto.ctSubject}</a></td>
-                    <td>${dto.ctName }</td>
+                    <td class="board-writer">${dto.ctName }</td>
                     <td>${dto.ctDate}</td>
-
                 </tr>
             </c:forEach>
-        </table>
-
-        <table style="width: 100%; margin: 0px auto; border-spacing: 0px;">
-            <tr height="35">
-                <td align="center">
-                    ${dataCount==0?"등록된 게시물이 없습니다.":paging}
-                </td>
+            <tr class="board-paging" height="35">
+                ${dataCount == 0 ? "<td colspan='5'>등록된 게시물이 없습니다.<td>" : paging}
             </tr>
         </table>
     </div>
-</div>
 
-
-<div class="footer">
-    <jsp:include page="/WEB-INF/views/layout/footer.jsp"></jsp:include>
-</div>
-
+    <div class="footer">
+        <jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
+    </div>
 </body>
 </html>
