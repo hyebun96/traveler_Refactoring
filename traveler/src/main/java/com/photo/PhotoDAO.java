@@ -1,5 +1,8 @@
 package com.photo;
 
+import com.mysql.cj.protocol.Resultset;
+import com.util.DBConn;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,41 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.member.MemberDTO;
-import com.util.DBConn;
-
 public class PhotoDAO {
-    private Connection conn = DBConn.getConnection();
-
-    public int insertPhoto(PhotoDTO dto) {
-        int result = 0;
-        PreparedStatement pstmt = null;
-        String sql;
-
-        sql = "INSERT INTO photo (userId,subject, content, imageFilename ) VALUES (?,?,?,?)";
-        try {
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, dto.getUserId());
-            pstmt.setString(2, dto.getSubject());
-            pstmt.setString(3, dto.getContent());
-            pstmt.setString(4, dto.getImageFilename());
-
-            result = pstmt.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return result;
-    }
+    private final Connection conn = DBConn.getConnection();
+    private StringBuilder sb;
+    private PreparedStatement pstmt;
+    private ResultSet rs;
 
     public int dataCount() {
         int result = 0;
@@ -66,7 +39,6 @@ public class PhotoDAO {
                     e.printStackTrace();
                 }
             }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -75,21 +47,118 @@ public class PhotoDAO {
                 }
             }
         }
-
         return result;
+    }
+
+    public void insertPhoto(PhotoDTO dto) {
+        sb = new StringBuilder();
+        pstmt = null;
+
+        sb.append("INSERT INTO photo (userId,subject, content, imageFilename ) VALUES (?,?,?,?)");
+        try {
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, dto.getUserId());
+            pstmt.setString(2, dto.getSubject());
+            pstmt.setString(3, dto.getContent());
+            pstmt.setString(4, dto.getImageFilename());
+
+            pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void insertTag(String tag, int photoNum){
+        sb = new StringBuilder();
+        pstmt = null;
+
+        try {
+            sb.append("INSERT INTO photoTag(tag, photoNum) VALUES(?, ?)");
+
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setString(1, tag);
+            pstmt.setInt(2, photoNum);
+
+            pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public List<TagDTO> readTag(int photoNum){
+        List<TagDTO> list = new ArrayList<>();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
+
+        try {
+            sb.append("SELECT tagNum, tag, photoNum FROM photoTag WHERE photoNum = ?");
+
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, photoNum);
+
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                TagDTO tagDTO = new TagDTO();
+
+                tagDTO.setTagNum(rs.getInt("tagNum"));
+                tagDTO.setTag(rs.getString("tag"));
+                tagDTO.setPhotoNum(rs.getInt("photoNum"));
+
+                list.add(tagDTO);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(rs!= null){
+                try{
+                    rs.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     public List<PhotoDTO> listPhoto(int offset, int rows) {
         List<PhotoDTO> list = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sb.append("SELECT photoNum, p.userId ,subject, imageFilename  ");
-            sb.append(" FROM photo p JOIN member m ON p.userId = m.userId  ");
-            sb.append(" ORDER BY photoNum DESC  ");
-            sb.append(" LIMIT ? OFFSET ?");
+            sb.append("SELECT photoNum, userId , place, subject, content, ");
+            sb.append("   imageFilename, DATE_FORMAT(created,'%Y-%m-%d') AS created  ");
+            sb.append("   FROM photo");
+            sb.append("   ORDER BY photoNum DESC ");
+            sb.append("   LIMIT ? OFFSET ?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, rows);
@@ -101,45 +170,46 @@ public class PhotoDAO {
                 PhotoDTO dto = new PhotoDTO();
                 dto.setPhotoNum(rs.getInt("photoNum"));
                 dto.setUserId(rs.getString("userId"));
-                dto.setContent(rs.getString("subject"));
+                dto.setPlace(rs.getString("place"));
+                dto.setSubject(rs.getString("subject"));
+                dto.setContent(rs.getString("content"));
                 dto.setImageFilename(rs.getString("imageFilename"));
+                dto.setCreated(rs.getString("created"));
 
                 list.add(dto);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+            }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
                 }
             }
         }
-
         return list;
     }
 
     public PhotoDTO readPhoto(int photoNum) {
         PhotoDTO dto = null;
-
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
+        pstmt = null;
+        rs = null;
 
         try {
-            sb.append("SELECT photoNum, userId, content, subject, imageFilename ");
-            sb.append(" FROM photo ");
-            sb.append(" WHERE photoNum=?");
+            sb.append("SELECT photoNum, userId , place, subject, content, ");
+            sb.append("   imageFilename, tag, DATE_FORMAT(created,'%Y-%m-%d') AS created  ");
+            sb.append("   FROM photo");
+            sb.append("   WHERE photoNum=?");
 
             pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, photoNum);
@@ -149,21 +219,16 @@ public class PhotoDAO {
                 dto = new PhotoDTO();
                 dto.setPhotoNum(rs.getInt("photoNum"));
                 dto.setUserId(rs.getString("userId"));
-                dto.setContent(rs.getString("content"));
+                dto.setPlace(rs.getString("place"));
                 dto.setSubject(rs.getString("subject"));
+                dto.setContent(rs.getString("content"));
                 dto.setImageFilename(rs.getString("imageFilename"));
+                dto.setCreated(rs.getString("created"));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
             if (pstmt != null) {
                 try {
                     pstmt.close();
@@ -171,221 +236,20 @@ public class PhotoDAO {
                     e.printStackTrace();
                 }
             }
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
         return dto;
     }
 
-    public List<PhotoDTO> listPhotoUser(int offset, int rows) {
-        List<PhotoDTO> list = new ArrayList<PhotoDTO>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            sb.append("SELECT photoNum, p.userId ,subject, p.imageFilename, m.userName  ");
-            sb.append(" FROM photo p JOIN member m ON p.userId = m.userId  ");
-            sb.append(" ORDER BY photoNum DESC  ");
-            sb.append(" LIMIT ? OFFSET ?");
-
-            pstmt = conn.prepareStatement(sb.toString());
-            pstmt.setInt(1, rows);
-            pstmt.setInt(2, offset);
-
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                PhotoDTO dto = new PhotoDTO();
-                dto.setPhotoNum(rs.getInt("photoNum"));
-                dto.setUserId(rs.getString("userId"));
-                dto.setSubject(rs.getString("subject"));
-                dto.setImageFilename(rs.getString("imageFilename"));
-                dto.setUserName(rs.getString("userName"));
-
-                list.add(dto);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return list;
-    }
-
-    public List<MemberDTO> listMemberUser(int offset, int rows) {
-        List<MemberDTO> list = new ArrayList<MemberDTO>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();
-
-        try {
-            sb.append("SELECT userId , userName  ");
-            sb.append(" FROM member ");
-            sb.append(" LIMIT ? OFFSET ?");
-
-            pstmt = conn.prepareStatement(sb.toString());
-            pstmt.setInt(1, rows);
-            pstmt.setInt(2, offset);
-
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                MemberDTO dto = new MemberDTO();
-                dto.setUserId(rs.getString("userId"));
-                dto.setUserName(rs.getString("userName"));
-
-                list.add(dto);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return list;
-    }
-
-    public List<PhotoDTO> listPhotoUser(String keyword) {
-        List<PhotoDTO> list = new ArrayList<>();
-
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuffer sb = new StringBuffer();
-
-        try {
-            sb.append("SELECT photoNum, p.userId, p.imageFilename,  ");
-            sb.append("       subject, content, m.userName  ");
-            sb.append(" FROM photo p JOIN member m ON p.userId = m.userId  ");
-            sb.append(" where p.userId = ? ");
-
-
-            pstmt = conn.prepareStatement(sb.toString());
-
-            pstmt.setString(1, keyword);
-
-
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                PhotoDTO dto = new PhotoDTO();
-                dto.setPhotoNum(rs.getInt("photoNum"));
-                dto.setUserId(rs.getString("userId"));
-                dto.setImageFilename(rs.getString("imageFilename"));
-                dto.setSubject(rs.getString("subject"));
-                dto.setContent(rs.getString("content"));
-                dto.setUserName(rs.getString("userName"));
-
-                list.add(dto);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return list;
-    }
-
-    public List<MemberDTO> listMemberUser(String keyword) {
-        List<MemberDTO> list = new ArrayList<>();
-
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        StringBuffer sb = new StringBuffer();
-
-        try {
-            sb.append("SELECT userName, userId  ");
-            sb.append(" FROM member  ");
-            sb.append(" where userId = ? ");
-
-            pstmt = conn.prepareStatement(sb.toString());
-
-            pstmt.setString(1, keyword);
-
-
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                MemberDTO dto = new MemberDTO();
-
-                dto.setUserId(rs.getString("userId"));
-                dto.setUserName(rs.getString("userName"));
-
-                list.add(dto);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return list;
-    }
-
-
-    public int updatePhoto(PhotoDTO dto) {
-        int result = 0;
-        PreparedStatement pstmt = null;
-        StringBuilder sb = new StringBuilder();
+    public void updatePhoto(PhotoDTO dto) {
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
             sb.append("UPDATE photo SET subject=?, content=?,  imageFilename=? ");
@@ -397,8 +261,8 @@ public class PhotoDAO {
             pstmt.setString(3, dto.getImageFilename());
             pstmt.setInt(4, dto.getPhotoNum());
 
+            pstmt.executeUpdate();
 
-            result = pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -410,20 +274,17 @@ public class PhotoDAO {
                 }
             }
         }
-
-        return result;
     }
 
-    public int deletePhoto(int photoNum) {
-        int result = 0;
-        PreparedStatement pstmt = null;
-        String sql;
+    public void deletePhoto(int photoNum) {
+        sb = new StringBuilder();
+        pstmt = null;
 
         try {
-            sql = "DELETE FROM photo WHERE photoNum=?";
-            pstmt = conn.prepareStatement(sql);
+            sb.append("DELETE FROM photo WHERE photoNum = ?");
+            pstmt = conn.prepareStatement(sb.toString());
             pstmt.setInt(1, photoNum);
-            result = pstmt.executeUpdate();
+            pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -435,8 +296,27 @@ public class PhotoDAO {
                 }
             }
         }
-
-        return result;
     }
 
+    public void removeTag(int tagNum) {
+        sb = new StringBuilder();
+        pstmt = null;
+
+        try {
+            sb.append("DELETE FROM photoTag WHERE tagNum = ?");
+            pstmt = conn.prepareStatement(sb.toString());
+            pstmt.setInt(1, tagNum);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
