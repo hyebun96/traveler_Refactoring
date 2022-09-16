@@ -57,8 +57,6 @@ public class QnaServlet extends HttpServlet {
             replySubmit(req, resp);
         } else if (uri.contains("delete.do")) {
             delelte(req, resp);
-        } else if (uri.contains("access.do")) {
-            access(req, resp);
         }
     }
 
@@ -362,27 +360,4 @@ public class QnaServlet extends HttpServlet {
         dao.deleteQna(qnaNum, info.getUserId());
         resp.sendRedirect(cp + "/qna/list.do?" + query);
     }
-
-    protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String page = req.getParameter("page");
-        if(page == null){
-            page = "1";
-        }
-        String query =  "/qna/list.do?" + "page=" + page;
-        String condition = req.getParameter("condition");
-        String keyword = req.getParameter("keyword");
-        if (condition == null) {
-            condition = "subject";
-            keyword = "";
-        }
-        keyword = URLDecoder.decode(keyword, "utf-8");
-        if (keyword.length() != 0) {
-            query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
-        }
-
-        req.setAttribute("query", query);
-
-        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
-    }
-
 }

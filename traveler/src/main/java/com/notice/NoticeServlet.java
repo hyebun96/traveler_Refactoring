@@ -53,8 +53,6 @@ public class NoticeServlet extends MyUploadServlet {
             download(req, resp);
         } else if (uri.contains("deleteFile.do")) {
             deleteFile(req, resp);
-        } else if (uri.contains("access.do")) {
-            access(req, resp);
         }
     }
 
@@ -408,24 +406,4 @@ public class NoticeServlet extends MyUploadServlet {
         forward(req, resp, "/WEB-INF/views/notice/write.jsp");
 
     }
-
-    protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String page = req.getParameter("page");
-        String query =  "/notice/list.do?" + "page=" + page;
-        String condition = req.getParameter("condition");
-        String keyword = req.getParameter("keyword");
-        if (condition == null) {
-            condition = "title";
-            keyword = "";
-        }
-        keyword = URLDecoder.decode(keyword, "utf-8");
-        if (keyword.length() != 0) {
-            query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
-        }
-
-        req.setAttribute("query", query);
-
-        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
-    }
-
 }

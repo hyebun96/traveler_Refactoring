@@ -150,7 +150,7 @@ public class MemberServlet extends MyUploadServlet {
 			return;
 		}
 		
-		resp.sendRedirect(cp+"/member/main.do");
+		resp.sendRedirect(cp+"/main/main.do");
 	}		 
 
 	private void pwdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

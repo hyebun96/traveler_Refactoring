@@ -4,7 +4,9 @@ function searchList() {
 }
 
 function memberOnly() {
-    const url = "/traveler_war_exploded/qna/access.do?";
+    const returnPage = "&returnPage=" + "/qna/list.do";
+
+    const url = "/traveler_war_exploded/main/access.do?" + returnPage;
     location.href = url;
 }
 

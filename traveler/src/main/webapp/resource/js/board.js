@@ -29,13 +29,14 @@ function createBoard(mode) {
 function updateBoard(num, loginUserId, boardWriteId, page, query) {
     let url;
     query = "num=" + num + "&page=" + page + "&" + query;
+    const returnPage = "&returnPage=" + "/board/view.do";
 
     if(loginUserId === boardWriteId){
         url = "/traveler_war_exploded/board/update.do?" + query;
         location.href = url;
     }
     if(loginUserId !== boardWriteId){
-        url = "/traveler_war_exploded/board/access.do?" + query;
+        url = "/traveler_war_exploded/main/access.do?" + query + returnPage;
         location.href = url;
     }
 
@@ -44,6 +45,7 @@ function updateBoard(num, loginUserId, boardWriteId, page, query) {
 function deleteBoard(num, loginUserId, boardWriteId, query) {
     let url;
     query = "num=" + num + "&" + query;
+    const returnPage = "&returnPage=" + "/board/view.do";
     
     if(loginUserId === 'admin' || loginUserId === boardWriteId){
         url = "/traveler_war_exploded/board/delete.do?" + query;
@@ -52,7 +54,7 @@ function deleteBoard(num, loginUserId, boardWriteId, query) {
     }
 
     if(loginUserId !== 'admin' && loginUserId !== boardWriteId){
-        url = "/traveler_war_exploded/board/access.do?" + query;
+        url = "/traveler_war_exploded/main/access.do?" + query + returnPage;
         location.href = url;
     }
 }

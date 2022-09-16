@@ -13,8 +13,8 @@
 <div class="header-top">
     <div class="header-left">
         <p>
-            <a href="<%=cp %>/main.do">
-                <img id="logo" alt="HOME" src="<%=cp %>/resource/img/logo3.png">
+            <a href="<%=cp%>/main/main.do">
+                <img id="logo" alt="HOME" src="<%=cp%>/resource/img/logo3.png">
             </a>
         </p>
     </div>

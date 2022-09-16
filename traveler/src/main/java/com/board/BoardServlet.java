@@ -21,13 +21,11 @@ public class BoardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         process(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // TODO Auto-generated method stub
         process(req, resp);
     }
 
@@ -56,8 +54,6 @@ public class BoardServlet extends HttpServlet {
             updateSubmit(req, resp);
         } else if (uri.contains("delete.do")) {
             delete(req, resp);
-        } else if (uri.contains("access.do")) {
-            access(req, resp);
         }
     }
 
@@ -266,24 +262,5 @@ public class BoardServlet extends HttpServlet {
 
         dao.deleteBoard(num, info.getUserId());
         resp.sendRedirect(cp + "/board/list.do?" + query);
-    }
-
-    protected void access(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String cp = req.getContextPath();
-        String page = req.getParameter("page");
-        String query = "/board/list.do?" + "page=" + page;
-        String condition = req.getParameter("condition");
-        String keyword = req.getParameter("keyword");
-        if (condition == null) {
-            condition = "title";
-            keyword = "";
-        }
-        keyword = URLDecoder.decode(keyword, "utf-8");
-        if (keyword.length() != 0) {
-            query += "&condition=" + condition + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
-        }
-
-        req.setAttribute("query", query);
-        forward(req, resp, "/WEB-INF/views/layout/access.jsp");
     }
 }

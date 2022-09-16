@@ -52,25 +52,25 @@ function updateNotice(num, loginUserId, boardWriteId, page, query) {
     }
     if(loginUserId !== boardWriteId){
         query = "num=" + num + "&" + query;
-        url = "/traveler_war_exploded/notice/access.do?" + query;
+        const returnPage = "&returnPage=" + "/notice/list.do";
+        url = "/traveler_war_exploded/main/access.do?" + query + returnPage;
         location.href = url;
     }
 }
 
 function deleteNotice(num, loginUserId, boardWriteId, query) {
     let url;
+    query = "num=" + num + "&" + query;
 
     if(loginUserId === 'admin' || loginUserId === boardWriteId){
-        query = "num=" + num + "&" + query;
         url = "/traveler_war_exploded/notice/delete.do?" + query;
-
         if (confirm("자료를 삭제 하시 겠습니까 ? ")){
             location.href = url;
         }
     }
     if(loginUserId !== 'admin' && loginUserId !== boardWriteId){
-        query = "num=" + num + "&" + query;
-        url = "/traveler_war_exploded/notice/access.do?" + query;
+        const returnPage = "&returnPage=" + "/notice/list.do";
+        url = "/traveler_war_exploded/main/access.do?" + query + returnPage;
         location.href = url;
     }
 }

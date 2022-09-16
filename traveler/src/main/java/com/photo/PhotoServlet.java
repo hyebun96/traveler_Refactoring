@@ -282,7 +282,8 @@ public class PhotoServlet extends MyUploadServlet {
         SessionInfo info = (SessionInfo) session.getAttribute("member");
 
         if(info == null){
-            resp.sendRedirect(cp + "/board/access.do");
+            String returnPage = "returnPage=" + "/photo/list.do";
+            resp.sendRedirect(cp + "/main/access.do?" + returnPage);
             return;
         }
 
@@ -302,7 +303,8 @@ public class PhotoServlet extends MyUploadServlet {
         SessionInfo info = (SessionInfo) session.getAttribute("member");
 
         if(info == null){
-            resp.sendRedirect(cp + "/board/access.do");
+            String returnPage = "returnPage=" + "/photo/list.do";
+            resp.sendRedirect(cp + "/main/access.do?" + returnPage);
             return;
         }
 

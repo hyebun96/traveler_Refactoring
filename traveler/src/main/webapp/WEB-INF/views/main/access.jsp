@@ -5,7 +5,6 @@
 <%
     String cp = request.getContextPath();
 %>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -23,7 +22,7 @@
         <div class="nav-bar">권한 제한</div>
     </div>
 
-    <div class=main>
+    <div class="main">
         <div class="login">
             <h1>권한 제한</h1>
         </div>
