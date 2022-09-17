@@ -17,78 +17,88 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="<%=cp%>/resource/js/photo.js"></script>
+    <script src="https://kit.fontawesome.com/667371032c.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp"/>
     </div>
     <div class="navigation">
-        <div class="nav-bar">HOME > Gallay</div>
+        <div class="nav-bar">HOME > Photo</div>
     </div>
 
     <div class="photo">
-        <div>
-            <p class="title">Photo</p>
+        <div  class="title">
+            <p>Photo</p>
             <c:if test="${sessionScope.member.userId != null}">
-                <p class="createBtn">
-                    <button class="btn-hover" type="button" onclick="location.href='<%=cp%>/photo/created.do'">글등록</button>
-                </p>
+                <button class="createBtn btn-hover" type="button" onclick="location.href='<%=cp%>/photo/created.do'">글등록</button>
             </c:if>
         </div>
 
-        <div class="photo-menu post-move">
-            <a href=""><img alt="" src="<%=cp%>/resource/img/namsan.jpg">서울</a>
-            <a href=""><img alt="" src="<%=cp%>/resource/img/inje.jpg">강원</a>
-            <a href=""><img alt="" src="<%=cp%>/resource/img/samyang.jpg">충북</a>
-            <a href=""><img alt="" src="<%=cp%>/resource/img/namsan.jpg">광주</a>
-            <a href=""><img alt="" src="<%=cp%>/resource/img/namsan.jpg">경북</a>
-            <a href=""><img alt="" src="<%=cp%>/resource/img/namsan.jpg">제주</a>
+        <div class="post-move">
+            <div class="photo-menu">
+                <input hidden id="photoNum" value="${dto.photoNum}">
+                <c:forEach var="allDTO" items="${allList}">
+                    <img id="photo-${allDTO.photoNum}" onclick="ListPhoto('${allDTO.photoNum}')" alt="" src="<%=cp%>/uploads/photo/${allDTO.imageFilename}">
+                </c:forEach>
+            </div>
         </div>
 
         <table class="photo-list">
-            <c:forEach var="dto" items="${list}">
+            <tr class="post-move">
+                <td class="move">
+                    <span class="prev">
+                        <c:if test="${prevPhotoDTO != null}">
+                            <a href="<%=cp%>/photo/list.do?photoNum=${prevPhotoDTO.photoNum}">◀️</a>
+                        </c:if>
+                    </span>
+                </td>
+                <td class="center-img">
+                    <img id="photo-img" src="<%=cp%>/uploads/photo/${dto.imageFilename}">
+                </td>
+                <td class="move">
+                    <span class="next">
+                        <c:if test="${nextPhotoDTO != null}">
+                        <a href="<%=cp%>/photo/list.do?photoNum=${nextPhotoDTO.photoNum}">▶️</a>
+                        </c:if>
+                    </span>
+                </td>
+            </tr>
             <tr class="tag-tr">
                 <td></td>
                 <td class="center-img">
-                    <c:forEach var="tagDTO" items="${dto.tagList}">
-                    <span>${tagDTO.tag}<a onclick="tagRemove('{tagDTO.tagNum}')">✖️</a></span>
-                    </c:forEach>
-                    <span id="addTag" onclick="tagActive('0')">➕</span>
+                    <span id="addTag"><a onclick="tagActive('0')">Tag <i class="fa-solid fa-plus"></i></a></span>
                     <span id="inputTag" hidden>
                         <input type="text" name="tag" id="tag">
-                        <a id="checkTag" onclick="addTag('${dto.photoNum}')">✔️</a>
+                        <a id="checkTag" onclick="addTag('${dto.photoNum}')"><i class="fa-solid fa-circle-check"></i></a>
                         <a onclick="tagActive('1')">✖️</a>
                     </span>
+                    <marquee class="tag-list">
+                    <c:forEach var="tagDTO" items="${dto.tagList}">
+                        <span>${tagDTO.tag}<a onclick="tagRemove('${tagDTO.tagNum}', '${dto.photoNum}')">✖️</a></span>
+                    </c:forEach>
+                    </marquee>
                 </td>
                 <td></td>
-            </tr>
-            <tr class="post-move">
-                <td>
-                    <span class="prev">◀️</span>
-                </td>
-                <td class="center-img">
-                    <a onclick="photoarticle('1', '${photoarticleUrl}');">
-                        <img src="<%=cp%>/uploads/photo/${dto.imageFilename}">
-
-                    </a>
-                </td>
-                <td>
-                    <span class="next">▶️</span>
-                </td>
             </tr>
             <tr>
                 <td></td>
                 <td class="center-img">
                     <div class="photo-box2">
-                    <img src="<%=cp%>/resource/img/user.png" alt="">
-                    <span>${dto.place} | ${dto.subject}</span><br>
-                    <span>${dto.userId} |  ${dto.created}</span>
-                    <div class="content">${dto.content}</div>
+                        <img src="<%=cp%>/resource/img/user.png" alt="">
+                        <span class="update-btn">
+                            <c:if test="${sessionScope.member.userId == dto.userId}">
+                                <button class="btn-hover" type="button" onclick="updatePhoto('${dto.photoNum}')">글수정</button>
+                                <button class="btn-hover" type="button" onclick="deletePhoto('${dto.photoNum}')">글삭제</button>
+                            </c:if>
+                        </span>
+                        <span>${dto.place} | ${dto.subject}</span><br>
+                        <span>${dto.userId} |  ${dto.created}</span>
+                        <div class="content">${dto.content}</div>
                     </div>
                 </td>
                 <td></td>
             </tr>
-            </c:forEach>
         </table>
     </div>
 

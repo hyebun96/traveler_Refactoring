@@ -3,7 +3,6 @@ package com.photo;
 import com.member.SessionInfo;
 import com.util.FileManager;
 import com.util.MyUploadServlet;
-import com.util.MyUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -45,11 +43,9 @@ public class PhotoServlet extends MyUploadServlet {
             createdForm(req, resp);
         } else if (uri.contains("created_ok.do")) {
             createdSubmit(req, resp);
-        } else if (uri.contains("photoarticle.do")) {
-            photoarticle(req, resp);
-        } else if (uri.contains("update.do")) {
+        } else if (uri.contains("updated.do")) {
             updateForm(req, resp);
-        } else if (uri.contains("update_ok.do")) {
+        } else if (uri.contains("updated_ok.do")) {
             updateSubmit(req, resp);
         } else if (uri.contains("delete.do")) {
             delete(req, resp);
@@ -57,41 +53,34 @@ public class PhotoServlet extends MyUploadServlet {
             createdTag(req, resp);
         } else if (uri.contains("removeTag.do")) {
             removeTag(req, resp);
+        } else if (uri.contains("deleteFile.do")) {
+            deleteFile(req, resp);
         }
     }
 
     private void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         PhotoDAO dao = new PhotoDAO();
-        MyUtil util = new MyUtil();
-        String cp = req.getContextPath();
 
-        String page = req.getParameter("page");
-        int current_page = 1;
-        if (page != null) {
-            current_page = Integer.parseInt(page);
+        int photoNum;
+        if(req.getParameter("photoNum") == null){
+            photoNum = dao.firstdataNum();
+        }else {
+            photoNum = Integer.parseInt(req.getParameter("photoNum"));
         }
 
-        String keyword = req.getParameter("nam");
-        if (keyword == null) {
-            keyword = "";
-        }
+        List<PhotoDTO> allList = null;
+        allList = dao.listPhoto(0);
 
-        int dataCount = dao.dataCount();
-
-        int rows = 6;
-        int total_page = util.pageCount(rows, dataCount);
-        if (current_page > total_page) {
-            current_page = total_page;
-        }
-
-        int offset = (current_page - 1) * rows;
-        if(offset < 0){
-            offset = 0;
+        for(PhotoDTO dto: allList){
+            List<TagDTO> tagList= dao.readTag(dto.getPhotoNum());
+            if (tagList != null) {
+                dto.setTagList(tagList);
+            }
         }
 
         List<PhotoDTO> list = null;
-        list = dao.listPhoto(offset, rows);
+        list = dao.listPhoto(photoNum);
 
         for(PhotoDTO dto: list){
             List<TagDTO> tagList= dao.readTag(dto.getPhotoNum());
@@ -100,26 +89,30 @@ public class PhotoServlet extends MyUploadServlet {
             }
         }
 
-        String query = "";
-        if (keyword.length() != 0) {
-            query = "nam=" + URLEncoder.encode(keyword, "utf-8");
+        PhotoDTO prevPhotoDTO = null;
+        PhotoDTO dto = null;
+        PhotoDTO nextPhotoDTO = null;
+
+        if(list.size() == 2){
+            dto = list.get(0);
+            if(list.get(1).getPhotoNum() > photoNum ){
+               nextPhotoDTO = list.get(1);
+           }else {
+               prevPhotoDTO = list.get(1);
+           }
+        } else if(list.size() == 1){
+            dto = list.get(0);
+        } else {
+            prevPhotoDTO = list.get(1);
+            dto = list.get(0);
+            nextPhotoDTO = list.get(2);
         }
 
-        String listUrl = cp + "/photo/list.do";
-        String photoarticleUrl = cp + "/photo/photoarticle.do?page=" + current_page;
-        String paging = util.paging(current_page, total_page, listUrl);
-        if (query.length() != 0) {
-            listUrl += "?" + query;
-            photoarticleUrl += "&" + query;
-        }
 
-        req.setAttribute("list", list);
-        req.setAttribute("dataCount", dataCount);
-        req.setAttribute("photoarticleUrl", photoarticleUrl);
-        req.setAttribute("page", current_page);
-        req.setAttribute("total_page", total_page);
-        req.setAttribute("paging", paging);
-        req.setAttribute("nam", keyword);
+        req.setAttribute("allList", allList);
+        req.setAttribute("prevPhotoDTO", prevPhotoDTO);
+        req.setAttribute("dto", dto);
+        req.setAttribute("nextPhotoDTO", nextPhotoDTO);
 
         forward(req, resp, "/WEB-INF/views/photo/list.jsp");
     }
@@ -128,7 +121,7 @@ public class PhotoServlet extends MyUploadServlet {
 
         req.setAttribute("mode", "created");
 
-        forward(req, resp, "/WEB-INF/views/photo/created.jsp");
+        forward(req, resp, "/WEB-INF/views/photo/write.jsp");
     }
 
     private void createdSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -143,6 +136,7 @@ public class PhotoServlet extends MyUploadServlet {
         dto.setUserId(info.getUserId());
         dto.setSubject(req.getParameter("subject"));
         dto.setContent(req.getParameter("content"));
+        dto.setPlace(req.getParameter("place"));
 
         String filename = null;
         Part p = req.getPart("upload");
@@ -157,35 +151,6 @@ public class PhotoServlet extends MyUploadServlet {
         }
 
         resp.sendRedirect(cp + "/photo/list.do");
-    }
-
-    private void photoarticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        String cp = req.getContextPath();
-
-        PhotoDAO dao = new PhotoDAO();
-
-        int photoNum = Integer.parseInt(req.getParameter("photoNum"));
-        String page = req.getParameter("page");
-
-        PhotoDTO dto = dao.readPhoto(photoNum);
-
-        if (dto == null) {
-            resp.sendRedirect(cp + "/photo/list.do?page=" + page);
-            return;
-        }
-
-        List<TagDTO> tagList= dao.readTag(dto.getPhotoNum());
-        if (tagList != null) {
-            dto.setTagList(tagList);
-        }
-
-        dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
-
-        req.setAttribute("dto", dto);
-        req.setAttribute("page", page);
-
-        forward(req, resp, "/WEB-INF/views/photo/photoarticle.jsp");
     }
 
     private void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -213,9 +178,9 @@ public class PhotoServlet extends MyUploadServlet {
         req.setAttribute("dto", dto);
         req.setAttribute("page", page);
 
-        req.setAttribute("mode", "update");
+        req.setAttribute("mode", "updated");
 
-        forward(req, resp, "/WEB-INF/views/photo/created.jsp");
+        forward(req, resp, "/WEB-INF/views/photo/write.jsp");
     }
 
     private void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -223,29 +188,31 @@ public class PhotoServlet extends MyUploadServlet {
         PhotoDAO dao = new PhotoDAO();
         PhotoDTO dto = new PhotoDTO();
 
-        String page = req.getParameter("page");
+        int photoNum = Integer.parseInt(req.getParameter("photoNum"));
         if (req.getMethod().equalsIgnoreCase("")) {
-            resp.sendRedirect(cp + "/photo/list.do?page=" + page);
+            resp.sendRedirect(cp + "/photo/list.do?photoNum=" + photoNum);
             return;
         }
 
-        String imageFilename = req.getParameter("imageFilename");
-        dto.setPhotoNum(Integer.parseInt(req.getParameter("photoNum")));
+        dto.setPhotoNum(photoNum);
         dto.setSubject(req.getParameter("subject"));
         dto.setContent(req.getParameter("content"));
+        dto.setPlace(req.getParameter("place"));
+        String imageFilename = req.getParameter("imageFilename");
 
-        Part p = req.getPart("upload");
-        Map<String, String> map = doFileUpload(p, pathname);
-        if (map != null) {
-            String filename = map.get("saveFilename");
-            FileManager.doFiledelete(pathname, imageFilename);
-            dto.setImageFilename(filename);
+        if(imageFilename == null || imageFilename.equals("")){
+            Part p = req.getPart("upload");
+            Map<String, String> map = doFileUpload(p, pathname);
+            if (map != null) {
+                String filename = map.get("saveFilename");
+                dto.setImageFilename(filename);
+            }
         } else {
             dto.setImageFilename(imageFilename);
         }
 
         dao.updatePhoto(dto);
-        resp.sendRedirect(cp + "/photo/list.do?page=" + page);
+        resp.sendRedirect(cp + "/photo/list.do?photoNum=" + photoNum);
     }
 
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -256,23 +223,22 @@ public class PhotoServlet extends MyUploadServlet {
 
         PhotoDAO dao = new PhotoDAO();
 
-        int num = Integer.parseInt(req.getParameter("photoNum"));
-        String page = req.getParameter("page");
+        int photoNum = Integer.parseInt(req.getParameter("photoNum"));
 
-        PhotoDTO dto = dao.readPhoto(num);
+        PhotoDTO dto = dao.readPhoto(photoNum);
         if (dto == null) {
-            resp.sendRedirect(cp + "/photo/list.do?page=" + page);
+            resp.sendRedirect(cp + "/photo/list.do");
             return;
         }
 
         if (!dto.getUserId().equals(info.getUserId()) && !info.getUserId().equals("admin")) {
-            resp.sendRedirect(cp + "/photo/list.do?page=" + page);
+            resp.sendRedirect(cp + "/photo/list.do?page");
             return;
         }
 
         FileManager.doFiledelete(pathname, dto.getImageFilename());
-		dao.deletePhoto(num);
-        resp.sendRedirect(cp + "/photo/list.do?page=" + page);
+		dao.deletePhoto(photoNum);
+        resp.sendRedirect(cp + "/photo/list.do");
     }
 
     private  void createdTag(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -293,8 +259,9 @@ public class PhotoServlet extends MyUploadServlet {
 
         dao.insertTag(addTag, photoNum);
 
-        resp.sendRedirect(cp + "/photo/list.do");
+        resp.sendRedirect(cp + "/photo/list.do?photoNum=" + photoNum);
     }
+
 
     private void removeTag(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -310,10 +277,31 @@ public class PhotoServlet extends MyUploadServlet {
 
         PhotoDAO dao = new PhotoDAO();
         int tagNum = Integer.parseInt(req.getParameter("tagNum"));
+        int photoNum = Integer.parseInt(req.getParameter("photoNum"));
 
         dao.removeTag(tagNum);
 
-        resp.sendRedirect(cp + "/photo/list.do");
+        resp.sendRedirect(cp + "/photo/list.do?photoNum=" + photoNum);
     }
 
+    private void deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String cp = req.getContextPath();
+        HttpSession session = req.getSession();
+        SessionInfo info = (SessionInfo) session.getAttribute("member");
+
+        if(info == null){
+            String returnPage = "returnPage=" + "/photo/list.do";
+            resp.sendRedirect(cp + "/main/access.do?" + returnPage);
+            return;
+        }
+
+        int photoNum = Integer.parseInt(req.getParameter("photoNum"));
+        String mode = req.getParameter("mode");
+
+        PhotoDAO dao = new PhotoDAO();
+        dao.deleteFile(photoNum);
+
+        resp.sendRedirect(cp + "/photo/" + mode + ".do?photoNum=" + photoNum);
+    }
 }

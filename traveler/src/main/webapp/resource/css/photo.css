@@ -1,70 +1,145 @@
 @charset "UTF-8";
 
-.photo1{
-	width:300px;
-	min-height: 400px;
-	margin: 20px auto 50px;
-	text-align: center;
-}
-.photo1 img{
-	width: 300px;
-	height: 400px;
-	background-size: cover;
+.photo {
+    width: 800px;
+    margin: 10px auto 50px;
 }
 
-.btn {
-	border: none;
-  color: white;
-  padding: 16px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 50px 50px 50px 50px;
+.photo .title{
+    display: inline-block;
 }
 
-
-.btn:hover {
-	 background-color: #4CAF50;
- 	 color: white;
- 	 
+.photo .title p{
+    float: left;
+    font-size: 30px;
+    margin: 25px 30px;
+    padding-left: 23px;
+    line-height: 22px;
 }
 
-.btn {
-	background-color: white; 
- 	 color: black; 
- 	 border: 2px solid #424242;
+.photo .createBtn{
+    font-size: 13px;
+    margin-right: 40px;
+    margin-left: 480px;
+    margin-top: 19px;
 }
 
-.btn1 {
-	border: none;
-  color: white;
-  padding: 16px 32px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 13px;
-  margin: 2px auto;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 50px;
-
+button {
+    height: 30px;
+    width: 90px;
+    background: #EFEFEF;
+    border: 1px solid white;
+    border-radius: 5px;
 }
 
-
-.btn1:hover {
-	 background-color: #4CAF50;
- 	 color: white;
- 	 
+.prev img, .next img{
+    width: 15px;
+    height: 400px;
 }
 
-.btn1 {
-	background-color: white; 
- 	 color: #458B74;
- 	 border: 2px solid #4CAF50;
- 	     font-weight: bold;
+.photo-menu {
+    width: 700px;
+    margin: 2px 34px;
+    white-space: nowrap;
+    display: inline-block;
+    overflow: scroll;
 }
 
+.photo .photo-menu img{
+    width: 110px;
+    height: 50px;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+}
 
+.photo .photo-menu img:hover, .photo .photo-menu img:active{
+    border: 2px solid #c4bfcb;
+}
+
+.photo .photo-list {
+    width: 800px;
+    height: 400px;
+}
+
+.photo .photo-list .move{
+    width: 28.8px;
+}
+
+.photo .photo-list .tag-tr {
+    height: 35px;
+}
+
+.photo-list .tag-tr .center-img{
+    width: 700px;
+    height: 35px;
+    margin: 11px 18px;
+    padding-top: 7px;
+    white-space: nowrap;
+    overflow: scroll;
+    display: inline-block;
+}
+
+.photo-list #photo-img{
+    width: 700px;
+    height: 400px;
+}
+
+.photo-list .tag-tr .center-img #checkTag{
+    color: #4CAF50;
+}
+
+.photo-list .tag-tr .center-img .tag-list {
+    height: 45px;
+    display: inline-table;
+}
+
+.photo .photo-list .tag-tr span{
+    font-size: 12px;
+    border: 1px solid #EFEFEF;
+    border-radius: 10px;
+    margin-right: 5px;
+    padding: 5px;
+    height: 11px;
+    background: #EFEFEF;
+}
+
+.photo .photo-list .tag-tr #tag{
+    border: none;
+    border-bottom: 1px solid;
+    background: #efefef;
+}
+
+.photo .photo-list a img{
+    width: 700px;
+    height: 400px;
+}
+
+.photo .photo-list .photo-box2{
+    width: 700px;
+    margin-top: 12px;
+    font-size: 13px;
+    padding-left: 16px;
+    float: left;
+}
+
+.photo .photo-list .photo-box2 img{
+    width: 40px;
+    height : 40px;
+    float : left;
+    border-radius : 100px;
+}
+
+.photo .photo-list .photo-box2 span{
+    padding-left: 10px;
+}
+
+.photo .photo-list .photo-box2 .update-btn{
+    height: 40px;
+    float: right;
+}
+
+.photo .photo-list .photo-box2 .content{
+    padding: 24px 8px;
+    width: 100%;
+}

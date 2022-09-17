@@ -43,7 +43,6 @@
 	resize: none;
 	width: 675px;
 	height: 260px;
-	display: inline-table;
 	padding: 10px;
 }
 
@@ -64,6 +63,15 @@
 
 .writeBoardForm .travel-box .place{
 	width: 62%;
+	margin: 15px 0;
+	border: none;
+	border-bottom: 1px solid black;
+	background: aliceblue;
+	padding: 3px 0 3px 10px;
+}
+
+.writeBoardForm .travel-box .place2{
+	width: 36%;
 	margin: 15px 0;
 	border: none;
 	border-bottom: 1px solid black;
