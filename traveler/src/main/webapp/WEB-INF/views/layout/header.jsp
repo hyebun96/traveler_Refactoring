@@ -5,8 +5,8 @@
 <%
     String cp = request.getContextPath();
 %>
-
 <link rel="stylesheet" href="<%=cp%>/resource/css/header.css" type="text/css">
+
 <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="<%=cp%>/resource/js/header.js"></script>
 
@@ -22,7 +22,7 @@
     <div class="header-right">
         <div class="menu">
             <ul class="nav">
-                <li class="nav-li">
+                <li class="nav-li" id="li-travel">
                     <a href="<%=cp%>/travel/list.do?type=seoul">TRAVEL</a>
                     <ul>
                         <li><a class="nav-a" href="<%=cp%>/travel/list.do?type=Seoul">서울</a></li>
@@ -36,24 +36,21 @@
 
 
                 <li class="nav-li">
-                    <a href="<%=cp %>/photo/photoMain.do">GALLERY</a>
+                    <a href="<%=cp%>/photo/list.do">PHOTO</a>
                 </li>
 
                 <li class="nav-li">
-                    <a href="<%=cp %>/notice/notice.do">BOARD</a>
+                    <a href="<%=cp%>/notice/list.do">BOARD</a>
                     <ul>
-                        <li><a class="nav-a" href="<%=cp %>/notice/notice.do">공지사항</a></li>
+                        <li id="li-notice"><a class="nav-a" href="<%=cp%>/notice/list.do">공지사항</a></li>
                         <li><a class="nav-a" href="<%=cp%>/qna/list.do">Q&amp;A</a></li>
-                        <li><a class="nav-a" href="<%=cp %>/board/board.do">자유게시판</a></li>
+                        <li><a class="nav-a" href="<%=cp%>/board/list.do">자유게시판</a></li>
                     </ul>
                 </li>
 
                 <c:if test="${sessionScope.member.userId!='admin'}">
                 <li class="nav-li">
                     <a href="<%=cp%>/contact/contact.do">CONTACT</a>
-                    <ul>
-                        <li><a class="nav-a" href="<%=cp%>/contact/contact.do">CONTACT</a></li>
-                    </ul>
                 </li>
                 </c:if>
 
@@ -61,7 +58,7 @@
                 <li class="nav-li">
                     <a href="<%=cp%>/member/list.do">ADMIN</a>
                     <ul>
-                       <li><a class="nav-a"href="<%=cp%>/member/list.do">회원리스트</a></li>
+                       <li id="li-admin"><a class="nav-a"href="<%=cp%>/member/list.do">회원리스트</a></li>
                        <li><a class="nav-a" href="<%=cp%>/contact/list.do">CANTACT 목록</a></li>
                     </ul>
                 </li>

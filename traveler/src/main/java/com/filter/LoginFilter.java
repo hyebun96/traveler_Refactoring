@@ -21,7 +21,6 @@ public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -31,7 +30,7 @@ public class LoginFilter implements Filter {
         HttpSession session = req.getSession();
         SessionInfo info = (SessionInfo) session.getAttribute("member");
 
-        if (info == null && isExclideUri(req) == false) {
+        if (info == null && !isExclideUri(req)) {
             String path = "/WEB-INF/views/member/login.jsp";
             RequestDispatcher rd = req.getRequestDispatcher(path);
             rd.forward(request, response);
@@ -39,13 +38,11 @@ public class LoginFilter implements Filter {
         }
 
         chain.doFilter(request, response);
-
     }
 
     @Override
     public void destroy() {
         // TODO Auto-generated method stub
-
     }
 
     private boolean isExclideUri(HttpServletRequest req) {
@@ -54,10 +51,14 @@ public class LoginFilter implements Filter {
         uri = uri.substring(cp.length());
 
         String[] uris = {
-                "/index.jsp", "/main.do",
-                "/board/board.do", "/member/login.do", "/member/login_ok.do", "/member/member.do", "/member/member_ok.do",
-                "/notice/notice.do", "/qna/list.do", "/contact/contact.do", "/contact/contact_ok.do", "/resource/**",
-                "/travel/list.do", "/uploads/travel/**"
+                "/index.jsp", "/main/**",
+                "/member/login.do", "/member/login_ok.do", "/member/member.do", "/member/member_ok.do",
+                "/travel/list.do",
+                "/notice/list.do", "/notice/view.do", "/notice/download.do",
+                "/board/list.do", "/qna/list.do",
+                "/photo/list.do", "/photo/createdTag.do", "/photo/removeTag.do",
+                "/contact/contact.do", "/contact/contact_ok.do",
+                "/resource/**", "/uploads/**"
         };
 
         if (uri.length() <= 1) {

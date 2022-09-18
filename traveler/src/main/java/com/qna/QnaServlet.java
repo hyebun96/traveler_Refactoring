@@ -298,7 +298,7 @@ public class QnaServlet extends HttpServlet {
         }
         String s = "\n --------------------------------original message--------------------------------\n re: ";
         String s1 = "\n --------------------------------------------------------------------------------\n";
-        String s2 = dto.getSubject() + "답변입니다.";		// TODO : 뭔지 알아내야함
+        String s2 = dto.getSubject() + "답변입니다.";
         dto.setContent(s + dto.getContent() + s1);
         dto.setSubject(s2);
         req.setAttribute("mode", "reply");

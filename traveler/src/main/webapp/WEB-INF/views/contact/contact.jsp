@@ -27,6 +27,8 @@
     </div>
 
     <div class="main">
+        <br>
+
         <div class="title">
             <h1>CONTACT</h1>
         </div>

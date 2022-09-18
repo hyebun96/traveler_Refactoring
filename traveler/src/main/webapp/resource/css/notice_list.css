@@ -47,10 +47,6 @@ button {
 	border-bottom: 2px solid black;
 }
 
-.board-table tr:first-child {
-	border-bottom: 2px solid black;
-}
-
 .board-title {
 	width: 270px;
 	text-align: left;

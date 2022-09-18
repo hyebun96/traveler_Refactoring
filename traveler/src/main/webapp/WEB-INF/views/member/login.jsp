@@ -43,7 +43,7 @@
             </form>
         </div>
         <div class="bottom-text">
-            Don't have account? <a href="<%=cp%>/member/member.do">Sign up</a>
+            Don't have account? <a href="<%=cp%>/member/member.do">SIGN UP</a>
         </div>
     </div>
 

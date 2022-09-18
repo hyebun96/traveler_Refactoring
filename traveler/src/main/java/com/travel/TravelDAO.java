@@ -5,18 +5,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TravelDAO {
     private final Connection conn = DBConn.getConnection();
@@ -476,27 +472,7 @@ public class TravelDAO {
                 Map<String, String> map = new HashMap<>();
                 map.put("saveFileName", rs.getString("saveFileName"));
                 map.put("place", rs.getString("place"));
-                switch (rs.getString("type")) {
-                    case "seoul":
-                        type = "서울";
-                        break;
-                    case "gangwon-do":
-                        type = "강원";
-                        break;
-                    case "chungcheongbuk-do":
-                        type = "충북";
-                        break;
-                    case "gwangju":
-                        type = "경주";
-                        break;
-                    case "gyeongsangbuk-do":
-                        type = "경북";
-                        break;
-                    case "jeju":
-                        type = "제주";
-                        break;
-                }
-                map.put("type", type);
+                map.put("type", rs.getString("type"));
 
                 list.add(map);
             }

@@ -5,7 +5,7 @@
 }
 
 .header-top .header-left {
-    width: 300px;
+    width: 200px;
     height: 10px;
     float: left;
 }
@@ -27,13 +27,13 @@
     padding-top: 30px;
     float: right;
     margin-right: 50px;
-    width: 780px;
+    width: 880px;
     height: 50px;
 }
 
 .header-top .header-right .menu {
     margin:0 auto;
-    width: 660px;
+    width: 800px;
     min-height: 40px;
     clear: both;
     box-sizing: border-box;
@@ -72,8 +72,7 @@
 
 ul.nav {
     width:100%;
-    margin-left: 50px;
-    padding: 0;
+    padding-left: 50px;
     list-style: none;
 }
 
@@ -115,4 +114,16 @@ ul.nav li:hover > ul li a:hover {
     color: #333333;
     text-decoration: none;
     height: 30px;
+}
+
+#li-travel{
+    padding-left: 150px;
+}
+
+#li-notice {
+    margin-left: 230px;
+}
+
+#li-admin {
+    margin-left: 340px;
 }

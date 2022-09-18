@@ -408,7 +408,7 @@ public class NoticeDAO {
                 dto.setId(rs.getString("id"));
                 dto.setName(rs.getString("name"));
                 dto.setTitle(rs.getString("title"));
-                dto.setCreated(rs.getString("created"));
+                dto.setCreated(rs.getString("created").substring(0, 10));
                 dto.setViewCount(rs.getInt("viewCount"));
 
                 list.add(dto);

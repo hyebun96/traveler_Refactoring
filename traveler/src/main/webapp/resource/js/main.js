@@ -16,19 +16,13 @@ $(function () {
 });
 
 $(function() {
-
     let msg = $("#msg").val();
     if(msg !== '' && msg !== undefined){
         alert(msg);
     }
 
-    let time = 500;
-    let idx = idx2 = 0;
-    let slide_width = $("#bxslider").width();
-
-    $("#bxslider li:first").css("display", "block");
-
     setInterval(clock, 1000);
+
 
 });
 
@@ -46,3 +40,16 @@ function clock(){  // 실시간 시계
     $("#nowTime").empty();
     $("#nowTime").append(nowDate);
 }
+
+$.noConflict();
+
+jQuery(document).ready(function($){
+    $('.post-wrapper').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        nextArrow:$('.next'),
+        prevArrow:$('.prev'),
+    });
+});

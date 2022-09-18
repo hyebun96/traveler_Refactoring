@@ -14,11 +14,15 @@
     <link rel="stylesheet" href="<%=cp%>/resource/css/style.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/main.css" type="text/css">
     <link rel="stylesheet" href="<%=cp%>/resource/css/notice_list.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 
-    <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="<%=cp%>/resource/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/photo.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script type="text/javascript" src="<%=cp%>/resource/js/main.js"></script>
+    <script type="text/javascript" src="https://kit.fontawesome.com/667371032c.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
     <div class="header">
         <jsp:include page="/WEB-INF/views/layout/header.jsp" />
@@ -27,50 +31,67 @@
         <div class="nav-bar">HOME</div>
     </div>
 
-    <div class=main>
+    <div class="main">
         <div class="clock">
             <p class="nowDate">
-                <img alt="" src="<%=cp %>/resource/img/clock.png">
+                <img alt="" src="<%=cp%>/resource/img/clock.png">
                 <b id="nowTime"></b>
             </p>
         </div>
 
-        <hr style="clear: both">
-        <input id="msg" value="${msg}" hidden/>
+        <hr>
 
-        <ul id="bxslider">
-            <c:if test="${travelImageList != null}">
-                <c:forEach var="dto" items="${travelImageList}" >
-                    <li><img src="<%=cp %>/uploads/travel/${dto.saveFileName}"/></li>
-                </c:forEach>
-            </c:if>
-        </ul>
-
-        <br><br><br><br>
-
-        <div class=main-title>
-            <h3>나에게로 떠나는 여행에 오신걸 환영합니다 .</h3>
+        <div class="page-wrapper">
+            <div class="post-slider">
+                <div class="post-wrapper">
+                    <c:forEach var="dto" items="${travelImageList}" >
+                    <div class="post">
+                        <a href="<%=cp%>/travel/list.do?type=${dto.type}">
+                            <img src="<%=cp%>/uploads/travel/${dto.saveFileName}" class="slider-image">
+                        </a>
+                    </div>
+                    </c:forEach>
+                </div>
+            </div>
+            <div class="post-move">
+                <span class="prev"><i class="fa-solid fa-circle-chevron-left"></i></span>
+                <span class="move-box">&nbsp;&nbsp;🗽관리자가 추천하는 여행지&nbsp;&nbsp;</span>
+                <span class="next"><i class="fa-solid fa-circle-chevron-right"></i></span>
+            </div>
         </div>
 
-        <p>일상 탈출을 위한 여행</p>
-        <p>지금 바로 떠나는 국내여행</p>
-        <br><br><br>
-        <div class="main-box1">
+        <br>
+        <br>
+        <br>
+
+        <div class=main-title>
+            <h3>Welcome ‍🙋🏻‍♀️</h3>
+            <p>국내여행 구석구석 나만의 여행을 공유해주세요.</p>
+            <p>다양한 추천 여행지도 보고, 여행 후기도 남기고</p>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <h3 class="noticeTitle">&nbsp;📢 Notice</h3>
+        <h3 class="photoTitle">&nbsp;✏️_여행 후기</h3>
+        <div class="main-notice">
             <table class="board-table">
                 <tr>
-                    <td>글번호</td>
-                    <td class="title">제목</td>
+                    <td>📢</td>
+                    <td>제목</td>
                     <td>작성자</td>
                     <td>작성일</td>
                     <td>조회수</td>
                 </tr>
-                <c:forEach var="dto" items="${list }" begin="0" end="4">
+                <c:forEach var="dto" items="${noticeList}">
                 <tr>
                     <td>
-                        <span>중요!</span>
+                        <span>공지</span>
                     </td>
                     <td class="notice">
-                        <a href="${articleUrl }?num=${dto.num}&page=1">${dto.title }</a>
+                        <a href="<%=cp%>/notice/view.do?num=${dto.num}&page=1">${dto.title}</a>
                     </td>
                     <td>${dto.name }</td>
                     <td>${dto.created }</td>
@@ -80,8 +101,11 @@
             </table>
         </div>
 
-        <div class="main-box2">
-            <a href="<%=cp %>/photo/photoMain.do"></a>
+        <div class="main-photo">
+            <input type="text" id="photoNum" hidden>
+            <c:forEach var="dto" items="${photoList}">
+                <img onclick="ListPhoto('${dto.photoNum}')" alt="" src="<%=cp%>/uploads/photo/${dto.imageFilename}">
+            </c:forEach>
         </div>
     </div>
 

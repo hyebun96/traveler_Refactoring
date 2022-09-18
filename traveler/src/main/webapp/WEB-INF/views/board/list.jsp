@@ -68,7 +68,7 @@
                 </tr>
             </c:forEach>
             <tr class="board-paging" height="35">
-                ${dataCount == 0 ? "<td colspan='5'>등록된 게시물이 없습니다.<td>" : paging}
+
             </tr>
             <tr height="35" class="board-created">
                 <td colspan="5">

@@ -7,20 +7,14 @@
     font-style: normal;
 }
 
-*{
-	padding: 0;
+* {
+    padding: 0;
     margin: 0;
     font-family: IM_Hyemin-Bold, serif;
 }
 
 body {
     font-size: 13px;
-}
-
-.main-box{
-	width: 50px; height: 30px;
-	border: 2px solid white;
-	background: white;
 }
 
 .main .clock .nowDate {
@@ -34,15 +28,15 @@ body {
     padding: 10px;
 }
 
-.main .clock .nowDate img{
-    width:30px;
+.main .clock .nowDate img {
+    width: 30px;
     height: 30px;
     float: left;
 }
 
 /* navigation */
 .navigation {
-    width:1080px;
+    width: 1080px;
     height: 40px;
     clear: both;
     margin: 10px auto;
@@ -50,91 +44,201 @@ body {
 }
 
 .nav-bar {
-	width:1080px;
+    width: 1080px;
     height: 40px;
     clear: both;
-    line-height:40px;
     font-size: 11px;
     text-align: right;
     box-sizing: border-box;
- 	padding: 10px;
+    padding: 10px;
 }
 
-.main{
-	width:1080px;
-	min-height: 500px;
-	margin: 0px auto 50px;
+.main {
+    width: 1080px;
+    min-height: 500px;
+    margin: 0 auto 50px;
 }
 
-.main p{
+.main p {
     text-align: center;
     color: #999999;
 }
 
-.main-title h3{
-	text-align: center;
+.main hr {
+    clear: both;
 }
 
-.main-box1{
-	width: 500px;
-	height: 300px;
-	border: 1px dotted gray;
-	float: left;
-	margin-bottom: 100px;
+.main-title h3 {
+    text-align: center;
 }
 
-.main-box1 table{
-    height: 100%;
+.page-wrapper {
+    position:relative;
+}
+
+.noticeTitle {
+    margin-right: 520px;
+    margin-left: 10px;
+    display: initial;
+}
+
+.photoTitle {
+    display: initial;
+}
+
+.main-notice {
+    width: 500px;
+    height: 300px;
+    border: 1px dotted gray;
+    float: left;
+    margin-bottom: 100px;
+    overflow: scroll;
+}
+
+.main-notice table {
     table-layout: fixed;
 }
 
-.main-box1 table tr{
-    border-bottom: 2px solid black;
+.main-notice table tr {
+    border-bottom: 1px solid black;
 }
 
-.main-box1 table tr .title{
-    width: 40%;
-}
-
-.main-box1 table span{
+.main-notice table span {
     display: inline-block;
-    padding:1px 3px;
+    padding: 1px 3px;
     background: #ED4C00;
     color: #FFFFFF;
 }
 
-.main-box1 .notice {
+.main-notice .notice {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
 
-.main-box2{
-	width: 500px;
-	height: 300px;
-	border: 1px dotted gray;
-	float: left;
-	margin-left: 76px;
+.main-photo {
+    width: 500px;
+    height: 300px;
+    border: 1px dotted gray;
+    float: left;
+    margin-left: 76px;
+    overflow: scroll;
 }
 
-#bxslider {position:relative;margin:0 auto;padding:10px 65px;list-style:none;width:1080px;height:500px;overflow-x:hidden}
-#bxslider li {display:none;position:absolute;left:0;top:0}
-#bxslider img {width:1080px;height:500px;}
+.main-photo img {
+    width: 89px;
+    height: 89px;
+    border-radius: 10px;
+    margin: 4px;
+    cursor: pointer;
+}
+
+/*post slider*/
+.post-slider {
+    margin: 0 auto;
+    position: relative;
+}
+
+.post-move {
+    text-align: center;
+}
+
+.post-move .prev, .post-move .next {
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.post-move .move-box {
+    font-size: 17px;
+}
+
+.post-slider .post-wrapper {
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 10px 0 10px 0;
+}
+
+.post-slider .post-wrapper .post {
+    width: 300px;
+    height: 300px;
+    margin: 0 10px;
+    display: inline-block;
+    background: white;
+    border-radius: 5px;
+}
+
+.post-slider .post-wrapper .post .slider-image {
+    width: 100%;
+    height: 300px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
 
 /* page */
-#paginate {clear:both; padding:15px 0px;text-align:center;height:28px;white-space:nowrap;}
-#paginate a {border:1px solid #ccc;height:28px;color:#000000;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;outline:none; select-dummy: expression(this.hideFocus=true);}
-#paginate a:hover, a:active {border:1px solid #ccc;color:#6771ff;vertical-align:middle; line-height:normal;}
-#paginate .curBox {border:1px solid #e28d8d; background: #fff; color:#cb3536; font-weight:bold;height:28px;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
-#paginate .numBox {border:1px solid #ccc;height:28px;font-weight:bold;text-decoration:none;padding:4px 7px 4px 7px;margin-left:3px;line-height:normal;vertical-align:middle;}
+#paginate {
+    clear: both;
+    padding: 15px 0;
+    text-align: center;
+    height: 28px;
+    white-space: nowrap;
+}
 
-/* 게시판에서 많이 쓰는 형식 */
-.div-button{
+#paginate a {
+    border: 1px solid #ccc;
+    height: 28px;
+    color: #000000;
+    text-decoration: none;
+    padding: 4px 7px 4px 7px;
+    margin-left: 3px;
+    line-height: normal;
+    vertical-align: middle;
+    outline: none;
+    select-dummy: expression(this.hideFocus=true);
+}
+
+#paginate a:hover, a:active {
+    border: 1px solid #ccc;
+    color: #6771ff;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+#paginate .curBox {
+    border: 1px solid #e28d8d;
+    background: #fff;
+    color: #cb3536;
+    font-weight: bold;
+    height: 28px;
+    padding: 4px 7px 4px 7px;
+    margin-left: 3px;
+    line-height: normal;
+    vertical-align: middle;
+}
+
+#paginate .numBox {
+    border: 1px solid #ccc;
+    height: 28px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 4px 7px 4px 7px;
+    margin-left: 3px;
+    line-height: normal;
+    vertical-align: middle;
+}
+
+/* button */
+.div-button {
     float: right;
     margin: 15px;
 }
 
-.div-button button{
+.travel .div-button button:hover, .btn-hover:active, .btn-hover:hover {
+    cursor: pointer;
+    background: cornflowerblue !important;
+    color: white;
+}
+
+.div-button button {
     height: 30px;
     width: 90px;
     background: #EFEFEF;
@@ -142,15 +246,18 @@ body {
     border-radius: 5px;
 }
 
+input, select {
+    cursor: pointer;
+}
+
 /* footer */
 .footer {
-	clear:both;
-    width:100%;
-    height:40px;
-    margin:100px auto 0;
-    text-align:center;
-    line-height: 40px;
-    border-top:1px solid #cccccc;
+    clear: both;
+    width: 100%;
+    height: 40px;
+    margin: 100px auto 0;
+    text-align: center;
+    border-top: 1px solid #cccccc;
     font-size: 10px;
     position: fixed;
     bottom: 0;
@@ -158,9 +265,9 @@ body {
     color: white;
 }
 
-.footer img{
-	width: 20px;
-	height: 20px;
+.footer img {
+    width: 20px;
+    height: 20px;
 
 }
 

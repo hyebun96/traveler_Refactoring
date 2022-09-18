@@ -2,6 +2,8 @@ package com.main;
 
 import com.notice.NoticeDAO;
 import com.notice.NoticeDTO;
+import com.photo.PhotoDAO;
+import com.photo.PhotoDTO;
 import com.travel.TravelDAO;
 import com.util.MyServlet;
 
@@ -10,8 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -25,30 +25,26 @@ public class MainServlet extends MyServlet {
         String uri = req.getRequestURI();
 
         if (uri.contains("main.do")) {
-            mainNotice(req, resp);
+            main(req, resp);
         } else if (uri.contains("access.do")) {
             access(req, resp);
         }
     }
 
-    protected void mainNotice(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        NoticeDAO dao = new NoticeDAO();
-        String cp = req.getContextPath();
-        List<NoticeDTO> list = dao.importantList();
+    protected void main(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String articleUrl = cp + "/notice/viewNotice.do";
-
-        for (NoticeDTO dto : list) {
-            dto.setCreated(dto.getCreated().substring(0, 10));
-        }
-
-        // 이미지 출력
         TravelDAO travelDAO = new TravelDAO();
         List<Map<String, String>> travelImageList = travelDAO.allTravelImage();
 
-        req.setAttribute("list", list);
-        req.setAttribute("articleUrl", articleUrl);
+        NoticeDAO noticeDAO = new NoticeDAO();
+        List<NoticeDTO> noticeList = noticeDAO.importantList();
+
+        PhotoDAO photoDAO = new PhotoDAO();
+        List<PhotoDTO> photoList = photoDAO.listPhoto(0);
+
         req.setAttribute("travelImageList", travelImageList);
+        req.setAttribute("noticeList", noticeList);
+        req.setAttribute("photoList", photoList);
         forward(req, resp, "/WEB-INF/views/main/main.jsp");
     }
 

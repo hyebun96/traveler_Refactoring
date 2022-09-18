@@ -171,12 +171,14 @@ function memberOk(mode) {
     }
 
     if (mode === "created") {
-        alert("회원가입하시겠습니까?");
-        f.action = "/traveler_war_exploded/member/member_ok.do";
+        if (confirm("회원가입하시겠습니까?")) {
+            f.action = "/traveler_war_exploded/member/member_ok.do";
+        }
 
     } else if (mode === "update") {
-        alert("수정하시겠습니까?");
-        f.action = "/traveler_war_exploded/member/update_ok.do";
+        if (confirm("수정하시겠습니까?")) {
+            f.action = "/traveler_war_exploded/member/update_ok.do";
+        }
     }
     f.submit();
 
@@ -226,8 +228,9 @@ function memberUpdate(mode) {
     const f = document.memberForm;
 
     if (mode === "delete") {
-        alert("탈퇴하시겠습니까?");
-        f.action = "/traveler_war_exploded/member/delete.do";
+        if (confirm("탈퇴하시겠습니까?")) {
+            f.action = "/traveler_war_exploded/member/delete.do";
+        }
 
     } else if (mode === "update") {
         f.action = "/traveler_war_exploded/member/pwd.do?mode=update";
