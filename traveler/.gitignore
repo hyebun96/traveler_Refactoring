@@ -16,6 +16,9 @@ target/
 *.jar
 *.project
 *.MF
+.lib/*
+.FrontEnd/META-INF/*
+.FrontEnd/src/lib/*
 
 ### Eclipse ###
 .apt_generated
