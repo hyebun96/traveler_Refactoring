@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar /Users/hyebunjeong/Documents/github_repo/traveler_Refactoring/traveler/out/artifacts/traveler/traveler.war
