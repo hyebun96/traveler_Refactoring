@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+* {
+    margin:0; padding:0;
+}
+
+body {
+    font-size: 13px;
+}
+
+a {
+	color:black;
+    cursor: pointer;
+    text-decoration: none;
+    /*line-height: 150%;*/
+}
+a:hover, a:active {
+    color: #e28d8d;
+    text-decoration: underline;
+}
+
+.footer >a{
+	color:white;
+}
